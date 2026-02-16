@@ -85,11 +85,14 @@ async function handlePaymentCaptured(
 
   // Fire WhatsApp confirmation (non-blocking)
   if (booking) {
-    fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/whatsapp/send`, {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ bookingId: booking.id, type: "confirmation" }),
-    }).catch(err => console.error("[razorpay-webhook] WhatsApp send failed:", err));
+    const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    if (baseUrl) {
+      fetch(`${baseUrl}/api/whatsapp/send`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ bookingId: booking.id, type: "confirmation" }),
+      }).catch(err => console.error("[razorpay-webhook] WhatsApp send failed:", err));
+    }
   }
 
   return { ok: true, bookingId: paymentRow.booking_id };

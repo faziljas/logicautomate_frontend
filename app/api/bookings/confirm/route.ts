@@ -128,16 +128,24 @@ export async function POST(request: NextRequest) {
     })
     .eq("id", bookingId);
 
-  // ── 6. Queue WhatsApp confirmation ───────────────────────
-  // Fire-and-forget — failure doesn't break the booking
-  try {
-    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/whatsapp/send`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bookingId, type: "confirmation" }),
-    });
-  } catch (e) {
-    console.warn("[confirm] WhatsApp send failed (non-fatal):", e);
+  // ── 6. Send WhatsApp confirmation ────────────────────────
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+  if (baseUrl) {
+    try {
+      const waRes = await fetch(`${baseUrl}/api/whatsapp/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingId, type: "confirmation" }),
+      });
+      if (!waRes.ok) {
+        const errText = await waRes.text();
+        console.warn("[confirm] WhatsApp send failed:", waRes.status, errText);
+      }
+    } catch (e) {
+      console.warn("[confirm] WhatsApp fetch failed (non-fatal):", e);
+    }
+  } else {
+    console.warn("[confirm] NEXT_PUBLIC_APP_URL not set — WhatsApp not sent");
   }
 
   return NextResponse.json({ status: "confirmed", bookingId }, { status: 200 });

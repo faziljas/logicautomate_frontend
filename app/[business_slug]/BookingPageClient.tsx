@@ -90,6 +90,82 @@ interface BookingPageClientProps {
   slug: string;
 }
 
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between text-sm">
+      <span className="text-gray-500">{label}</span>
+      <span className="font-medium text-gray-900">{value}</span>
+    </div>
+  );
+}
+
+function ConfirmedScreen({
+  terminology,
+  customerDetails,
+  selectedService,
+  selectedDate,
+  selectedTime,
+  businessName,
+  bookingId,
+}: {
+  terminology?: { booking?: string };
+  customerDetails: { phone: string };
+  selectedService?: { name: string };
+  selectedDate: string;
+  selectedTime: string;
+  businessName: string;
+  bookingId: string;
+}) {
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        window.close();
+      } catch {
+        // Ignore — browser may block close
+      }
+    }, 4000);
+    return () => clearTimeout(t);
+  }, []);
+
+  const cssVars = { "--primary-color": "#7C3AED" } as React.CSSProperties;
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={cssVars}
+    >
+      <div
+        className="w-full max-w-sm text-center rounded-2xl p-6 shadow-lg"
+        style={{ backgroundColor: "white" }}
+      >
+        <CheckCircle2
+          className="w-16 h-16 mx-auto mb-4"
+          style={{ color: "#10b981" }}
+        />
+        <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
+          {terminology?.booking ?? "Appointment"} Confirmed! 🎉
+        </h1>
+        <p className="text-gray-500 text-sm mb-6">
+          You&apos;ll receive a WhatsApp confirmation on {customerDetails.phone}
+        </p>
+        <div className="bg-gray-50 rounded-xl border border-gray-100 p-5 text-left space-y-3">
+          <SummaryRow label="Service" value={selectedService?.name ?? ""} />
+          <SummaryRow label="Date" value={selectedDate ?? ""} />
+          <SummaryRow label="Time" value={selectedTime ?? ""} />
+          <SummaryRow label="At" value={businessName} />
+        </div>
+        <p className="mt-5 text-xs text-gray-400">Booking ID: {bookingId}</p>
+        <button
+          type="button"
+          onClick={() => window.close()}
+          className="mt-6 w-full py-3 rounded-xl bg-gray-900 text-white font-semibold text-sm hover:bg-gray-800 transition-colors"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function BookingFlowInner({
   initialData,
   slug,
@@ -378,33 +454,15 @@ function BookingFlowInner({
   // --- CONFIRMED STATE ---
   if (step === "confirmed") {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center px-4"
-        style={cssVars}
-      >
-        <div
-          className="w-full max-w-sm text-center rounded-2xl p-6 shadow-lg"
-          style={{ backgroundColor: "white" }}
-        >
-          <CheckCircle2
-            className="w-16 h-16 mx-auto mb-4"
-            style={{ color: "#10b981" }}
-          />
-          <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
-            {terminology?.booking ?? "Appointment"} Confirmed! 🎉
-          </h1>
-          <p className="text-gray-500 text-sm mb-6">
-            You&apos;ll receive a WhatsApp confirmation on {customerDetails.phone}
-          </p>
-          <div className="bg-gray-50 rounded-xl border border-gray-100 p-5 text-left space-y-3">
-            <SummaryRow label="Service" value={selectedService?.name ?? ""} />
-            <SummaryRow label="Date" value={selectedDate ?? ""} />
-            <SummaryRow label="Time" value={selectedTime ?? ""} />
-            <SummaryRow label="At" value={business.name} />
-          </div>
-          <p className="mt-5 text-xs text-gray-400">Booking ID: {bookingId}</p>
-        </div>
-      </div>
+      <ConfirmedScreen
+        terminology={terminology}
+        customerDetails={customerDetails}
+        selectedService={selectedService}
+        selectedDate={selectedDate}
+        selectedTime={selectedTime}
+        businessName={business.name}
+        bookingId={bookingId ?? ""}
+      />
     );
   }
 
@@ -680,15 +738,6 @@ function BookingFlowInner({
           </div>
         )}
       </main>
-    </div>
-  );
-}
-
-function SummaryRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between text-sm">
-      <span className="text-gray-400">{label}</span>
-      <span className="font-semibold text-gray-800">{value}</span>
     </div>
   );
 }
