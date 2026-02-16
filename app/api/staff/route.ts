@@ -102,13 +102,31 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Default working hours (Mon–Fri 9–5) so slots work immediately after adding staff
+  const DEFAULT_WORKING_HOURS: Record<
+    string,
+    { start: string; end: string } | null
+  > = {
+    monday: { start: "09:00", end: "17:00" },
+    tuesday: { start: "09:00", end: "17:00" },
+    wednesday: { start: "09:00", end: "17:00" },
+    thursday: { start: "09:00", end: "17:00" },
+    friday: { start: "09:00", end: "17:00" },
+    saturday: null,
+    sunday: null,
+  };
+  const effectiveWorkingHours =
+    workingHours && Object.keys(workingHours).length > 0
+      ? workingHours
+      : DEFAULT_WORKING_HOURS;
+
   const { data: staff, error: staffErr } = await supabase
     .from("staff")
     .insert({
       business_id: businessId,
       user_id: userId,
       role_name: roleName?.trim() || "Staff",
-      working_hours: workingHours ?? {},
+      working_hours: effectiveWorkingHours,
       specializations: [],
       is_active: true,
     })

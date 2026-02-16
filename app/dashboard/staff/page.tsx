@@ -4,10 +4,11 @@
 // BookFlow — Staff Management
 // ============================================================
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Loader2, UserPlus } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
 import StaffCard from "@/components/dashboard/StaffCard";
+import AddStaffModal from "@/components/dashboard/AddStaffModal";
 
 interface StaffMember {
   id: string;
@@ -22,8 +23,9 @@ export default function StaffPage() {
   const { business, role, loading: ctxLoading } = useDashboard();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
 
-  useEffect(() => {
+  const fetchStaff = useCallback(() => {
     if (!business?.id) return;
     setLoading(true);
     fetch(`/api/dashboard/staff?businessId=${business.id}`)
@@ -35,6 +37,10 @@ export default function StaffPage() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [business?.id]);
+
+  useEffect(() => {
+    fetchStaff();
+  }, [fetchStaff]);
 
   const canEdit = role === "owner";
 
@@ -52,7 +58,7 @@ export default function StaffPage() {
         <h1 className="text-xl font-bold text-slate-900">Staff</h1>
         {canEdit && (
           <button
-            onClick={() => alert("Add staff form - integrate with POST /api/staff")}
+            onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
           >
             <UserPlus className="w-4 h-4" /> Add Staff
@@ -78,6 +84,13 @@ export default function StaffPage() {
             />
           ))}
         </div>
+      )}
+      {showAddModal && business && (
+        <AddStaffModal
+          businessId={business.id}
+          onSaved={fetchStaff}
+          onClose={() => setShowAddModal(false)}
+        />
       )}
     </div>
   );
