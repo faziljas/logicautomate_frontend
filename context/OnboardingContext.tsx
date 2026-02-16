@@ -240,8 +240,12 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
       if (saved) {
         const parsed = JSON.parse(saved) as OnboardingState;
         // If a previous onboarding completed, don't rehydrate — start fresh.
-        // Prevents wrong industry when user clears DB and tests again.
         if (parsed.createdBusinessId) return init;
+        // When on industry-selection, never rehydrate selectedTemplate — force
+        // explicit selection. Prevents wrong industry from stale tab/sessionStorage.
+        if (parsed.currentStep === "industry-selection") {
+          return { ...parsed, selectedTemplate: null };
+        }
         return parsed;
       }
     } catch {
