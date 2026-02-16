@@ -417,7 +417,7 @@ function BookingFlowInner({
         address={business.address}
         phone={business.phone}
         primaryColor={primaryColor}
-        showBookNow={step !== "confirmed" && step !== "payment"}
+        showBookNow={step !== "payment"}
         onBookNow={() => {
           if (step !== "service") {
             setStep("service");
