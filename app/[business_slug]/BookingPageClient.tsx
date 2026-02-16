@@ -7,7 +7,7 @@
 // ============================================================
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { CheckCircle2, AlertCircle, X } from "lucide-react";
+import { CheckCircle2, AlertCircle, X, Check } from "lucide-react";
 import { BookingProvider, useBooking } from "@/context/BookingContext";
 import { Header } from "@/components/booking-page/Header";
 import { ServiceGrid } from "@/components/booking-page/ServiceGrid";
@@ -37,6 +37,18 @@ const STEP_ORDER: Step[] = [
   "payment",
   "confirmed",
 ];
+
+const BOOKING_STEP_LABELS: Record<Step, string> = {
+  service: "Service",
+  staff: "Provider",
+  datetime: "Select Date",
+  details: "Details",
+  summary: "Review",
+  payment: "Payment",
+  confirmed: "Confirmed",
+};
+
+const VISIBLE_STEPS: Step[] = ["service", "staff", "datetime", "details", "summary"];
 
 interface BusinessData {
   id: string;
@@ -454,77 +466,82 @@ function BookingFlowInner({
         </div>
       )}
 
-      <div className="bg-white border-b border-gray-100 px-4 py-3">
+      <div className="bg-white border-b border-gray-100 px-4 py-4">
         <div className="max-w-lg mx-auto">
-          <div className="flex items-center justify-between mb-2">
-            {(["service", "staff", "datetime", "details", "summary"] as Step[]).map(
-            (s, i) => {
+          <div className="flex items-center justify-center gap-0">
+            {VISIBLE_STEPS.map((s, i) => {
               const idx = STEP_ORDER.indexOf(step);
               const sIdx = STEP_ORDER.indexOf(s);
               const isDone = sIdx < idx;
               const isCurrent = sIdx === idx;
               const canNavigate = sIdx <= idx;
+              const isLast = i === VISIBLE_STEPS.length - 1;
               return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => canNavigate && setStep(s)}
-                  disabled={!canNavigate}
-                  className={`flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 rounded ${
-                    canNavigate ? "cursor-pointer" : "cursor-default"
-                  }`}
-                  title={
-                    canNavigate
-                      ? sIdx === 0
-                        ? "Select service"
-                        : sIdx === 1
-                        ? "Choose provider"
-                        : sIdx === 2
-                        ? "Select date & time"
-                        : sIdx === 3
-                        ? "Enter details"
-                        : "Review booking"
-                      : undefined
-                  }
-                >
-                  <div
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      isDone
-                        ? "bg-green-400"
-                        : isCurrent
-                        ? "scale-125"
-                        : "bg-gray-200"
-                    } ${canNavigate ? "hover:opacity-80" : ""}`}
-                    style={
-                      isCurrent && !isDone
-                        ? { backgroundColor: primaryColor }
-                        : undefined
+                <div key={s} className="flex items-center">
+                  <button
+                    type="button"
+                    onClick={() => canNavigate && setStep(s)}
+                    disabled={!canNavigate}
+                    className={`flex flex-col items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 rounded ${
+                      canNavigate ? "cursor-pointer" : "cursor-default"
+                    }`}
+                    title={
+                      canNavigate ? BOOKING_STEP_LABELS[s] : undefined
                     }
-                  />
-                  {i < 4 && (
+                  >
                     <div
-                      className={`w-6 h-0.5 ${
+                      className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-all duration-300 ${
+                        isDone
+                          ? "bg-green-500 border-green-500 text-white"
+                          : isCurrent
+                          ? "border-2 text-white shadow-md"
+                          : "bg-white border-gray-200 text-gray-400"
+                      }`}
+                      style={
+                        isCurrent && !isDone
+                          ? { backgroundColor: primaryColor, borderColor: primaryColor }
+                          : undefined
+                      }
+                    >
+                      {isDone ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        <span>{i + 1}</span>
+                      )}
+                    </div>
+                    <span
+                      className={`mt-1.5 text-xs font-medium whitespace-nowrap ${
+                        isCurrent
+                          ? "font-semibold"
+                          : isDone
+                          ? "text-green-600"
+                          : "text-gray-400"
+                      }`}
+                      style={
+                        isCurrent && !isDone
+                          ? { color: primaryColor }
+                          : undefined
+                      }
+                    >
+                      {BOOKING_STEP_LABELS[s]}
+                    </span>
+                  </button>
+                  {!isLast && (
+                    <div
+                      className={`h-0.5 w-8 sm:w-12 mx-0.5 mb-5 flex-shrink-0 transition-all ${
                         isDone ? "bg-green-300" : "bg-gray-200"
                       }`}
                     />
                   )}
-                </button>
+                </div>
               );
-            }
-          )}
+            })}
           </div>
-          <p className="text-xs text-gray-500 text-center">
-            {step === "service" && "Select a service"}
-            {step === "staff" && "Choose your provider"}
-            {step === "datetime" && "Select date & time"}
-            {step === "details" && "Enter your details"}
-            {step === "summary" && "Review & confirm"}
-            {step !== "service" && (
-              <span className="block mt-1 text-gray-400">
-                Tap a dot above to go back
-              </span>
-            )}
-          </p>
+          {step !== "service" && (
+            <p className="text-xs text-gray-400 text-center mt-2">
+              Tap a step above to go back
+            </p>
+          )}
         </div>
       </div>
 
