@@ -17,8 +17,6 @@ export interface HeaderProps {
   rating?: number | null;
   totalReviews?: number | null;
   primaryColor: string;
-  onBookNow?: () => void;
-  showBookNow?: boolean;
 }
 
 export function Header({
@@ -31,8 +29,6 @@ export function Header({
   rating,
   totalReviews,
   primaryColor,
-  onBookNow,
-  showBookNow = true,
 }: HeaderProps) {
   const locationText = [city, address].filter(Boolean).join(", ");
   const hasRating = rating != null && rating > 0;
@@ -92,14 +88,6 @@ export function Header({
             )}
           </div>
 
-          {showBookNow && onBookNow && (
-            <button
-              onClick={onBookNow}
-              className="shrink-0 px-4 py-2.5 rounded-xl font-bold text-sm bg-white/95 hover:bg-white text-gray-900 transition-colors shadow-md"
-            >
-              Book Now
-            </button>
-          )}
         </div>
       </div>
     </header>

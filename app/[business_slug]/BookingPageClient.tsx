@@ -213,8 +213,6 @@ function BookingFlowInner({
 
   const [step, setStep] = useState<Step>("service");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [showIncompleteMessage, setShowIncompleteMessage] = useState(false);
-  const [incompleteMessageStep, setIncompleteMessageStep] = useState<Step | null>(null);
   const mainContentRef = useRef<HTMLElement>(null);
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [paymentOrderId, setPaymentOrderId] = useState<string | null>(null);
@@ -514,45 +512,7 @@ function BookingFlowInner({
         address={business.address}
         phone={business.phone}
         primaryColor={primaryColor}
-        showBookNow={step !== "payment"}
-        onBookNow={() => {
-          setIncompleteMessageStep(step);
-          setShowIncompleteMessage(true);
-          mainContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-          setTimeout(() => {
-            setShowIncompleteMessage(false);
-            setIncompleteMessageStep(null);
-          }, 5000);
-        }}
       />
-
-      {showIncompleteMessage && (
-        <div
-          className="mx-4 mt-2 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-3"
-          role="alert"
-        >
-          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-amber-800">
-              {incompleteMessageStep === "service"
-                ? "Please select a session first"
-                : "Complete your booking first"}
-            </p>
-            <p className="text-xs text-amber-700 mt-0.5">
-              {incompleteMessageStep === "service"
-                ? "Choose a session from the list below to continue."
-                : "Please select a service, choose date & time, and enter your details below."}
-            </p>
-          </div>
-          <button
-            onClick={() => setShowIncompleteMessage(false)}
-            className="shrink-0 p-1 rounded hover:bg-amber-100 text-amber-600"
-            aria-label="Dismiss"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      )}
 
       <div className="bg-white border-b border-gray-100 px-4 py-4">
         <div className="max-w-lg mx-auto">
