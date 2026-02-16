@@ -52,7 +52,23 @@ BookFlow/
 
 ---
 
-## Setup: Option B — Supabase CLI (Recommended for Teams)
+## Setup: Option B — Auto migrations on deploy (GitHub Actions)
+
+Migrations run automatically on every push to `main` via GitHub Actions.
+
+1. **Add `DATABASE_URL` secret** to your GitHub repo:
+   - Repo → Settings → Secrets and variables → Actions → New repository secret
+   - Name: `DATABASE_URL`
+   - Value: Supabase **Connection string (URI)** from Project Settings → Database
+
+2. **Run locally** (optional):
+   ```bash
+   DATABASE_URL="postgresql://..." npm run migrate
+   ```
+
+---
+
+## Setup: Option C — Supabase CLI (for teams using Supabase CLI)
 
 ```bash
 # Install Supabase CLI
