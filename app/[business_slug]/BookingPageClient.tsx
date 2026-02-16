@@ -107,6 +107,7 @@ function ConfirmedScreen({
   selectedTime,
   businessName,
   bookingId,
+  slug,
 }: {
   terminology?: { booking?: string };
   customerDetails: { phone: string };
@@ -115,7 +116,9 @@ function ConfirmedScreen({
   selectedTime: string;
   businessName: string;
   bookingId: string;
+  slug: string;
 }) {
+  // Try window.close() after 4s; browser blocks it unless window was opened by script
   useEffect(() => {
     const t = setTimeout(() => {
       try {
@@ -126,6 +129,18 @@ function ConfirmedScreen({
     }, 4000);
     return () => clearTimeout(t);
   }, []);
+
+  const handleClose = () => {
+    try {
+      window.close();
+    } catch {
+      /* noop */
+    }
+    // Fallback: if close() was blocked by browser, redirect back to booking page
+    setTimeout(() => {
+      window.location.href = `/${slug}`;
+    }, 100);
+  };
 
   const cssVars = { "--primary-color": "#7C3AED" } as React.CSSProperties;
   return (
@@ -156,7 +171,7 @@ function ConfirmedScreen({
         <p className="mt-5 text-xs text-gray-400">Booking ID: {bookingId}</p>
         <button
           type="button"
-          onClick={() => window.close()}
+          onClick={handleClose}
           className="mt-6 w-full py-3 rounded-xl bg-gray-900 text-white font-semibold text-sm hover:bg-gray-800 transition-colors"
         >
           Close
@@ -462,6 +477,7 @@ function BookingFlowInner({
         selectedTime={selectedTime ?? ""}
         businessName={business.name}
         bookingId={bookingId ?? ""}
+        slug={slug}
       />
     );
   }
