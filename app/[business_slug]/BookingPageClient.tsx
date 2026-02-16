@@ -157,14 +157,20 @@ function BookingFlowInner({
   }, [customerDetails]);
 
   const createBookingAndProceed = useCallback(async () => {
+    const resolvedStaffId =
+      selectedStaffId === "any" ? staff[0]?.id : selectedStaffId;
     if (
       !business ||
       !selectedService ||
-      !selectedStaffId ||
+      !resolvedStaffId ||
       !selectedDate ||
       !selectedTime
-    )
+    ) {
+      if (!resolvedStaffId && selectedStaffId === "any") {
+        alert("No staff available. Please add staff in the dashboard first.");
+      }
       return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -174,10 +180,7 @@ function BookingFlowInner({
         body: JSON.stringify({
           businessId: business.id,
           serviceId: selectedService.id,
-          staffId:
-            selectedStaffId === "any"
-              ? staff[0]?.id ?? selectedStaffId
-              : selectedStaffId,
+          staffId: resolvedStaffId,
           date: selectedDate,
           time: selectedTime,
           customerDetails: {
@@ -233,14 +236,22 @@ function BookingFlowInner({
   ]);
 
   const handlePayAtVenue = useCallback(async () => {
+    const resolvedStaffId =
+      selectedStaffId === "any" ? staff[0]?.id : selectedStaffId;
     if (
       !business ||
       !selectedService ||
-      !selectedStaffId ||
+      !resolvedStaffId ||
       !selectedDate ||
       !selectedTime
-    )
+    ) {
+      alert(
+        resolvedStaffId
+          ? "Please fill in all details."
+          : "No staff available. Please add staff in the dashboard first."
+      );
       return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -250,12 +261,10 @@ function BookingFlowInner({
         body: JSON.stringify({
           businessId: business.id,
           serviceId: selectedService.id,
-          staffId:
-            selectedStaffId === "any"
-              ? staff[0]?.id ?? selectedStaffId
-              : selectedStaffId,
+          staffId: resolvedStaffId,
           date: selectedDate,
           time: selectedTime,
+          payAtVenue: true,
           customerDetails: {
             name: customerDetails.name,
             phone: customerDetails.phone,

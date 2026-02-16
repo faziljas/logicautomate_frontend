@@ -19,6 +19,8 @@ interface CustomerDetails {
   customFields: Record<string, unknown>;
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 interface CreateBookingBody {
   businessId:      string;
   serviceId:       string;
@@ -27,6 +29,7 @@ interface CreateBookingBody {
   time:            string;  // HH:MM
   customerDetails: CustomerDetails;
   customBookingData?: Record<string, unknown>; // industry-specific booking fields
+  payAtVenue?:     boolean; // Skip Razorpay, confirm with advance_paid=0
 }
 
 function getAdmin() {
@@ -62,6 +65,7 @@ export async function POST(request: NextRequest) {
     time,
     customerDetails,
     customBookingData = {},
+    payAtVenue = false,
   } = body;
 
   // ── 1. Input validation ──────────────────────────────────
@@ -70,6 +74,9 @@ export async function POST(request: NextRequest) {
   if (!businessId) errors.businessId = "Required";
   if (!serviceId)  errors.serviceId  = "Required";
   if (!staffId)    errors.staffId    = "Required";
+  if (staffId === "any" || !UUID_REGEX.test(staffId)) {
+    errors.staffId = "Please select a specific provider. No staff available.";
+  }
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) errors.date = "Valid YYYY-MM-DD required";
   if (!time || !/^\d{2}:\d{2}$/.test(time))         errors.time = "Valid HH:MM required";
   if (!customerDetails?.name?.trim())  errors["customerDetails.name"]  = "Name is required";
@@ -236,36 +243,40 @@ export async function POST(request: NextRequest) {
     bookingId = rpcResult as string;
   }
 
-  // ── 6. Create Razorpay order ─────────────────────────────
+  // ── 6. Razorpay order (skip for pay-at-venue) ─────────────
   let razorpayOrderId: string;
   let razorpayAmount:  number;
 
-  try {
-    const razorpay = getRazorpay();
-    const order    = await razorpay.orders.create({
-      amount:   Math.round(advanceAmount * 100), // paise
-      currency: "INR",
-      receipt:  `booking_${bookingId}`,
-      notes:    { booking_id: bookingId, business_id: businessId },
-    });
-    razorpayOrderId = order.id;
-    razorpayAmount  = advanceAmount;
+  if (payAtVenue || advanceAmount === 0) {
+    // Pay at venue: no online payment, advance_paid stays 0
+    razorpayOrderId = "pay_at_venue";
+    razorpayAmount  = 0;
+  } else {
+    try {
+      const razorpay = getRazorpay();
+      const order    = await razorpay.orders.create({
+        amount:   Math.round(advanceAmount * 100), // paise
+        currency: "INR",
+        receipt:  `booking_${bookingId}`,
+        notes:    { booking_id: bookingId, business_id: businessId },
+      });
+      razorpayOrderId = order.id;
+      razorpayAmount  = advanceAmount;
 
-    // Store pending payment record
-    await supabase.from("payments").insert({
-      booking_id:        bookingId,
-      business_id:       businessId,
-      amount:            advanceAmount,
-      payment_method:    "razorpay",
-      razorpay_order_id: razorpayOrderId,
-      status:            "pending",
-      is_advance:        true,
-    });
-  } catch (rpErr) {
-    console.error("[create-booking] razorpay:", rpErr);
-    // In dev/test, continue without Razorpay
-    razorpayOrderId = `mock_order_${bookingId}`;
-    razorpayAmount  = advanceAmount;
+      await supabase.from("payments").insert({
+        booking_id:        bookingId,
+        business_id:       businessId,
+        amount:            advanceAmount,
+        payment_method:    "razorpay",
+        razorpay_order_id: razorpayOrderId,
+        status:            "pending",
+        is_advance:        true,
+      });
+    } catch (rpErr) {
+      console.error("[create-booking] razorpay:", rpErr);
+      razorpayOrderId = `mock_order_${bookingId}`;
+      razorpayAmount  = advanceAmount;
+    }
   }
 
   return NextResponse.json(
