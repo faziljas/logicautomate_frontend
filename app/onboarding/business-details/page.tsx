@@ -62,12 +62,13 @@ export default function BusinessDetailsPage() {
   const { businessDetails: bd } = state;
   const slugCheck = useSlugCheck(bd.slug);
 
-  // Auto-generate slug from business name
+  // Auto-generate slug from business name (sync when name changes, unless user customized slug)
   useEffect(() => {
-    if (!slugEdited && bd.name) {
-      dispatch({ type: "SET_SLUG", payload: generateSlug(bd.name) });
+    const generated = generateSlug(bd.name);
+    if (bd.name.trim().length >= 3 && generated.length >= 3 && (!slugEdited || !bd.slug)) {
+      dispatch({ type: "SET_SLUG", payload: generated });
     }
-  }, [bd.name, slugEdited, dispatch]);
+  }, [bd.name, bd.slug, slugEdited, dispatch]);
 
   const selectedIndustry = INDUSTRY_LIST.find(
     (i) => i.id === state.selectedTemplate
