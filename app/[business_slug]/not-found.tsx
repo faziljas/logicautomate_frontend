@@ -13,7 +13,7 @@ export default function BusinessNotFound() {
           href="/"
           className="inline-block px-5 py-2.5 rounded-xl font-semibold text-white bg-violet-600 hover:bg-violet-700 transition-colors"
         >
-          Go to BookFlow
+          Go to LogicAutomate
         </Link>
       </div>
     </div>

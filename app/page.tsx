@@ -15,7 +15,7 @@ export default function LandingPage() {
         {/* Logo & Hero */}
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-3">
-            <span className="text-violet-600">Book</span>Flow
+            <span className="text-violet-600">Logic</span>Automate
           </h1>
           <p className="text-lg text-gray-600">
             Appointment booking for salons, clinics, and service businesses
@@ -75,7 +75,7 @@ export default function LandingPage() {
 
         <p className="text-center text-sm text-gray-400 mt-8">
           Customers book via your link:{" "}
-          <span className="font-mono text-gray-600">yoursite.com/your-business</span>
+          <span className="font-mono text-gray-600">logicautomate.app/your-business</span>
         </p>
       </div>
     </div>

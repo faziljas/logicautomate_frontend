@@ -295,7 +295,7 @@ export async function sendFeedbackRequest(
   booking: BookingForMessage,
   config:  TemplateConfig
 ): Promise<SendResult> {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://bookflow.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
   return sendWhatsApp({
     businessId:  booking.business_id,
     to:          booking.customer_phone,
@@ -317,7 +317,7 @@ export async function sendLoyaltyReward(
   config:     TemplateConfig,
   visitCount: number
 ): Promise<SendResult> {
-  const appUrl   = process.env.NEXT_PUBLIC_APP_URL ?? "https://bookflow.app";
+  const appUrl   = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
   const slug     = booking.business_slug ?? "";
   return sendWhatsApp({
     businessId:  booking.business_id,
@@ -357,7 +357,7 @@ export interface BookingForMessage {
 }
 
 function buildBookingVariables(b: BookingForMessage): TemplateVariables {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://bookflow.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
   return {
     customer_name:    b.customer_name,
     service_name:     b.service_name,

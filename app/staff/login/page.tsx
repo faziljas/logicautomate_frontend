@@ -62,7 +62,7 @@ export default function StaffLoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-pink-50 to-white px-4">
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
-        <h1 className="text-center text-xl font-bold text-slate-900">BookFlow Staff</h1>
+        <h1 className="text-center text-xl font-bold text-slate-900">LogicAutomate Staff</h1>
         <p className="mt-1 text-center text-sm text-slate-500">
           Sign in with your staff phone number
         </p>

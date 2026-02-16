@@ -98,7 +98,7 @@ export default function CompletePage() {
     (i) => i.id === state.selectedTemplate
   );
 
-  const bookingUrl = state.bookingUrl ?? `https://bookflow.app/${state.createdBusinessSlug ?? "your-business"}`;
+  const bookingUrl = state.bookingUrl ?? `https://logicautomate.app/${state.createdBusinessSlug ?? "your-business"}`;
 
   // Hide confetti after 5s
   useEffect(() => {
@@ -142,7 +142,7 @@ export default function CompletePage() {
         {/* Header */}
         <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100">
           <div className="max-w-lg mx-auto px-4 py-4">
-            <span className="text-xl font-bold text-violet-600">📅 BookFlow</span>
+            <span className="text-xl font-bold text-violet-600">📅 LogicAutomate</span>
           </div>
         </header>
 

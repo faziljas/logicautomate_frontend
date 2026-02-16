@@ -231,7 +231,7 @@ export async function POST(request: NextRequest) {
   }
 
   // ── 7. Create business ───────────────────────────────────
-  const bookingUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://bookflow.app"}/${finalSlug}`;
+  const bookingUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app"}/${finalSlug}`;
 
   const { data: business, error: bizErr } = await supabase
     .from("businesses")

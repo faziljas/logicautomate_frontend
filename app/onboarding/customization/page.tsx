@@ -262,7 +262,7 @@ export default function CustomizationPage() {
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <span className="text-xl font-bold text-violet-600">📅 BookFlow</span>
+          <span className="text-xl font-bold text-violet-600">📅 LogicAutomate</span>
           <button
             onClick={handleSkip}
             className="ml-auto flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors"

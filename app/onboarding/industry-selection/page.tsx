@@ -33,7 +33,7 @@ export default function IndustrySelectionPage() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold text-violet-600">📅 BookFlow</span>
+          <span className="text-xl font-bold text-violet-600">📅 LogicAutomate</span>
           <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full">
             <Clock className="w-3.5 h-3.5" />
             <span>Setup takes ~3 minutes</span>

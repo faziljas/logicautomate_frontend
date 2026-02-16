@@ -155,7 +155,7 @@ export default function BusinessDetailsPage() {
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <span className="text-xl font-bold text-violet-600">📅 BookFlow</span>
+          <span className="text-xl font-bold text-violet-600">📅 LogicAutomate</span>
         </div>
       </header>
 
@@ -295,7 +295,7 @@ export default function BusinessDetailsPage() {
             </label>
             <div className="relative flex items-center">
               <span className="absolute left-3 text-xs text-gray-400 font-medium whitespace-nowrap">
-                bookflow.app/
+                logicautomate.app/
               </span>
               <input
                 type="text"
