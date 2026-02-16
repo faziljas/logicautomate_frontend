@@ -295,8 +295,16 @@ export default function BusinessDetailsPage() {
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
               Your Booking Page URL
             </label>
-            <div className="relative flex items-center">
-              <span className="absolute left-3 text-xs text-gray-400 font-medium whitespace-nowrap">
+            <div
+              className={`flex items-stretch rounded-xl overflow-hidden border focus-within:ring-2 focus-within:ring-violet-400 focus-within:border-violet-400 ${
+                errors.slug || slugCheck.status === "taken"
+                  ? "border-red-300 bg-red-50"
+                  : slugCheck.status === "available"
+                  ? "border-green-300 bg-green-50"
+                  : "border-gray-200 bg-white"
+              }`}
+            >
+              <span className="flex items-center px-3 bg-gray-50 text-gray-500 text-sm font-mono border-r border-gray-200 shrink-0">
                 logicautomate.app/
               </span>
               <input
@@ -306,16 +314,15 @@ export default function BusinessDetailsPage() {
                   setSlugEdited(true);
                   setField("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""));
                 }}
-                className={`w-full pl-28 pr-10 py-3 rounded-xl border text-sm font-mono transition-colors focus:outline-none focus:ring-2 focus:ring-violet-400 ${
+                placeholder="your-business"
+                className={`flex-1 min-w-0 py-3 px-3 pr-10 text-sm font-mono bg-transparent focus:outline-none placeholder:text-gray-400 ${
                   errors.slug || slugCheck.status === "taken"
-                    ? "border-red-300 bg-red-50"
-                    : slugCheck.status === "available"
-                    ? "border-green-300 bg-green-50"
-                    : "border-gray-200 bg-white focus:border-violet-400"
+                    ? "text-red-900"
+                    : "text-gray-900"
                 }`}
               />
               {/* Status icon */}
-              <div className="absolute right-3">
+              <div className="flex items-center pr-3 shrink-0">
                 {slugCheck.status === "checking" && (
                   <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
                 )}
