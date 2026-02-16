@@ -90,7 +90,7 @@ export default function CustomerTable({
             <tbody>
               {customers.map((c) => (
                 <tr
-                  key={c.id}
+                  key={`${c.id}:${c.name}`}
                   className={cn(
                     "border-b border-slate-50 hover:bg-slate-50/50",
                     onCustomerClick && "cursor-pointer"
