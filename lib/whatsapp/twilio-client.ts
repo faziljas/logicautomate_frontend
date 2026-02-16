@@ -144,11 +144,21 @@ export async function sendWhatsApp(options: SendOptions): Promise<SendResult> {
 
   try {
     const client  = getTwilioClient();
-    const message = await client.messages.create({
+    const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    const createParams: {
+      from: string;
+      to: string;
+      body: string;
+      statusCallback?: string;
+    } = {
       from: fromNumber,
       to:   phoneCheck.formatted,
       body: messageBody,
-    });
+    };
+    if (baseUrl) {
+      createParams.statusCallback = `${baseUrl}/api/webhooks/twilio`;
+    }
+    const message = await client.messages.create(createParams);
     messageSid = message.sid;
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
