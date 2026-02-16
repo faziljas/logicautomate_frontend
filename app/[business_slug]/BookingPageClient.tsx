@@ -6,8 +6,8 @@
 // Template-aware styling, sessionStorage persistence
 // ============================================================
 
-import { useState, useCallback, useEffect } from "react";
-import { ArrowLeft, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 import { BookingProvider, useBooking } from "@/context/BookingContext";
 import { Header } from "@/components/booking-page/Header";
 import { ServiceGrid } from "@/components/booking-page/ServiceGrid";
@@ -110,6 +110,7 @@ function BookingFlowInner({
 
   const [step, setStep] = useState<Step>("service");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const mainContentRef = useRef<HTMLElement>(null);
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [paymentOrderId, setPaymentOrderId] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
@@ -416,8 +417,14 @@ function BookingFlowInner({
         address={business.address}
         phone={business.phone}
         primaryColor={primaryColor}
-        showBookNow={step === "service"}
-        onBookNow={() => setStep("service")}
+        showBookNow={step !== "confirmed" && step !== "payment"}
+        onBookNow={() => {
+          if (step !== "service") {
+            setStep("service");
+          } else {
+            mainContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }}
       />
 
       <div className="bg-white border-b border-gray-100 px-4 py-3">
@@ -458,16 +465,7 @@ function BookingFlowInner({
         </div>
       </div>
 
-      <main className="max-w-lg mx-auto px-4 py-6 pb-10">
-        {step !== "service" && (
-          <button
-            onClick={goBack}
-            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-5 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back
-          </button>
-        )}
-
+      <main ref={mainContentRef} className="max-w-lg mx-auto px-4 py-6 pb-10">
         {step === "service" && (
           <ServiceGrid
             services={services}
