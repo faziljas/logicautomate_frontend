@@ -143,3 +143,86 @@ export async function POST(request: NextRequest) {
 
   return jsonResponse({ staff }, { status: 201 });
 }
+
+// ============================================================
+// PATCH /api/staff
+// Update staff. Owner only.
+// Body: { staffId, businessId, name, email?, phone?, roleName }
+// ============================================================
+
+export async function PATCH(request: NextRequest) {
+  const { session, business, supabase, isOwner, error } = await getSessionAndBusiness();
+
+  if (error || !session || !business || !supabase) {
+    return unauthorized();
+  }
+
+  if (!isOwner) {
+    return jsonResponse({ error: "Owner only" }, { status: 403 });
+  }
+
+  let body: {
+    staffId: string;
+    businessId: string;
+    name: string;
+    email?: string;
+    phone?: string;
+    roleName?: string;
+  };
+  try {
+    body = await request.json();
+  } catch {
+    return badRequest("Invalid JSON");
+  }
+
+  const { staffId, businessId, name, email, phone, roleName } = body;
+  if (!staffId || !businessId || businessId !== business.id) {
+    return badRequest("staffId and businessId required");
+  }
+  if (!name?.trim()) return badRequest("name required");
+  if (!email?.trim() && !phone?.trim()) {
+    return badRequest("email or phone required");
+  }
+
+  const { data: staffRow, error: staffErr } = await supabase
+    .from("staff")
+    .select("id, user_id")
+    .eq("id", staffId)
+    .eq("business_id", businessId)
+    .single();
+
+  if (staffErr || !staffRow) {
+    return jsonResponse({ error: "Staff not found" }, { status: 404 });
+  }
+
+  const userId = staffRow.user_id;
+
+  const { error: userUpdateErr } = await supabase
+    .from("users")
+    .update({
+      name: name.trim(),
+      email: email?.trim() ? email.trim().toLowerCase() : null,
+      phone: phone?.trim() || null,
+    })
+    .eq("id", userId);
+
+  if (userUpdateErr) {
+    console.error("[staff PATCH user]", userUpdateErr);
+    return jsonResponse({ error: "Failed to update staff" }, { status: 500 });
+  }
+
+  const { error: staffUpdateErr } = await supabase
+    .from("staff")
+    .update({
+      role_name: roleName?.trim() || "Staff",
+    })
+    .eq("id", staffId)
+    .eq("business_id", businessId);
+
+  if (staffUpdateErr) {
+    console.error("[staff PATCH staff]", staffUpdateErr);
+    return jsonResponse({ error: "Failed to update staff" }, { status: 500 });
+  }
+
+  return jsonResponse({ ok: true });
+}

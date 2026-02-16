@@ -24,6 +24,7 @@ export default function StaffPage() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
 
   const fetchStaff = useCallback(() => {
     if (!business?.id) return;
@@ -80,16 +81,23 @@ export default function StaffPage() {
             <StaffCard
               key={s.id}
               staff={s}
-              onEdit={canEdit ? () => alert(`Edit staff ${s.id}`) : undefined}
+              onEdit={canEdit ? () => setEditingStaff(s) : undefined}
             />
           ))}
         </div>
       )}
-      {showAddModal && business && (
+      {(showAddModal || editingStaff) && business && (
         <AddStaffModal
           businessId={business.id}
-          onSaved={fetchStaff}
-          onClose={() => setShowAddModal(false)}
+          staff={editingStaff}
+          onSaved={() => {
+            fetchStaff();
+            setEditingStaff(null);
+          }}
+          onClose={() => {
+            setShowAddModal(false);
+            setEditingStaff(null);
+          }}
         />
       )}
     </div>
