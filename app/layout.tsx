@@ -1,5 +1,6 @@
 // Root layout for BookFlow (required by Next.js App Router)
 import React from "react";
+import "./globals.css";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
