@@ -129,8 +129,18 @@ type Action =
 
 function reducer(state: OnboardingState, action: Action): OnboardingState {
   switch (action.type) {
-    case "SET_TEMPLATE":
-      return { ...state, selectedTemplate: action.payload };
+    case "SET_TEMPLATE": {
+      const isChanging = state.selectedTemplate !== action.payload;
+      return {
+        ...state,
+        selectedTemplate: action.payload,
+        // Clear form data when user switches to a different industry
+        ...(isChanging && {
+          businessDetails: BLANK_DETAILS,
+          services: [],
+        }),
+      };
+    }
 
     case "SET_STEP":
       return { ...state, currentStep: action.payload };
