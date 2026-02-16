@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/customers/:id
+export const dynamic = "force-dynamic";
 // Full customer profile + visit history.
 // ============================================================
 

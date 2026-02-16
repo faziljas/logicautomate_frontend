@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/analytics
+export const dynamic = "force-dynamic";
 // Analytics data: revenue trend, popular services, retention, peak hours.
 // ============================================================
 

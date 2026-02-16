@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/analytics/bookings
+export const dynamic = "force-dynamic";
 // Booking analytics with date range.
 // Query: start, end, businessId
 // ============================================================

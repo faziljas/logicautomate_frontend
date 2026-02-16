@@ -1,5 +1,6 @@
 // ============================================================
 // POST /api/analytics/email-report
+export const dynamic = "force-dynamic";
 // Schedule weekly or monthly analytics report emails.
 // Body: { businessId, email, frequency: 'weekly' | 'monthly' }
 // Note: Requires Resend/SendGrid setup for actual email delivery.

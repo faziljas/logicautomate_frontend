@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/payments
+export const dynamic = "force-dynamic";
 // List payments for a business (owner auth required).
 // Query: ?businessId=xxx&status=pending|completed|failed|refunded
 // ============================================================

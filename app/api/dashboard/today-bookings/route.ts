@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/today-bookings
+export const dynamic = "force-dynamic";
 // Today's appointments for the overview.
 // Query: ?businessId=xxx
 // ============================================================

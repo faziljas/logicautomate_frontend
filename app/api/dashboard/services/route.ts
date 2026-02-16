@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/services
+export const dynamic = "force-dynamic";
 // List services. Owner only for edit; staff can read.
 // ============================================================
 

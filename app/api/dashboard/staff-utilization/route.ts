@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/staff-utilization
+export const dynamic = "force-dynamic";
 // Staff busy % for today (owner only).
 // Query: ?businessId=xxx
 // ============================================================

@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/customers
+export const dynamic = "force-dynamic";
 // List customers with search. Paginated.
 // Query: businessId, search, page, limit
 // ============================================================

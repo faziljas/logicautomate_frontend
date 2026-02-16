@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/analytics/services
+export const dynamic = "force-dynamic";
 // Service analytics with date range.
 // Query: start, end, businessId
 // ============================================================

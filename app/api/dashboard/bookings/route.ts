@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/bookings
+export const dynamic = "force-dynamic";
 // List bookings with filters. Paginated.
 // Query: businessId, startDate, endDate, status, staffId, serviceId, page, limit
 // ============================================================

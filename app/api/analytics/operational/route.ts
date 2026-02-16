@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/analytics/operational
+export const dynamic = "force-dynamic";
 // Operational metrics with date range.
 // Query: start, end, businessId
 // ============================================================

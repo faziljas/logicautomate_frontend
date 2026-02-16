@@ -1,4 +1,5 @@
 // GET /api/whatsapp/logs?businessId=xxx&page=1&limit=50
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse }  from "next/server";
 import { createRouteHandlerClient }   from "@supabase/auth-helpers-nextjs";
 import { createClient }               from "@supabase/supabase-js";

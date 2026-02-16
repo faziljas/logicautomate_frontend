@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/analytics/revenue
+export const dynamic = "force-dynamic";
 // Revenue analytics with date range.
 // Query: start, end, businessId
 // ============================================================

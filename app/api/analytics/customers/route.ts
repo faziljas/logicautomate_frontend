@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/analytics/customers
+export const dynamic = "force-dynamic";
 // Customer analytics with date range.
 // Query: start, end, businessId
 // ============================================================

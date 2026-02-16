@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/analytics/overview
+export const dynamic = "force-dynamic";
 // Combined analytics for dashboard - fetches all metrics in parallel.
 // Query: start, end, businessId, preset
 // ============================================================

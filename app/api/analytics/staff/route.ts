@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/analytics/staff
+export const dynamic = "force-dynamic";
 // Staff performance analytics with date range.
 // Query: start, end, businessId
 // ============================================================

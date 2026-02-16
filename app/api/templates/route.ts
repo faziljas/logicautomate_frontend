@@ -1,5 +1,6 @@
 // ============================================================
 // BookFlow — Templates API
+export const dynamic = "force-dynamic";
 // app/api/templates/route.ts
 //
 // GET /api/templates         → list all active templates

@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/stats
+export const dynamic = "force-dynamic";
 // Today's overview stats for the dashboard home.
 // Query: ?businessId=xxx
 // ============================================================

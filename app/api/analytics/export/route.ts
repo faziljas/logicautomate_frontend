@@ -1,5 +1,6 @@
 // ============================================================
 // POST /api/analytics/export
+export const dynamic = "force-dynamic";
 // Export analytics as PDF or Excel (CSV).
 // Body: { businessId, start, end, format: 'pdf' | 'csv' }
 // ============================================================

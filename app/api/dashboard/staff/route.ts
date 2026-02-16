@@ -1,5 +1,6 @@
 // ============================================================
 // GET /api/dashboard/staff
+export const dynamic = "force-dynamic";
 // List staff with basic metrics. Owner only.
 // ============================================================
 
