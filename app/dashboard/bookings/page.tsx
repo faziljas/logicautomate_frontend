@@ -34,6 +34,11 @@ export default function BookingsPage() {
   const [filters, setFilters] = useState<Filters>({});
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [reminderFeedback, setReminderFeedback] = useState<{
+    sent: number;
+    failed: number;
+  } | null>(null);
+  const [sendingReminders, setSendingReminders] = useState(false);
 
   const limit = 20;
 
@@ -98,14 +103,28 @@ export default function BookingsPage() {
   };
 
   const handleSendReminders = async (ids: string[]) => {
+    if (ids.length === 0) return;
+    setSendingReminders(true);
+    setReminderFeedback(null);
+    let sent = 0;
+    let failed = 0;
     for (const id of ids) {
-      await fetch("/api/whatsapp/send-reminder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookingId: id }),
-      });
+      try {
+        const res = await fetch("/api/whatsapp/send-reminder", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bookingId: id }),
+        });
+        if (res.ok) sent++;
+        else failed++;
+      } catch {
+        failed++;
+      }
     }
+    setReminderFeedback({ sent, failed });
+    setSendingReminders(false);
     fetchBookings(page, filters);
+    setTimeout(() => setReminderFeedback(null), 5000);
   };
 
   if (ctxLoading || !business) {
@@ -142,17 +161,38 @@ export default function BookingsPage() {
           onBookingClick={(b) => setSelectedBooking(b as Booking)}
         />
       ) : (
-        <BookingList
-          bookings={bookings}
-          total={total}
-          page={page}
-          limit={limit}
-          onPageChange={setPage}
-          onFiltersChange={handleFiltersChange}
-          onBookingClick={setSelectedBooking}
-          onExportCSV={handleExportCSV}
-          onSendReminders={handleSendReminders}
-        />
+        <>
+          {reminderFeedback && (
+            <div
+              className={`rounded-lg border px-4 py-2 text-sm ${
+                reminderFeedback.failed === 0
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                  : reminderFeedback.sent === 0
+                    ? "border-red-200 bg-red-50 text-red-800"
+                    : "border-amber-200 bg-amber-50 text-amber-800"
+              }`}
+              role="alert"
+            >
+              {reminderFeedback.failed === 0
+                ? `Reminders sent successfully (${reminderFeedback.sent})`
+                : reminderFeedback.sent === 0
+                  ? `Failed to send reminders (${reminderFeedback.failed})`
+                  : `Reminders sent: ${reminderFeedback.sent}, failed: ${reminderFeedback.failed}`}
+            </div>
+          )}
+          <BookingList
+            bookings={bookings}
+            total={total}
+            page={page}
+            limit={limit}
+            onPageChange={setPage}
+            onFiltersChange={handleFiltersChange}
+            onBookingClick={setSelectedBooking}
+            onExportCSV={handleExportCSV}
+            onSendReminders={handleSendReminders}
+            sendingReminders={sendingReminders}
+          />
+        </>
       )}
 
       <BookingDetailsModal

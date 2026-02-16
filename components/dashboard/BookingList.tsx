@@ -37,7 +37,8 @@ interface Props {
   onFiltersChange?: (f: Filters) => void;
   onBookingClick?: (b: Booking) => void;
   onExportCSV?: () => void;
-  onSendReminders?: (ids: string[]) => void;
+  onSendReminders?: (ids: string[]) => void | Promise<void>;
+  sendingReminders?: boolean;
 }
 
 export interface Filters {
@@ -89,6 +90,7 @@ export default function BookingList({
   onBookingClick,
   onExportCSV,
   onSendReminders,
+  sendingReminders = false,
 }: Props) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -145,10 +147,20 @@ export default function BookingList({
           )}
           {onSendReminders && selected.size > 0 && (
             <button
-              onClick={() => onSendReminders(Array.from(selected))}
-              className="flex items-center gap-1.5 rounded-lg bg-violet-600 px-2.5 py-1.5 text-sm text-white hover:bg-violet-700"
+              onClick={async () => {
+                const ids = Array.from(selected);
+                await onSendReminders(ids);
+                setSelected(new Set());
+              }}
+              disabled={sendingReminders}
+              className="flex items-center gap-1.5 rounded-lg bg-violet-600 px-2.5 py-1.5 text-sm text-white hover:bg-violet-700 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              <Send className="w-4 h-4" /> Send reminders ({selected.size})
+              {sendingReminders ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}{" "}
+              Send reminders ({selected.size})
             </button>
           )}
         </div>
