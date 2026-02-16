@@ -9,7 +9,8 @@ import { Loader2, Building2, MessageSquare, CreditCard, Bell, Users, Copy, Check
 import { useDashboard } from "@/context/DashboardContext";
 import WhatsAppTemplateEditor from "@/components/settings/WhatsAppTemplateEditor";
 import BookingRulesEditor from "@/components/settings/BookingRulesEditor";
-import NotificationsEditor from "@/components/settings/NotificationsEditor";
+import type { BookingRules } from "@/lib/templates/types";
+import NotificationsEditor, { type NotificationPrefs } from "@/components/settings/NotificationsEditor";
 import TeamMembersEditor from "@/components/settings/TeamMembersEditor";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
@@ -146,7 +147,7 @@ export default function SettingsPage() {
               </p>
               <BookingRulesEditor
                 businessId={business.id}
-                initialRules={(business.custom_config as Record<string, unknown>)?.booking_rules}
+                initialRules={(business.custom_config as Record<string, unknown>)?.booking_rules as Partial<BookingRules> | undefined}
                 onSaved={refetch}
               />
             </div>
@@ -159,7 +160,7 @@ export default function SettingsPage() {
               </h2>
               <NotificationsEditor
                 businessId={business.id}
-                initialPrefs={(business.custom_config as Record<string, unknown>)?.notifications}
+                initialPrefs={(business.custom_config as Record<string, unknown>)?.notifications as NotificationPrefs | undefined}
                 onSaved={refetch}
               />
             </div>
