@@ -1,9 +1,12 @@
 // ============================================================
 // BookFlow — Server-side business fetch (for SSR)
 // Direct DB access, no HTTP round-trip
+// Uses getBusinessConfig so UI respects template_id even when
+// custom_config is empty or stale (e.g. applyTemplate failed during onboarding)
 // ============================================================
 
 import { createClient } from "@supabase/supabase-js";
+import { getBusinessConfig } from "@/lib/templates/utils";
 
 export interface FetchedService {
   id: string;
@@ -57,6 +60,10 @@ export async function fetchBusinessBySlug(slug: string) {
 
   const businessId = business.id;
 
+  // Use getBusinessConfig so we get template defaults merged in (handles empty
+  // or stale custom_config when applyTemplate failed or was never run)
+  const mergedConfig = await getBusinessConfig(businessId);
+
   const { data: services } = await supabase
     .from("services")
     .select("id, name, description, duration_minutes, price, advance_amount, category")
@@ -101,7 +108,7 @@ export async function fetchBusinessBySlug(slug: string) {
       phone: business.phone ?? null,
       logo_url: business.logo_url ?? null,
       google_review_link: business.google_review_link ?? null,
-      custom_config: business.custom_config ?? {},
+      custom_config: mergedConfig ?? (business.custom_config ?? {}),
     },
     services: typedServices,
     staff,

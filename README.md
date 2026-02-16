@@ -223,6 +223,27 @@ After running `seed/sample_data.sql`:
 
 ---
 
+## Fix: UI shows wrong industry (salon/coaching mismatch)
+
+If `industry_type` or `template_id` were changed in the DB but the UI still shows old terminology, re-apply the template:
+
+**1. Add `ADMIN_SECRET`** to `.env.local` and production env vars:
+```
+ADMIN_SECRET=any-long-random-string   # e.g. run: openssl rand -hex 32
+```
+
+**2. Call the admin API** (replace values):
+```bash
+curl -X POST "https://YOUR_DOMAIN/api/admin/apply-template" \
+  -H "Content-Type: application/json" \
+  -H "x-admin-secret: YOUR_ADMIN_SECRET" \
+  -d '{"slug":"business-slug","templateId":"coaching"}'
+```
+
+**Valid templateId:** `salon`, `clinic`, `coaching`, `consulting`, `photography`, `fitness`, `custom`
+
+---
+
 ## Next Steps
 
 Module 2 will add the Next.js project scaffold with Supabase client setup.

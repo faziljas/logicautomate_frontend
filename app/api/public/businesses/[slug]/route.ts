@@ -2,11 +2,14 @@
 // BookFlow — Public Business API (SSR-friendly)
 // GET /api/public/businesses/[slug]
 // Returns business + services + staff for public booking page
+// Uses getBusinessConfig so UI respects template_id even when
+// custom_config is empty or stale.
 // Cache-Control for 1hr on template config
 // ============================================================
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { getBusinessConfig } from "@/lib/templates/utils";
 
 function getAdmin() {
   return createClient(
@@ -53,6 +56,8 @@ export async function GET(
   }
 
   const businessId = business.id;
+
+  const mergedConfig = await getBusinessConfig(businessId);
 
   // Fetch services (active only)
   const { data: services, error: svcErr } = await supabase
@@ -106,7 +111,7 @@ export async function GET(
       phone: business.phone ?? null,
       logo_url: business.logo_url ?? null,
       google_review_link: business.google_review_link ?? null,
-      custom_config: business.custom_config ?? {},
+      custom_config: mergedConfig ?? (business.custom_config ?? {}),
     },
     services: (services ?? []).map((s: Record<string, unknown>) => ({
       id: s.id,
