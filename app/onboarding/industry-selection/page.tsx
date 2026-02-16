@@ -5,17 +5,33 @@
 // app/onboarding/industry-selection/page.tsx
 // ============================================================
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowRight, Clock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowRight, Clock, RotateCcw } from "lucide-react";
 import { useOnboarding } from "@/context/OnboardingContext";
 import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
 import { IndustryCard, INDUSTRY_LIST } from "@/components/onboarding/IndustryCard";
 import type { IndustryType } from "@/lib/templates/types";
 
+const SESSION_KEY = "bookflow_onboarding";
+
 export default function IndustrySelectionPage() {
   const router = useRouter();
-  const { state, setTemplate, goToStep } = useOnboarding();
+  const searchParams = useSearchParams();
+  const { state, setTemplate, goToStep, dispatch } = useOnboarding();
+
+  // ?reset=1 — clear stale sessionStorage (e.g. after clearing DB to test fresh)
+  useEffect(() => {
+    if (searchParams.get("reset") === "1") {
+      try {
+        sessionStorage.removeItem(SESSION_KEY);
+      } catch {
+        // ignore
+      }
+      dispatch({ type: "RESET" });
+      router.replace("/onboarding/industry-selection");
+    }
+  }, [searchParams, dispatch, router]);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   function handleSelect(id: string) {
@@ -34,10 +50,20 @@ export default function IndustrySelectionPage() {
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <span className="text-xl font-bold text-violet-600">📅 LogicAutomate</span>
+          <div className="flex items-center gap-3">
+          <a
+            href="/onboarding/industry-selection?reset=1"
+            className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-violet-600 px-3 py-1.5 rounded-full hover:bg-violet-50 transition-colors"
+            title="Clear previous session and start fresh (use after clearing DB)"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Start fresh</span>
+          </a>
           <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full">
             <Clock className="w-3.5 h-3.5" />
             <span>Setup takes ~3 minutes</span>
           </div>
+        </div>
         </div>
       </header>
 

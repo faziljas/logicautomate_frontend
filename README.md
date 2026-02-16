@@ -225,6 +225,14 @@ After running `seed/sample_data.sql`:
 
 ## Fix: UI shows wrong industry (salon/coaching mismatch)
 
+**Root cause:** Onboarding state (including selected industry) is stored in `sessionStorage`. If you cleared the DB but kept the same browser tab open (or a tab from the same session), the old selection can be rehydrated and sent to the API.
+
+**What to do before testing with a fresh DB:**
+1. Go to `/onboarding/industry-selection?reset=1` or click **Start fresh** in the header.
+2. Re-select your industry (coaching, salon, etc.) and complete onboarding.
+
+**Verify:** In Dashboard → Settings → Business Profile, check **Industry (from DB)**. It should match what you selected.
+
 If `industry_type` or `template_id` were changed in the DB but the UI still shows old terminology, re-apply the template:
 
 **1. Add `ADMIN_SECRET`** to `.env.local` and production env vars:

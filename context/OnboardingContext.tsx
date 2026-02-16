@@ -237,7 +237,13 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined") return init;
     try {
       const saved = sessionStorage.getItem(SESSION_KEY);
-      if (saved) return JSON.parse(saved) as OnboardingState;
+      if (saved) {
+        const parsed = JSON.parse(saved) as OnboardingState;
+        // If a previous onboarding completed, don't rehydrate — start fresh.
+        // Prevents wrong industry when user clears DB and tests again.
+        if (parsed.createdBusinessId) return init;
+        return parsed;
+      }
     } catch {
       // Corrupted storage — start fresh
     }

@@ -5,12 +5,15 @@
 // ============================================================
 
 import { useState } from "react";
-import { Loader2, Building2, MessageSquare, CreditCard, Bell, Users } from "lucide-react";
+import { Loader2, Building2, MessageSquare, CreditCard, Bell, Users, Copy, Check } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
 import WhatsAppTemplateEditor from "@/components/settings/WhatsAppTemplateEditor";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
+
 export default function SettingsPage() {
   const { business, role, loading: ctxLoading } = useDashboard();
+  const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "profile" | "whatsapp" | "payments" | "booking-rules" | "notifications" | "team"
   >("profile");
@@ -77,10 +80,34 @@ export default function SettingsPage() {
                 Edit business name, address, contact details. Use the onboarding flow or
                 add a dedicated profile form here.
               </p>
-              <div className="text-sm text-slate-700">
+              <div className="text-sm text-slate-700 space-y-2">
                 <p><strong>Name:</strong> {business.name}</p>
                 <p><strong>Slug:</strong> {business.slug}</p>
-                <p>Booking URL: /{business.slug}/book</p>
+                {business.template_id && (
+                  <p><strong>Industry (from DB):</strong> {business.template_id}</p>
+                )}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span><strong>Booking URL:</strong></span>
+                  <span className="font-mono text-slate-600 truncate max-w-[min(100%,20rem)]">
+                    {APP_URL}/{business.slug}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const url = `${APP_URL}/${business.slug}`;
+                      await navigator.clipboard.writeText(url);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-violet-50 text-violet-700 hover:bg-violet-100 text-xs font-medium transition-colors"
+                  >
+                    {copied ? (
+                      <><Check className="w-3.5 h-3.5" /> Copied</>
+                    ) : (
+                      <><Copy className="w-3.5 h-3.5" /> Copy</>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           )}

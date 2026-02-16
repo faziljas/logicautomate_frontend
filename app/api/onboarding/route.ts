@@ -98,6 +98,9 @@ export async function POST(request: NextRequest) {
 
   const { templateId, businessName, phone, email, city, slug: slugOverride } = body;
 
+  // Debug: log received templateId (helps trace wrong-industry issues)
+  console.log("[onboarding] Received templateId:", templateId);
+
   // ── 2. Validate inputs ───────────────────────────────────
   const errors: Record<string, string> = {};
 
