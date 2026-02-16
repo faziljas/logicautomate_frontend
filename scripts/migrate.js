@@ -20,6 +20,7 @@ const MIGRATION_ORDER = [
   "004_payments_refund_columns.sql",
   "004_staff_push_tokens.sql",
   "add_whatsapp_flags.sql",
+  "005_seed_templates.sql",  // Required for onboarding (salon, clinic, coaching)
 ];
 
 async function runMigrations() {

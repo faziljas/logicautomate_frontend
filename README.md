@@ -31,13 +31,14 @@ BookFlow/
 
 1. Open your Supabase project → **SQL Editor**
 
-2. Run migrations in order:
+2. Run migrations in order (Option A: use migrate script, or Option B: paste manually):
    ```
-   Paste content of: migrations/001_initial_schema.sql  → Run
-   Paste content of: migrations/002_rls_policies.sql    → Run
+   npm run migrate   # runs all migrations including templates seed
    ```
+   Or paste and run: `001_initial_schema.sql`, then `002_rls_policies.sql`, etc.
+   **Note:** `005_seed_templates.sql` seeds salon/clinic/coaching — required for onboarding.
 
-3. Seed test data:
+3. Seed test data (optional — demo business, users, bookings):
    ```
    Paste content of: seed/sample_data.sql → Run
    ```
@@ -54,7 +55,7 @@ BookFlow/
 
 ## Setup: Option B — Auto migrations on deploy (GitHub Actions)
 
-Migrations run automatically on every push to `main` via GitHub Actions.
+Migrations (including templates seed) run automatically on every push to `main` via GitHub Actions.
 
 1. **Add `DATABASE_URL` secret** to your GitHub repo:
    - Repo → Settings → Secrets and variables → Actions → New repository secret
