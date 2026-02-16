@@ -224,10 +224,12 @@ export async function POST(request: NextRequest) {
     console.error("[onboarding] create user:", userErr);
     // Cleanup auth user on failure
     await supabase.auth.admin.deleteUser(authUserId);
-    return NextResponse.json(
-      { error: "Failed to create user account" },
-      { status: 500 }
-    );
+    // Return helpful message for common issues
+    const code = (userErr as { code?: string })?.code;
+    let message = "Failed to create user account";
+    if (code === "23505") message = "Email or phone already in use. Try a different email.";
+    else if (userErr?.message) message = userErr.message;
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 
   // ── 7. Create business ───────────────────────────────────
