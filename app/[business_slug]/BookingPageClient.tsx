@@ -457,9 +457,9 @@ function BookingFlowInner({
       <ConfirmedScreen
         terminology={terminology}
         customerDetails={customerDetails}
-        selectedService={selectedService}
-        selectedDate={selectedDate}
-        selectedTime={selectedTime}
+        selectedService={selectedService ?? undefined}
+        selectedDate={selectedDate ?? ""}
+        selectedTime={selectedTime ?? ""}
         businessName={business.name}
         bookingId={bookingId ?? ""}
       />
