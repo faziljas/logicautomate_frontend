@@ -463,8 +463,30 @@ function BookingFlowInner({
               const sIdx = STEP_ORDER.indexOf(s);
               const isDone = sIdx < idx;
               const isCurrent = sIdx === idx;
+              const canNavigate = sIdx <= idx;
               return (
-                <div key={s} className="flex items-center gap-1">
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => canNavigate && setStep(s)}
+                  disabled={!canNavigate}
+                  className={`flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 rounded ${
+                    canNavigate ? "cursor-pointer" : "cursor-default"
+                  }`}
+                  title={
+                    canNavigate
+                      ? sIdx === 0
+                        ? "Select service"
+                        : sIdx === 1
+                        ? "Choose provider"
+                        : sIdx === 2
+                        ? "Select date & time"
+                        : sIdx === 3
+                        ? "Enter details"
+                        : "Review booking"
+                      : undefined
+                  }
+                >
                   <div
                     className={`w-2 h-2 rounded-full transition-all ${
                       isDone
@@ -472,7 +494,7 @@ function BookingFlowInner({
                         : isCurrent
                         ? "scale-125"
                         : "bg-gray-200"
-                    }`}
+                    } ${canNavigate ? "hover:opacity-80" : ""}`}
                     style={
                       isCurrent && !isDone
                         ? { backgroundColor: primaryColor }
@@ -486,7 +508,7 @@ function BookingFlowInner({
                       }`}
                     />
                   )}
-                </div>
+                </button>
               );
             }
           )}
@@ -497,6 +519,11 @@ function BookingFlowInner({
             {step === "datetime" && "Select date & time"}
             {step === "details" && "Enter your details"}
             {step === "summary" && "Review & confirm"}
+            {step !== "service" && (
+              <span className="block mt-1 text-gray-400">
+                Tap a dot above to go back
+              </span>
+            )}
           </p>
         </div>
       </div>
