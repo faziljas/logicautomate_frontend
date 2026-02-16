@@ -17,6 +17,7 @@ import { CustomerForm } from "@/components/booking-page/CustomerForm";
 import { BookingSummary } from "@/components/booking-page/BookingSummary";
 import RazorpayCheckout from "@/components/booking/RazorpayCheckout";
 import type { TemplateConfig } from "@/lib/templates/types";
+import { validatePhone } from "@/lib/phone-utils";
 
 type Step =
   | "service"
@@ -132,15 +133,11 @@ function BookingFlowInner({
   const validateCustomer = useCallback((): boolean => {
     const e: Record<string, string> = {};
     if (!customerDetails.name.trim()) e.name = "Name is required";
+    const phoneRes = customerDetails.phone.trim()
+      ? validatePhone(customerDetails.phone, "IN")
+      : { valid: false, error: "Phone is required" };
     if (!customerDetails.phone.trim()) e.phone = "Phone is required";
-    if (
-      customerDetails.phone &&
-      !/^\+?[6-9]\d{9}$|^\+91[6-9]\d{9}$/.test(
-        customerDetails.phone.replace(/\s/g, "")
-      )
-    ) {
-      e.phone = "Enter a valid mobile number";
-    }
+    else if (!phoneRes.valid) e.phone = phoneRes.error ?? "Enter a valid phone number with country code";
     setFormErrors(e);
     return Object.keys(e).length === 0;
   }, [customerDetails]);

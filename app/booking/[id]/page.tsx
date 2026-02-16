@@ -117,7 +117,7 @@ export default function CustomerBookingPage() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
+                  placeholder="+1 234 567 8900, +91 98765 43210, +65 9123 4567"
                   required
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                 />

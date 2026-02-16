@@ -15,6 +15,7 @@ import {
 } from "@/lib/onboarding/slug-generator";
 import { applyTemplateToBusinessConfig } from "@/lib/templates/utils";
 import type { IndustryType } from "@/lib/templates/types";
+import { validatePhone } from "@/lib/phone-utils";
 
 // ─────────────────────────────────────────
 // SUPABASE SERVICE CLIENT
@@ -30,10 +31,6 @@ function getAdmin() {
 // ─────────────────────────────────────────
 // VALIDATORS
 // ─────────────────────────────────────────
-function validateIndianPhone(phone: string): boolean {
-  return /^\+91[6-9]\d{9}$/.test(phone.replace(/\s/g, ""));
-}
-
 function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -115,8 +112,9 @@ export async function POST(request: NextRequest) {
     errors.businessName = "Business name must be 50 characters or fewer";
   }
 
-  if (!phone || !validateIndianPhone(phone)) {
-    errors.phone = "Enter a valid Indian mobile number (+91XXXXXXXXXX)";
+  const phoneValidation = validatePhone(phone ?? "");
+  if (!phone || !phoneValidation.valid) {
+    errors.phone = phoneValidation.error ?? "Enter a valid phone number with country code (e.g. +1 234 567 8900, +91 98765 43210, +65 9123 4567)";
   }
 
   if (!email?.trim()) {
@@ -133,12 +131,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ errors }, { status: 422 });
   }
 
+  const phoneE164 = phoneValidation.e164;
+
   // ── 3. Uniqueness checks ────────────────────────────────
   // Phone uniqueness
   const { data: existingPhone } = await supabase
     .from("users")
     .select("id")
-    .eq("phone", phone.replace(/\s/g, ""))
+    .eq("phone", phoneE164)
     .maybeSingle();
 
   if (existingPhone) {
@@ -193,7 +193,7 @@ export async function POST(request: NextRequest) {
     email:          authEmail,
     password:       crypto.randomUUID(),
     email_confirm:  true,
-    user_metadata:  { role: "owner", phone: phone.replace(/\s/g, "") },
+    user_metadata:  { role: "owner", phone: phoneE164 },
   });
 
   if (authErr || !authUser.user) {
@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
     .insert({
       id:       authUserId,
       name:     businessName.trim(),
-      phone:    phone.replace(/\s/g, ""),
+      phone:    phoneE164,
       email:    authEmail,
       role:     "owner",
       metadata: { onboarding_complete: false },
@@ -242,7 +242,7 @@ export async function POST(request: NextRequest) {
       template_id:         templateId,
       custom_config:       {},      // filled by applyTemplateToBusinessConfig
       owner_id:            user.id,
-      phone:               phone.replace(/\s/g, ""),
+      phone:               phoneE164,
       email:               email?.toLowerCase() || null,
       city:                city.trim(),
       booking_url:         bookingUrl,

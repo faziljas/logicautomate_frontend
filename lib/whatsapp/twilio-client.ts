@@ -11,6 +11,7 @@ import {
   type TemplateVariables,
 } from "./template-renderer";
 import type { TemplateConfig, WhatsAppTemplates } from "@/lib/templates/types";
+import { validatePhone } from "@/lib/phone-utils";
 
 // ─────────────────────────────────────────
 // TYPES
@@ -59,36 +60,24 @@ function getFromNumber(): string {
 }
 
 // ─────────────────────────────────────────
-// PHONE VALIDATION
+// PHONE VALIDATION (delegates to lib/phone-utils)
 // ─────────────────────────────────────────
 
 /**
- * Normalises a phone number to WhatsApp-compatible E.164 format.
- * "+919876543210"  → "whatsapp:+919876543210"
- * "9876543210"     → "whatsapp:+919876543210" (assumes India)
- * "whatsapp:+91..."→ unchanged
+ * Normalises a phone number to WhatsApp-compatible format.
+ * Supports US (+1), India (+91), UK (+44), Europe, Singapore (+65), etc.
+ * Numbers without country code default to India for backward compatibility.
  */
 export function validatePhoneNumber(phone: string): {
   valid:      boolean;
   formatted:  string;
   error?:     string;
 } {
-  if (!phone) return { valid: false, formatted: "", error: "Phone is required" };
-
-  let cleaned = phone.trim().replace(/\s+/g, "");
-
-  // Strip existing whatsapp: prefix for processing
-  if (cleaned.startsWith("whatsapp:")) cleaned = cleaned.slice(9);
-
-  // Add country code if missing (India default)
-  if (/^[6-9]\d{9}$/.test(cleaned)) cleaned = `+91${cleaned}`;
-
-  // Must be E.164: + followed by 7–15 digits
-  if (!/^\+\d{7,15}$/.test(cleaned)) {
-    return { valid: false, formatted: "", error: `Invalid phone number: ${phone}` };
+  const result = validatePhone(phone, "IN");
+  if (!result.valid) {
+    return { valid: false, formatted: "", error: result.error };
   }
-
-  return { valid: true, formatted: `whatsapp:${cleaned}` };
+  return { valid: true, formatted: `whatsapp:${result.e164}` };
 }
 
 // ─────────────────────────────────────────

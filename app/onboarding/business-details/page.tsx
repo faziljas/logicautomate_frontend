@@ -15,6 +15,7 @@ import { useOnboarding } from "@/context/OnboardingContext";
 import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
 import { generateSlug } from "@/lib/onboarding/slug-generator";
 import { INDUSTRY_LIST } from "@/components/onboarding/IndustryCard";
+import { validatePhone } from "@/lib/phone-utils";
 
 // ─────────────────────────────────────────
 // HELPERS
@@ -84,8 +85,9 @@ export default function BusinessDetailsPage() {
       e.name = "Business name must be at least 3 characters";
     if (bd.name.trim().length > 50)
       e.name = "Business name must be 50 characters or fewer";
-    if (!bd.phone.trim() || !/^\+91[6-9]\d{9}$/.test(bd.phone.replace(/\s/g, "")))
-      e.phone = "Enter a valid Indian mobile number (+91XXXXXXXXXX)";
+    const phoneRes = validatePhone(bd.phone.trim());
+    if (!bd.phone.trim() || !phoneRes.valid)
+      e.phone = phoneRes.error ?? "Enter a valid phone number with country code (e.g. +1 234 567 8900, +91 98765 43210, +65 9123 4567)";
     if (bd.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bd.email))
       e.email = "Enter a valid email address";
     if (!bd.city.trim())
@@ -222,7 +224,7 @@ export default function BusinessDetailsPage() {
                 type="tel"
                 value={bd.phone}
                 onChange={(e) => setField("phone", e.target.value)}
-                placeholder="+91 98765 43210"
+                placeholder="+1 234 567 8900, +91 98765 43210, +65 9123 4567"
                 className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-400 ${
                   errors.phone
                     ? "border-red-300 bg-red-50"
@@ -234,7 +236,7 @@ export default function BusinessDetailsPage() {
               <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
             ) : (
               <p className="mt-1 text-xs text-gray-400">
-                Booking confirmations & reminders will be sent here
+                Include country code (US +1, India +91, UK +44, Singapore +65). Confirmations & reminders sent via WhatsApp.
               </p>
             )}
           </div>

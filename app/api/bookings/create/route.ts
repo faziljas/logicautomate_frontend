@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient }              from "@supabase/supabase-js";
 import Razorpay                      from "razorpay";
 import { isSlotAvailable, addMinutes, getServiceDuration } from "@/lib/booking/availability-checker";
+import { validatePhone } from "@/lib/phone-utils";
 
 interface CustomerDetails {
   name:         string;
@@ -72,11 +73,12 @@ export async function POST(request: NextRequest) {
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) errors.date = "Valid YYYY-MM-DD required";
   if (!time || !/^\d{2}:\d{2}$/.test(time))         errors.time = "Valid HH:MM required";
   if (!customerDetails?.name?.trim())  errors["customerDetails.name"]  = "Name is required";
+  const phoneValidation = customerDetails?.phone
+    ? validatePhone(customerDetails.phone, "IN")
+    : null;
   if (!customerDetails?.phone?.trim()) errors["customerDetails.phone"] = "Phone is required";
-  if (customerDetails?.phone && !/^\+?[6-9]\d{9}$|^\+91[6-9]\d{9}$/.test(
-    customerDetails.phone.replace(/\s/g, "")
-  )) {
-    errors["customerDetails.phone"] = "Enter a valid mobile number";
+  else if (phoneValidation && !phoneValidation.valid) {
+    errors["customerDetails.phone"] = phoneValidation.error ?? "Enter a valid phone number with country code";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -126,7 +128,7 @@ export async function POST(request: NextRequest) {
   }
 
   // ── 4. Find or create customer ───────────────────────────
-  const normalPhone = customerDetails.phone.replace(/\s/g, "");
+  const normalPhone = phoneValidation!.e164;
 
   let customerId: string;
   const { data: existingCustomer } = await supabase
