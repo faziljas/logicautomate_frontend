@@ -36,6 +36,14 @@ export interface SendOptions {
 }
 
 // ─────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────
+/** App URL without trailing slash (for building links). */
+function getAppUrl(): string {
+  return (process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app").replace(/\/+$/, "");
+}
+
+// ─────────────────────────────────────────
 // CLIENTS
 // ─────────────────────────────────────────
 function getTwilioClient() {
@@ -294,7 +302,7 @@ export async function sendFeedbackRequest(
   booking: BookingForMessage,
   config:  TemplateConfig
 ): Promise<SendResult> {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
+  const appUrl = getAppUrl();
   return sendWhatsApp({
     businessId:  booking.business_id,
     to:          booking.customer_phone,
@@ -316,7 +324,7 @@ export async function sendLoyaltyReward(
   config:     TemplateConfig,
   visitCount: number
 ): Promise<SendResult> {
-  const appUrl   = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
+  const appUrl   = getAppUrl();
   const slug     = booking.business_slug ?? "";
   return sendWhatsApp({
     businessId:  booking.business_id,
@@ -356,7 +364,7 @@ export interface BookingForMessage {
 }
 
 function buildBookingVariables(b: BookingForMessage): TemplateVariables {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
+  const appUrl = getAppUrl();
   return {
     customer_name:    b.customer_name,
     service_name:     b.service_name,
@@ -370,6 +378,6 @@ function buildBookingVariables(b: BookingForMessage): TemplateVariables {
     advance_amount:   b.advance_paid,
     remaining_amount: b.total_amount - b.advance_paid,
     total_amount:     b.total_amount,
-    cancellation_link: `${appUrl}/cancel/${b.id}`,
+    cancellation_link: `${appUrl}/booking/${b.id}`,
   };
 }
