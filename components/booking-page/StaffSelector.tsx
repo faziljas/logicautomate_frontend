@@ -35,13 +35,33 @@ export function StaffSelector({
   primaryColor = "#7C3AED",
   allowAny = true,
 }: StaffSelectorProps) {
+  const hasStaff = staff.length > 0;
+
   return (
     <div>
       <h2 className="text-lg font-bold text-gray-900 mb-4">
         Choose your {providerLabel}
       </h2>
-      <div className="space-y-2">
-        {allowAny && (
+      {!hasStaff && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-800 text-sm">
+          <p className="font-medium">No {providerLabel} available</p>
+          <p className="mt-1 text-amber-700">
+            No team members are set up yet. If you run this business, add staff
+            in{" "}
+            <a
+              href="/dashboard/staff"
+              className="underline font-medium hover:text-amber-900"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Dashboard → Staff
+            </a>
+            . Otherwise, please try again later or contact the business.
+          </p>
+        </div>
+      )}
+      <div className="space-y-2 mt-4">
+        {allowAny && hasStaff && (
           <button
             onClick={() => onSelect("any")}
             className={cn(

@@ -4,6 +4,8 @@
 // Fetches business by slug, loads template config, renders with template styling
 // ============================================================
 
+export const dynamic = "force-dynamic"; // Ensure fresh staff/services on each visit
+
 import { notFound } from "next/navigation";
 import {
   generateBookingPageMeta,
