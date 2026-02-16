@@ -75,10 +75,3 @@ BEGIN
     ALTER TYPE whatsapp_status ADD VALUE IF NOT EXISTS 'undelivered';
   END IF;
 END $$;
-
--- ── Backfill: set twilio_message_sid from metadata if stored there ─
--- (Only needed if metadata was used to store the SID previously)
-UPDATE whatsapp_logs
-SET    twilio_message_sid = metadata->>'twilio_sid'
-WHERE  twilio_message_sid IS NULL
-  AND  metadata ? 'twilio_sid';
