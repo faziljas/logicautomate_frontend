@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
     .select(`
       id, business_id, total_amount, advance_paid,
       booking_date, booking_time, duration_minutes,
+      custom_data,
       customers(name, phone),
       services(name),
       staff(users(name)),
@@ -37,9 +38,10 @@ export async function POST(request: NextRequest) {
 
   if (!row) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
 
+  const bookerName = (row as { custom_data?: { customer_name?: string } })?.custom_data?.customer_name;
   const booking: BookingForMessage = {
     id: row.id, business_id: row.business_id,
-    customer_name:  (row as any).customers?.name    ?? "Customer",
+    customer_name:  bookerName ?? (row as any).customers?.name ?? "Customer",
     customer_phone: (row as any).customers?.phone   ?? "",
     service_name:   (row as any).services?.name     ?? "Service",
     staff_name:     (row as any).staff?.users?.name ?? "Staff",

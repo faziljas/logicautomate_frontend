@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
       `
       id, booking_date, booking_time, duration_minutes, status,
       total_amount, advance_paid, special_requests, created_at,
+      custom_data,
       customers(id, name, phone, email),
       services(id, name, duration_minutes, price),
       staff(id, users(name), role_name)

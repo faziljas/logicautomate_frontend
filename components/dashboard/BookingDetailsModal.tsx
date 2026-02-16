@@ -17,6 +17,7 @@ interface Booking {
   total_amount: number;
   advance_paid?: number;
   special_requests?: string | null;
+  custom_data?: { customer_name?: string } | null;
   customers: { name: string; phone?: string; email?: string } | null;
   services: { name: string; duration_minutes?: number; price?: number } | null;
   staff: { users: { name: string } | null; role_name?: string } | null;
@@ -100,7 +101,10 @@ export default function BookingDetailsModal({ booking, onClose }: Props) {
           </div>
           <div>
             <p className="text-sm text-slate-500">Customer</p>
-            <p className="font-medium text-slate-900">{booking.customers?.name ?? "—"}</p>
+            <p className="font-medium text-slate-900">
+            {(booking.custom_data as { customer_name?: string })?.customer_name ??
+              booking.customers?.name ?? "—"}
+          </p>
             {booking.customers?.phone && (
               <p className="text-sm text-slate-600">{booking.customers.phone}</p>
             )}

@@ -22,6 +22,7 @@ interface Booking {
   duration_minutes: number;
   status: string;
   total_amount: number;
+  custom_data?: { customer_name?: string } | null;
   customers: { name: string; phone?: string; email?: string } | null;
   services: { name: string; price?: number } | null;
   staff: { users: { name: string } | null; role_name?: string } | null;
@@ -237,7 +238,9 @@ export default function BookingList({
                 </td>
                 <td className="px-4 py-2.5 text-slate-600">{formatDate(b.booking_date)}</td>
                 <td className="px-4 py-2.5 text-slate-600">{formatTime(b.booking_time)}</td>
-                <td className="px-4 py-2.5 font-medium text-slate-900">{b.customers?.name ?? "—"}</td>
+                <td className="px-4 py-2.5 font-medium text-slate-900">
+                {(b.custom_data as { customer_name?: string })?.customer_name ?? b.customers?.name ?? "—"}
+              </td>
                 <td className="px-4 py-2.5 text-slate-700">{b.services?.name ?? "—"}</td>
                 <td className="px-4 py-2.5 text-slate-600">
                   {(b.staff?.users as { name?: string })?.name ?? b.staff?.role_name ?? "—"}

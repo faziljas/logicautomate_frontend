@@ -17,6 +17,7 @@ interface Booking {
   duration_minutes: number;
   status: string;
   total_amount?: number;
+  custom_data?: { customer_name?: string } | null;
   customers: { name: string; phone?: string; email?: string } | null;
   services: { name: string } | null;
   staff: { users: { name: string } | null; role_name?: string } | null;
@@ -198,7 +199,7 @@ export default function BookingCalendar({
                             : "bg-violet-100 text-violet-800 hover:bg-violet-200"
                         )}
                       >
-                        {formatTime(b.booking_time)} {b.customers?.name ?? "—"}
+                        {formatTime(b.booking_time)} {(b.custom_data as { customer_name?: string })?.customer_name ?? b.customers?.name ?? "—"}
                       </button>
                     ))}
                     {dayBookings.length > 3 && (
@@ -236,7 +237,7 @@ export default function BookingCalendar({
                             {formatTime(b.booking_time)}
                           </span>
                           <span className="text-sm text-slate-700 flex-1 truncate">
-                            {b.customers?.name ?? "—"}
+                            {(b.custom_data as { customer_name?: string })?.customer_name ?? b.customers?.name ?? "—"}
                           </span>
                           <span className="text-xs text-slate-500 truncate">
                             {b.services?.name ?? "—"}

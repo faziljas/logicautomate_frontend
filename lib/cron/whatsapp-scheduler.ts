@@ -51,6 +51,7 @@ const BOOKING_SELECT = `
   booking_date, booking_time, duration_minutes,
   total_amount, advance_paid,
   reminder_24h_sent, reminder_2h_sent, feedback_sent,
+  custom_data,
   customers(name, phone),
   services(name),
   staff(users(name)),
@@ -58,10 +59,11 @@ const BOOKING_SELECT = `
 `;
 
 function rowToBooking(row: any): BookingForMessage {
+  const bookerName = row.custom_data?.customer_name;
   return {
     id:               row.id,
     business_id:      row.business_id,
-    customer_name:    row.customers?.name   ?? "Customer",
+    customer_name:    bookerName ?? row.customers?.name ?? "Customer",
     customer_phone:   row.customers?.phone  ?? "",
     service_name:     row.services?.name    ?? "Service",
     staff_name:       row.staff?.users?.name ?? "Staff",

@@ -147,15 +147,8 @@ export async function POST(request: NextRequest) {
 
   if (existingCustomer) {
     customerId = existingCustomer.id;
-    // Update name/email in case they changed
-    await supabase
-      .from("customers")
-      .update({
-        name:  customerDetails.name.trim(),
-        email: customerDetails.email?.toLowerCase() || null,
-        custom_fields: customerDetails.customFields ?? {},
-      })
-      .eq("id", customerId);
+    // Don't overwrite customer name — same phone can be used by different people (e.g. family).
+    // Per-booking name is stored in custom_data.customer_name for display.
   } else {
     const { data: newCustomer, error: custErr } = await supabase
       .from("customers")
@@ -183,6 +176,10 @@ export async function POST(request: NextRequest) {
   //   c. Returns the new booking id or throws if slot taken
   //
   // This is the race-condition-safe path.
+  const bookingCustomData = {
+    ...customBookingData,
+    customer_name: customerDetails.name.trim(),
+  };
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // +15 min
 
   const { data: rpcResult, error: rpcErr } = await supabase.rpc(
@@ -197,7 +194,7 @@ export async function POST(request: NextRequest) {
       p_duration_mins:   durationMins,
       p_total_amount:    totalAmount,
       p_advance_amount:  advanceAmount,
-      p_custom_data:     customBookingData,
+      p_custom_data:     bookingCustomData,
       p_expires_at:      expiresAt,
     }
   );
@@ -229,7 +226,7 @@ export async function POST(request: NextRequest) {
         status:           "pending",
         total_amount:     totalAmount,
         advance_paid:     0,
-        custom_data:      customBookingData,
+        custom_data:      bookingCustomData,
       })
       .select("id")
       .single();

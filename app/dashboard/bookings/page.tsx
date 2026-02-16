@@ -19,6 +19,7 @@ interface Booking {
   duration_minutes: number;
   status: string;
   total_amount: number;
+  custom_data?: { customer_name?: string } | null;
   customers: { name: string; phone?: string; email?: string } | null;
   services: { name: string } | null;
   staff: { users: { name: string } | null; role_name?: string } | null;
@@ -80,7 +81,7 @@ export default function BookingsPage() {
     const rows = bookings.map((b) => [
       b.booking_date,
       b.booking_time,
-      b.customers?.name ?? "",
+      (b.custom_data as { customer_name?: string })?.customer_name ?? b.customers?.name ?? "",
       b.services?.name ?? "",
       (b.staff?.users as { name?: string })?.name ?? "",
       b.status,
