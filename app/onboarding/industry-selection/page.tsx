@@ -5,7 +5,7 @@
 // app/onboarding/industry-selection/page.tsx
 // ============================================================
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Clock, RotateCcw } from "lucide-react";
 import { useOnboarding } from "@/context/OnboardingContext";
@@ -15,7 +15,7 @@ import type { IndustryType } from "@/lib/templates/types";
 
 const SESSION_KEY = "bookflow_onboarding";
 
-export default function IndustrySelectionPage() {
+function IndustrySelectionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { state, setTemplate, goToStep, dispatch } = useOnboarding();
@@ -138,5 +138,13 @@ export default function IndustrySelectionPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function IndustrySelectionPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <IndustrySelectionContent />
+    </Suspense>
   );
 }
