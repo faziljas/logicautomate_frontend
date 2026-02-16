@@ -259,13 +259,11 @@ CREATE TABLE bookings (
   booking_date     DATE NOT NULL,
   booking_time     TIME NOT NULL,
   duration_minutes INTEGER NOT NULL CHECK (duration_minutes > 0),
-  end_time         TIME GENERATED ALWAYS AS (
-                     (booking_time + (duration_minutes || ' minutes')::INTERVAL)::TIME
-                   ) STORED,
+  end_time         TIME NOT NULL DEFAULT '00:00',  -- set by trigger
   status           booking_status NOT NULL DEFAULT 'pending',
   total_amount     NUMERIC(10,2) NOT NULL DEFAULT 0,
   advance_paid     NUMERIC(10,2) NOT NULL DEFAULT 0,
-  remaining_amount NUMERIC(10,2) GENERATED ALWAYS AS (total_amount - advance_paid) STORED,
+  remaining_amount NUMERIC(10,2) NOT NULL DEFAULT 0,  -- set by trigger
   special_requests TEXT,
   cancellation_reason TEXT,
   custom_data      JSONB NOT NULL DEFAULT '{}',
@@ -395,6 +393,21 @@ CREATE TRIGGER trg_services_updated_at     BEFORE UPDATE ON services     FOR EAC
 CREATE TRIGGER trg_staff_updated_at        BEFORE UPDATE ON staff        FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER trg_customers_updated_at    BEFORE UPDATE ON customers    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER trg_bookings_updated_at     BEFORE UPDATE ON bookings     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Keep end_time and remaining_amount in sync (replaces GENERATED columns for immutability)
+CREATE OR REPLACE FUNCTION bookings_computed_columns()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.end_time := (NEW.booking_time + (NEW.duration_minutes || ' minutes')::INTERVAL)::TIME;
+  NEW.remaining_amount := NEW.total_amount - NEW.advance_paid;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_bookings_computed
+  BEFORE INSERT OR UPDATE ON bookings
+  FOR EACH ROW EXECUTE FUNCTION bookings_computed_columns();
+
 CREATE TRIGGER trg_payments_updated_at     BEFORE UPDATE ON payments     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER trg_templates_updated_at    BEFORE UPDATE ON templates    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
