@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================
-// BookFlow — Landing Page (Root)
+// LogicAutomate — Landing Page (Root)
 // Entry point: dashboard login, staff login, onboarding
 // ============================================================
 
