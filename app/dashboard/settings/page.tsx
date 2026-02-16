@@ -8,11 +8,14 @@ import { useState } from "react";
 import { Loader2, Building2, MessageSquare, CreditCard, Bell, Users, Copy, Check } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
 import WhatsAppTemplateEditor from "@/components/settings/WhatsAppTemplateEditor";
+import BookingRulesEditor from "@/components/settings/BookingRulesEditor";
+import NotificationsEditor from "@/components/settings/NotificationsEditor";
+import TeamMembersEditor from "@/components/settings/TeamMembersEditor";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
 
 export default function SettingsPage() {
-  const { business, role, loading: ctxLoading } = useDashboard();
+  const { business, role, session, loading: ctxLoading, refetch } = useDashboard();
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "profile" | "whatsapp" | "payments" | "booking-rules" | "notifications" | "team"
@@ -139,9 +142,13 @@ export default function SettingsPage() {
                 Booking Rules
               </h2>
               <p className="text-sm text-slate-500 mb-4">
-                Cancellation policy, advance payment %, booking buffer time. Stored in
-                businesses.custom_config.booking_rules. Add form to edit.
+                Cancellation policy, advance payment %, and booking buffer time.
               </p>
+              <BookingRulesEditor
+                businessId={business.id}
+                initialRules={(business.custom_config as Record<string, unknown>)?.booking_rules}
+                onSaved={refetch}
+              />
             </div>
           )}
 
@@ -150,9 +157,11 @@ export default function SettingsPage() {
               <h2 className="text-base font-semibold text-slate-900 mb-4">
                 Notifications
               </h2>
-              <p className="text-sm text-slate-500">
-                Configure email/SMS notifications for new bookings, reminders, etc.
-              </p>
+              <NotificationsEditor
+                businessId={business.id}
+                initialPrefs={(business.custom_config as Record<string, unknown>)?.notifications}
+                onSaved={refetch}
+              />
             </div>
           )}
 
@@ -161,10 +170,11 @@ export default function SettingsPage() {
               <h2 className="text-base font-semibold text-slate-900 mb-4">
                 Team Members
               </h2>
-              <p className="text-sm text-slate-500">
-                Multi-user access. Add managers and staff with different permission
-                levels. Integrate with Staff Management.
-              </p>
+              <TeamMembersEditor
+                businessId={business.id}
+                ownerName={session?.user?.name}
+                ownerEmail={session?.user?.email}
+              />
             </div>
           )}
         </div>

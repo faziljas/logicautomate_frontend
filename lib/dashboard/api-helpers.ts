@@ -64,7 +64,7 @@ export async function getSessionAndBusiness() {
     business,
     supabase,
     staffId: null,
-    isOwner: true,
+    isOwner: true as const,
     error: null,
   };
 }
