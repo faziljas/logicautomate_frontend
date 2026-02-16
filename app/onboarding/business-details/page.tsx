@@ -89,7 +89,9 @@ export default function BusinessDetailsPage() {
     const phoneRes = validatePhone(bd.phone.trim());
     if (!bd.phone.trim() || !phoneRes.valid)
       e.phone = phoneRes.error ?? "Enter a valid phone number with country code (e.g. +1 234 567 8900, +91 98765 43210, +65 9123 4567)";
-    if (bd.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bd.email))
+    if (!bd.email.trim())
+      e.email = "Email is required for dashboard login";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bd.email))
       e.email = "Enter a valid email address";
     if (!bd.city.trim())
       e.city = "City is required";
@@ -245,8 +247,7 @@ export default function BusinessDetailsPage() {
           {/* Email */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-              Email Address
-              <span className="ml-1 text-xs font-normal text-gray-400">(optional)</span>
+              Email Address <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
