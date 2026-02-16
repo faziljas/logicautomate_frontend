@@ -4,7 +4,8 @@
 // Fetches business by slug, loads template config, renders with template styling
 // ============================================================
 
-export const dynamic = "force-dynamic"; // Ensure fresh staff/services on each visit
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store"; // Never cache Supabase fetch — 404 when business deleted
 
 import { notFound } from "next/navigation";
 import {
