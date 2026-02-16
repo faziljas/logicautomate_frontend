@@ -23,6 +23,7 @@ CREATE TYPE industry_type AS ENUM (
 );
 
 CREATE TYPE subscription_tier AS ENUM (
+  'trial',
   'starter',
   'professional',
   'business'
