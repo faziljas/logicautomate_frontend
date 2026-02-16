@@ -259,6 +259,14 @@ export async function POST(request: NextRequest) {
     console.error("[onboarding] create business:", bizErr);
     // Cleanup orphaned user
     await supabase.from("users").delete().eq("id", user.id);
+    // Slug must be unique — return clear error so user understands
+    const code = (bizErr as { code?: string })?.code;
+    if (code === "23505") {
+      return NextResponse.json(
+        { errors: { slug: "This URL is already taken. Please choose a different one." } },
+        { status: 422 }
+      );
+    }
     return NextResponse.json(
       { error: "Failed to create business" },
       { status: 500 }

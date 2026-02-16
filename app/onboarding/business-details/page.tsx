@@ -124,6 +124,8 @@ export default function BusinessDetailsPage() {
       if (!res.ok) {
         if (data.errors) {
           setErrors(data.errors);
+          // Slug error from unique constraint — scroll user to slug field
+          if (data.errors.slug) setSlugEdited(true);
         } else {
           setErrors({ _global: data.error ?? "Something went wrong" });
         }
