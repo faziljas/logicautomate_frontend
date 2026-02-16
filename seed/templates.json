@@ -1,0 +1,463 @@
+[
+  {
+    "id": "salon",
+    "name": "Salon & Spa",
+    "description": "For hair salons, beauty parlours, nail studios, and spas",
+    "config": {
+      "terminology": {
+        "service_provider": "Stylist",
+        "service": "Service",
+        "customer": "Client",
+        "booking": "Appointment",
+        "service_providers": "Stylists",
+        "services": "Services",
+        "customers": "Clients",
+        "bookings": "Appointments"
+      },
+      "default_services": [
+        {
+          "name": "Haircut",
+          "duration_minutes": 45,
+          "price": 600,
+          "advance_amount": 200,
+          "category": "Hair",
+          "description": "Professional haircut and styling"
+        },
+        {
+          "name": "Hair Color",
+          "duration_minutes": 120,
+          "price": 3500,
+          "advance_amount": 500,
+          "category": "Hair",
+          "description": "Full hair coloring with premium products"
+        },
+        {
+          "name": "Facial",
+          "duration_minutes": 60,
+          "price": 1200,
+          "advance_amount": 300,
+          "category": "Skin",
+          "description": "Rejuvenating facial treatment"
+        },
+        {
+          "name": "Manicure",
+          "duration_minutes": 45,
+          "price": 800,
+          "advance_amount": 200,
+          "category": "Nail",
+          "description": "Classic manicure with nail polish"
+        },
+        {
+          "name": "Pedicure",
+          "duration_minutes": 60,
+          "price": 1000,
+          "advance_amount": 300,
+          "category": "Nail",
+          "description": "Relaxing pedicure treatment"
+        }
+      ],
+      "customer_fields": [
+        {
+          "id": "hair_type",
+          "label": "Hair Type",
+          "type": "select",
+          "options": ["Straight", "Wavy", "Curly", "Coily"],
+          "required": false
+        },
+        {
+          "id": "hair_texture",
+          "label": "Hair Texture",
+          "type": "select",
+          "options": ["Fine", "Medium", "Thick"],
+          "required": false
+        },
+        {
+          "id": "allergies",
+          "label": "Product Allergies",
+          "type": "text",
+          "placeholder": "e.g. ammonia, peroxide",
+          "required": false
+        },
+        {
+          "id": "preferred_products",
+          "label": "Preferred Brand",
+          "type": "text",
+          "placeholder": "e.g. L'Oréal, Schwarzkopf",
+          "required": false
+        }
+      ],
+      "booking_fields": [
+        {
+          "id": "reference_image",
+          "label": "Reference Image URL",
+          "type": "text",
+          "placeholder": "Paste a photo link for your style",
+          "required": false
+        },
+        {
+          "id": "color_formula",
+          "label": "Color Formula",
+          "type": "text",
+          "placeholder": "e.g. 7N + 20 vol",
+          "required": false
+        }
+      ],
+      "whatsapp_templates": {
+        "confirmation": "Hi {customer_name}! 🎉\n\nYour *{service_name}* appointment is confirmed!\n\n📅 Date: {date}\n⏰ Time: {time}\n💇 Stylist: {staff_name}\n📍 {business_name}\n💰 Advance paid: ₹{advance_amount}\n💰 Remaining: ₹{remaining_amount}\n\nNeed to cancel? {cancellation_link}\n\nSee you soon! ✨",
+        "reminder_24h": "Hi {customer_name}! 👋\n\nReminder: Your *{service_name}* appointment is *TOMORROW!*\n\n⏰ {date} at {time}\n👩 With {staff_name}\n📍 {business_name}\n\nWe're looking forward to seeing you! 💕",
+        "reminder_2h": "Hi {customer_name}! ⏰\n\nYour appointment is in *2 HOURS!*\n\n🕐 Time: {time}\n📍 {business_address}\n\nSee you soon! 🌟",
+        "no_show_followup": "Hi {customer_name},\n\nWe missed you today 😊\n\nWould you like to *reschedule* your {service_name} appointment?\n\nReply *YES* and we'll help you book a new slot. Your advance (₹{advance_amount}) will be adjusted.",
+        "feedback": "Thank you for visiting *{business_name}*! 🙏\n\nHow was your *{service_name}* experience with {staff_name}?\n\nRate us:\n⭐ 1 - Poor\n⭐⭐ 2 - Fair\n⭐⭐⭐ 3 - Good\n⭐⭐⭐⭐ 4 - Great\n⭐⭐⭐⭐⭐ 5 - Amazing\n\n{rating_link}",
+        "loyalty_reward": "🎉 Congratulations {customer_name}!\n\nYou've completed *{visit_count} visits* to {business_name}!\n\nYour reward: 🎁 *FREE {service_name}* on your next visit!\n\nBook now: {booking_link}\n\n_Valid for 30 days_ ✨",
+        "marketing": "Hi {customer_name}! 💇‍♀️\n\n{business_name} has a special offer just for you!\n\n{offer_details}\n\nBook now: {booking_link}"
+      },
+      "features": {
+        "packages": true,
+        "loyalty_program": true,
+        "inventory_tracking": false,
+        "video_calls": false,
+        "intake_forms": false,
+        "prescriptions": false,
+        "group_sessions": false
+      },
+      "booking_rules": {
+        "advance_booking_days": 30,
+        "min_advance_notice_hours": 1,
+        "cancellation_window_hours": 2,
+        "advance_payment_required": true,
+        "advance_payment_percentage": 30
+      },
+      "branding": {
+        "primary_color": "#FF69B4",
+        "secondary_color": "#FFB6C1",
+        "icon": "💇‍♀️",
+        "theme": "pink"
+      }
+    }
+  },
+
+  {
+    "id": "clinic",
+    "name": "Healthcare Clinic",
+    "description": "For doctors, dentists, physiotherapists, and health practitioners",
+    "config": {
+      "terminology": {
+        "service_provider": "Doctor",
+        "service": "Consultation",
+        "customer": "Patient",
+        "booking": "Appointment",
+        "service_providers": "Doctors",
+        "services": "Consultations",
+        "customers": "Patients",
+        "bookings": "Appointments"
+      },
+      "default_services": [
+        {
+          "name": "General Consultation",
+          "duration_minutes": 30,
+          "price": 500,
+          "advance_amount": 200,
+          "category": "Consultation",
+          "description": "General health check and consultation"
+        },
+        {
+          "name": "Follow-up Consultation",
+          "duration_minutes": 20,
+          "price": 300,
+          "advance_amount": 100,
+          "category": "Consultation",
+          "description": "Follow-up on previous treatment"
+        },
+        {
+          "name": "Full Body Check-up",
+          "duration_minutes": 60,
+          "price": 2000,
+          "advance_amount": 500,
+          "category": "Diagnostics",
+          "description": "Comprehensive health screening"
+        },
+        {
+          "name": "ECG / Heart Checkup",
+          "duration_minutes": 30,
+          "price": 800,
+          "advance_amount": 300,
+          "category": "Diagnostics",
+          "description": "Electrocardiogram and heart health check"
+        },
+        {
+          "name": "Minor Procedure",
+          "duration_minutes": 45,
+          "price": 1500,
+          "advance_amount": 500,
+          "category": "Procedure",
+          "description": "Minor outpatient procedure"
+        }
+      ],
+      "customer_fields": [
+        {
+          "id": "blood_group",
+          "label": "Blood Group",
+          "type": "select",
+          "options": ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+          "required": false
+        },
+        {
+          "id": "date_of_birth",
+          "label": "Date of Birth",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "gender",
+          "label": "Gender",
+          "type": "select",
+          "options": ["Male", "Female", "Other", "Prefer not to say"],
+          "required": false
+        },
+        {
+          "id": "chronic_conditions",
+          "label": "Chronic Conditions",
+          "type": "multiselect",
+          "options": ["Diabetes", "Hypertension", "Asthma", "Heart Disease", "Thyroid", "None"],
+          "required": false
+        },
+        {
+          "id": "current_medications",
+          "label": "Current Medications",
+          "type": "text",
+          "placeholder": "List any medications you are taking",
+          "required": false
+        },
+        {
+          "id": "allergies",
+          "label": "Drug Allergies",
+          "type": "text",
+          "placeholder": "e.g. Penicillin, Aspirin",
+          "required": false
+        },
+        {
+          "id": "emergency_contact",
+          "label": "Emergency Contact Number",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "booking_fields": [
+        {
+          "id": "symptoms",
+          "label": "Primary Symptoms",
+          "type": "textarea",
+          "placeholder": "Describe your symptoms",
+          "required": true
+        },
+        {
+          "id": "symptom_duration",
+          "label": "Symptom Duration",
+          "type": "select",
+          "options": ["Today", "2-3 days", "1 week", "2+ weeks", "1+ month"],
+          "required": false
+        },
+        {
+          "id": "referral_doctor",
+          "label": "Referred By",
+          "type": "text",
+          "placeholder": "Referring doctor name (if any)",
+          "required": false
+        },
+        {
+          "id": "fasting_required",
+          "label": "Is patient fasting?",
+          "type": "boolean",
+          "required": false
+        }
+      ],
+      "whatsapp_templates": {
+        "confirmation": "Dear {customer_name},\n\nYour appointment has been confirmed. ✅\n\n🩺 Consultation: {service_name}\n👨‍⚕️ Doctor: {staff_name}\n📅 Date: {date}\n⏰ Time: {time}\n📍 {business_name}\n💰 Advance paid: ₹{advance_amount}\n\nPlease carry a valid photo ID and any previous reports.\n\nTo cancel: {cancellation_link}",
+        "reminder_24h": "Dear {customer_name},\n\nReminder: Your appointment is *TOMORROW.* 📋\n\n📅 {date} at ⏰ {time}\n👨‍⚕️ Dr. {staff_name}\n📍 {business_name}\n\nPlease arrive 10 minutes early and bring your reports.",
+        "reminder_2h": "Dear {customer_name},\n\nYour appointment is in *2 hours.* ⏰\n\n🕐 Time: {time}\n📍 {business_address}\n\nPlease carry your medical reports.",
+        "no_show_followup": "Dear {customer_name},\n\nWe noticed you could not make it to your appointment today.\n\nWould you like to *reschedule*? Please reply to this message or call us.\n\nYour advance (₹{advance_amount}) will be fully adjusted.",
+        "feedback": "Dear {customer_name},\n\nThank you for visiting *{business_name}.* 🏥\n\nWe hope your {service_name} with Dr. {staff_name} was satisfactory.\n\nPlease take a moment to share your experience:\n{rating_link}\n\nYour feedback helps us improve. 🙏",
+        "loyalty_reward": "Dear {customer_name},\n\nAs a valued patient of {business_name}, you are eligible for a *complimentary {service_name}!* 🎁\n\nBook now: {booking_link}\n\n_Valid for 30 days._",
+        "marketing": "Dear {customer_name},\n\n{business_name} would like to inform you about:\n\n{offer_details}\n\nFor appointments: {booking_link}"
+      },
+      "features": {
+        "packages": false,
+        "loyalty_program": false,
+        "inventory_tracking": false,
+        "video_calls": true,
+        "intake_forms": true,
+        "prescriptions": true,
+        "group_sessions": false
+      },
+      "booking_rules": {
+        "advance_booking_days": 14,
+        "min_advance_notice_hours": 2,
+        "cancellation_window_hours": 4,
+        "advance_payment_required": true,
+        "advance_payment_percentage": 40
+      },
+      "branding": {
+        "primary_color": "#2196F3",
+        "secondary_color": "#BBDEFB",
+        "icon": "🏥",
+        "theme": "blue"
+      }
+    }
+  },
+
+  {
+    "id": "coaching",
+    "name": "Coaching & Tutoring",
+    "description": "For tutors, coaches, mentors, and educational service providers",
+    "config": {
+      "terminology": {
+        "service_provider": "Tutor",
+        "service": "Session",
+        "customer": "Student",
+        "booking": "Class",
+        "service_providers": "Tutors",
+        "services": "Sessions",
+        "customers": "Students",
+        "bookings": "Classes"
+      },
+      "default_services": [
+        {
+          "name": "1-on-1 Session",
+          "duration_minutes": 60,
+          "price": 800,
+          "advance_amount": 300,
+          "category": "Individual",
+          "description": "Personalised one-to-one tutoring session"
+        },
+        {
+          "name": "Group Class (5 Students)",
+          "duration_minutes": 90,
+          "price": 400,
+          "advance_amount": 150,
+          "category": "Group",
+          "description": "Small group session up to 5 students"
+        },
+        {
+          "name": "Doubt Clearing Session",
+          "duration_minutes": 30,
+          "price": 400,
+          "advance_amount": 100,
+          "category": "Individual",
+          "description": "Quick session to clear specific doubts"
+        },
+        {
+          "name": "Mock Test + Review",
+          "duration_minutes": 120,
+          "price": 1200,
+          "advance_amount": 400,
+          "category": "Assessment",
+          "description": "Full mock test with detailed review"
+        },
+        {
+          "name": "Monthly Package (12 Sessions)",
+          "duration_minutes": 60,
+          "price": 8000,
+          "advance_amount": 2000,
+          "category": "Package",
+          "description": "12 one-to-one sessions per month"
+        }
+      ],
+      "customer_fields": [
+        {
+          "id": "grade",
+          "label": "Grade / Standard",
+          "type": "select",
+          "options": ["6th", "7th", "8th", "9th", "10th", "11th", "12th", "Undergraduate", "Postgraduate", "Professional"],
+          "required": false
+        },
+        {
+          "id": "board",
+          "label": "Education Board",
+          "type": "select",
+          "options": ["CBSE", "ICSE", "State Board", "IB", "IGCSE", "Other"],
+          "required": false
+        },
+        {
+          "id": "subjects",
+          "label": "Subjects",
+          "type": "multiselect",
+          "options": ["Mathematics", "Physics", "Chemistry", "Biology", "English", "Hindi", "History", "Geography", "Computer Science", "Economics"],
+          "required": false
+        },
+        {
+          "id": "learning_goals",
+          "label": "Learning Goals",
+          "type": "textarea",
+          "placeholder": "What do you want to achieve?",
+          "required": false
+        },
+        {
+          "id": "parent_name",
+          "label": "Parent / Guardian Name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "parent_phone",
+          "label": "Parent / Guardian Phone",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "booking_fields": [
+        {
+          "id": "topic",
+          "label": "Topic for This Session",
+          "type": "text",
+          "placeholder": "e.g. Quadratic Equations, Organic Chemistry",
+          "required": false
+        },
+        {
+          "id": "homework_status",
+          "label": "Homework Completed?",
+          "type": "select",
+          "options": ["Yes", "Partially", "No", "N/A"],
+          "required": false
+        },
+        {
+          "id": "session_mode",
+          "label": "Session Mode",
+          "type": "select",
+          "options": ["In-person", "Online (Video Call)"],
+          "required": true
+        }
+      ],
+      "whatsapp_templates": {
+        "confirmation": "Hi {customer_name}! 📚\n\nYour *{service_name}* is confirmed!\n\n📅 Date: {date}\n⏰ Time: {time}\n👩‍🏫 Tutor: {staff_name}\n📍 {business_name}\n💰 Advance paid: ₹{advance_amount}\n\nDon't forget to complete your homework! ✏️\n\nTo cancel: {cancellation_link}",
+        "reminder_24h": "Hi {customer_name}! 📖\n\nReminder: Your *{service_name}* is *TOMORROW!*\n\n⏰ {date} at {time}\n👩‍🏫 With {staff_name}\n\nPlease prepare your study material. See you! ✨",
+        "reminder_2h": "Hi {customer_name}! 📝\n\nYour class is in *2 hours!*\n\n🕐 Time: {time}\n\nGet your books ready! 📚",
+        "no_show_followup": "Hi {customer_name},\n\nWe missed you today! 😊\n\nWould you like to *reschedule* your {service_name}?\n\nReply *YES* and we'll find you a new slot. Your advance (₹{advance_amount}) will be adjusted.",
+        "feedback": "Hi {customer_name}! 🌟\n\nHow was your *{service_name}* with {staff_name}?\n\nWe'd love your feedback:\n{rating_link}\n\nKeep up the great work! 📚✨",
+        "loyalty_reward": "🏆 Amazing {customer_name}!\n\nYou've completed *{visit_count} sessions* at {business_name}!\n\nAs a reward: 🎁 *FREE {service_name}* is on us!\n\nBook now: {booking_link}\n\n_Valid for 30 days._",
+        "marketing": "Hi {customer_name}! 📖\n\n{business_name} has something special for you:\n\n{offer_details}\n\nBook your session: {booking_link}"
+      },
+      "features": {
+        "packages": true,
+        "loyalty_program": true,
+        "inventory_tracking": false,
+        "video_calls": true,
+        "intake_forms": false,
+        "prescriptions": false,
+        "group_sessions": true
+      },
+      "booking_rules": {
+        "advance_booking_days": 30,
+        "min_advance_notice_hours": 2,
+        "cancellation_window_hours": 4,
+        "advance_payment_required": true,
+        "advance_payment_percentage": 35
+      },
+      "branding": {
+        "primary_color": "#4CAF50",
+        "secondary_color": "#C8E6C9",
+        "icon": "📚",
+        "theme": "green"
+      }
+    }
+  }
+]

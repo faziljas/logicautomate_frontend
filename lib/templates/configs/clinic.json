@@ -1,0 +1,219 @@
+{
+  "terminology": {
+    "service_provider": "Doctor",
+    "service_providers": "Doctors",
+    "service": "Consultation",
+    "services": "Consultations",
+    "customer": "Patient",
+    "customers": "Patients",
+    "booking": "Appointment",
+    "bookings": "Appointments"
+  },
+
+  "default_services": [
+    {
+      "name": "General Consultation",
+      "description": "General health check and medical consultation",
+      "duration_minutes": 30,
+      "price": 500,
+      "advance_amount": 200,
+      "category": "Consultation",
+      "custom_fields": {
+        "requires_reports": false
+      }
+    },
+    {
+      "name": "Follow-up Consultation",
+      "description": "Follow-up on previous diagnosis or treatment",
+      "duration_minutes": 20,
+      "price": 300,
+      "advance_amount": 100,
+      "category": "Consultation",
+      "custom_fields": {
+        "requires_previous_prescription": true
+      }
+    },
+    {
+      "name": "Full Body Check-up",
+      "description": "Comprehensive health screening with blood tests",
+      "duration_minutes": 60,
+      "price": 2000,
+      "advance_amount": 500,
+      "category": "Diagnostics",
+      "custom_fields": {
+        "fasting_required": true,
+        "reports_included": true
+      }
+    },
+    {
+      "name": "ECG / Cardiac Screening",
+      "description": "Electrocardiogram and basic heart health check",
+      "duration_minutes": 30,
+      "price": 800,
+      "advance_amount": 300,
+      "category": "Diagnostics",
+      "custom_fields": {
+        "fasting_required": false,
+        "requires_resting_10min": true
+      }
+    },
+    {
+      "name": "Minor Procedure",
+      "description": "Minor outpatient procedure or dressing change",
+      "duration_minutes": 45,
+      "price": 1500,
+      "advance_amount": 500,
+      "category": "Procedure",
+      "custom_fields": {
+        "consent_form_required": true,
+        "bring_escort": false
+      }
+    }
+  ],
+
+  "customer_fields": [
+    {
+      "id": "blood_group",
+      "label": "Blood Group",
+      "type": "select",
+      "options": ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-", "Unknown"],
+      "required": false
+    },
+    {
+      "id": "date_of_birth",
+      "label": "Date of Birth",
+      "type": "date",
+      "required": false
+    },
+    {
+      "id": "gender",
+      "label": "Gender",
+      "type": "select",
+      "options": ["Male", "Female", "Other", "Prefer not to say"],
+      "required": false
+    },
+    {
+      "id": "allergies",
+      "label": "Drug / Food Allergies",
+      "type": "text",
+      "placeholder": "e.g. Penicillin, Aspirin, Shellfish",
+      "required": false
+    },
+    {
+      "id": "chronic_conditions",
+      "label": "Chronic Conditions",
+      "type": "multiselect",
+      "options": [
+        "Diabetes", "Hypertension", "Asthma",
+        "Heart Disease", "Thyroid", "Kidney Disease",
+        "Arthritis", "None"
+      ],
+      "required": false
+    },
+    {
+      "id": "current_medications",
+      "label": "Current Medications",
+      "type": "textarea",
+      "placeholder": "List any medications you are currently taking",
+      "required": false
+    },
+    {
+      "id": "medical_history",
+      "label": "Past Medical History",
+      "type": "textarea",
+      "placeholder": "Past surgeries, hospitalisations, major illnesses",
+      "required": false
+    },
+    {
+      "id": "emergency_contact",
+      "label": "Emergency Contact Number",
+      "type": "phone",
+      "placeholder": "+91 XXXXX XXXXX",
+      "required": false
+    }
+  ],
+
+  "booking_fields": [
+    {
+      "id": "symptoms",
+      "label": "Primary Symptoms / Reason for Visit",
+      "type": "textarea",
+      "placeholder": "Describe your symptoms in brief",
+      "required": true
+    },
+    {
+      "id": "symptom_duration",
+      "label": "How long have you had these symptoms?",
+      "type": "select",
+      "options": [
+        "Today", "2–3 days", "1 week",
+        "2+ weeks", "1+ month", "Ongoing (chronic)"
+      ],
+      "required": false
+    },
+    {
+      "id": "urgency_level",
+      "label": "Urgency Level",
+      "type": "select",
+      "options": ["Routine", "Urgent", "Emergency"],
+      "required": true
+    },
+    {
+      "id": "referral_doctor",
+      "label": "Referred By (Doctor Name)",
+      "type": "text",
+      "placeholder": "Name of referring doctor (if any)",
+      "required": false
+    },
+    {
+      "id": "previous_reports",
+      "label": "Do you have previous reports?",
+      "type": "boolean",
+      "required": false
+    }
+  ],
+
+  "whatsapp_templates": {
+    "confirmation": "Dear {customer_name},\n\nYour appointment has been *confirmed.* ✅\n\n🩺 {service_name}\n👨‍⚕️ Doctor: {staff_name}\n📅 Date: {date}\n⏰ Time: {time}\n📍 {business_name}\n💰 Advance paid: ₹{advance_amount}\n\nPlease carry a valid photo ID and any previous medical reports.\n\nTo cancel: {cancellation_link}",
+
+    "reminder_24h": "Dear {customer_name},\n\nThis is a reminder that your appointment is *tomorrow.* 📋\n\n📅 {date} at ⏰ {time}\n👨‍⚕️ Dr. {staff_name}\n📍 {business_name}\n\nPlease arrive *10 minutes early* and carry your reports.",
+
+    "reminder_2h": "Dear {customer_name},\n\nYour appointment is in *2 hours.* ⏰\n\n🕐 Time: {time}\n📍 {business_name}\n\nPlease carry your medical records and reports.",
+
+    "no_show_followup": "Dear {customer_name},\n\nWe noticed you could not make it to your appointment today.\n\nWould you like to *reschedule*?\n\nPlease reply to this message or call us.\nYour advance (₹{advance_amount}) will be fully adjusted.",
+
+    "feedback": "Dear {customer_name},\n\nThank you for visiting *{business_name}.* 🏥\n\nWe hope your *{service_name}* with Dr. {staff_name} was satisfactory.\n\nKindly share your experience:\n{rating_link}\n\nYour feedback helps us serve you better. 🙏",
+
+    "loyalty_reward": "Dear {customer_name},\n\nAs a valued patient of *{business_name}*, you are eligible for a *complimentary {service_name}.* 🎁\n\nBook now: {booking_link}\n\n_Valid for 30 days._",
+
+    "marketing": "Dear {customer_name},\n\n*{business_name}* would like to inform you:\n\n{offer_details}\n\nFor appointments: {booking_link}"
+  },
+
+  "features": {
+    "packages": false,
+    "loyalty_program": false,
+    "inventory_tracking": false,
+    "video_calls": true,
+    "intake_forms": true,
+    "prescriptions": true,
+    "group_sessions": false,
+    "progress_tracking": false,
+    "assignments": false,
+    "medical_records": true
+  },
+
+  "booking_rules": {
+    "advance_booking_days": 14,
+    "min_advance_notice_hours": 2,
+    "cancellation_window_hours": 4,
+    "advance_payment_required": true,
+    "advance_payment_percentage": 40
+  },
+
+  "branding": {
+    "primary_color": "#4A90E2",
+    "secondary_color": "#BBDEFB",
+    "icon": "🏥",
+    "theme": "blue"
+  }
+}

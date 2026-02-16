@@ -1,0 +1,209 @@
+{
+  "terminology": {
+    "service_provider": "Tutor",
+    "service_providers": "Tutors",
+    "service": "Session",
+    "services": "Sessions",
+    "customer": "Student",
+    "customers": "Students",
+    "booking": "Class",
+    "bookings": "Classes"
+  },
+
+  "default_services": [
+    {
+      "name": "1-on-1 Session",
+      "description": "Personalised one-to-one tutoring session",
+      "duration_minutes": 60,
+      "price": 800,
+      "advance_amount": 300,
+      "category": "Individual",
+      "custom_fields": {
+        "max_students": 1,
+        "online_available": true
+      }
+    },
+    {
+      "name": "Group Class",
+      "description": "Small group session for up to 5 students",
+      "duration_minutes": 90,
+      "price": 400,
+      "advance_amount": 150,
+      "category": "Group",
+      "custom_fields": {
+        "max_students": 5,
+        "online_available": true
+      }
+    },
+    {
+      "name": "Mock Test + Review",
+      "description": "Full mock test followed by detailed performance review",
+      "duration_minutes": 120,
+      "price": 1200,
+      "advance_amount": 400,
+      "category": "Assessment",
+      "custom_fields": {
+        "includes_report_card": true,
+        "max_students": 1
+      }
+    },
+    {
+      "name": "Doubt Clearing Session",
+      "description": "Quick focused session to resolve specific doubts",
+      "duration_minutes": 30,
+      "price": 400,
+      "advance_amount": 100,
+      "category": "Individual",
+      "custom_fields": {
+        "max_students": 1,
+        "online_available": true
+      }
+    },
+    {
+      "name": "Monthly Package (12 Sessions)",
+      "description": "12 one-to-one sessions at discounted package price",
+      "duration_minutes": 60,
+      "price": 8000,
+      "advance_amount": 2000,
+      "category": "Package",
+      "custom_fields": {
+        "sessions_included": 12,
+        "validity_days": 30
+      }
+    }
+  ],
+
+  "customer_fields": [
+    {
+      "id": "grade",
+      "label": "Grade / Standard",
+      "type": "select",
+      "options": [
+        "6th", "7th", "8th", "9th", "10th",
+        "11th", "12th", "Undergraduate",
+        "Postgraduate", "Professional / Other"
+      ],
+      "required": false
+    },
+    {
+      "id": "board",
+      "label": "Education Board",
+      "type": "select",
+      "options": ["CBSE", "ICSE", "State Board", "IB", "IGCSE", "Other"],
+      "required": false
+    },
+    {
+      "id": "subjects",
+      "label": "Subjects Needed",
+      "type": "multiselect",
+      "options": [
+        "Mathematics", "Physics", "Chemistry", "Biology",
+        "English", "Hindi", "History", "Geography",
+        "Computer Science", "Economics", "Accountancy",
+        "Business Studies"
+      ],
+      "required": false
+    },
+    {
+      "id": "learning_goals",
+      "label": "Learning Goals",
+      "type": "textarea",
+      "placeholder": "What do you want to achieve? e.g. Board exam prep, competitive exams",
+      "required": false
+    },
+    {
+      "id": "parent_name",
+      "label": "Parent / Guardian Name",
+      "type": "text",
+      "required": false
+    },
+    {
+      "id": "parent_phone",
+      "label": "Parent / Guardian Phone",
+      "type": "phone",
+      "placeholder": "+91 XXXXX XXXXX",
+      "required": false
+    },
+    {
+      "id": "school_name",
+      "label": "School / College Name",
+      "type": "text",
+      "required": false
+    }
+  ],
+
+  "booking_fields": [
+    {
+      "id": "topics_to_cover",
+      "label": "Topics to Cover This Session",
+      "type": "text",
+      "placeholder": "e.g. Quadratic Equations, Photosynthesis, World War II",
+      "required": false
+    },
+    {
+      "id": "homework_submitted",
+      "label": "Previous Homework Status",
+      "type": "select",
+      "options": ["Completed", "Partially done", "Not done", "No homework assigned"],
+      "required": false
+    },
+    {
+      "id": "session_mode",
+      "label": "Session Mode",
+      "type": "select",
+      "options": ["In-person", "Online (Video Call)"],
+      "required": true
+    },
+    {
+      "id": "difficulty_areas",
+      "label": "Areas of Difficulty",
+      "type": "textarea",
+      "placeholder": "What specific concepts are you struggling with?",
+      "required": false
+    }
+  ],
+
+  "whatsapp_templates": {
+    "confirmation": "Hi {customer_name}! 📚\n\nYour *{service_name}* is confirmed!\n\n📅 Date: {date}\n⏰ Time: {time}\n👩‍🏫 Tutor: {staff_name}\n📍 {business_name}\n💰 Advance paid: ₹{advance_amount}\n💰 Remaining: ₹{remaining_amount}\n\nDon't forget to complete your homework! ✏️\n\nNeed to cancel? {cancellation_link}",
+
+    "reminder_24h": "Hi {customer_name}! 📖\n\nReminder: Your *{service_name}* is *TOMORROW!*\n\n⏰ {date} at {time}\n👩‍🏫 With {staff_name}\n\nPlease prepare your study material and revise the last session. See you! ✨",
+
+    "reminder_2h": "Hi {customer_name}! 📝\n\nYour class is in *2 hours!*\n\n🕐 Time: {time}\n📍 {business_name}\n\nGet your books and notes ready! 📚",
+
+    "no_show_followup": "Hi {customer_name}, we missed you today! 😊\n\nWould you like to *reschedule* your {service_name}?\n\nReply *YES* and we'll find you a new slot.\nYour advance (₹{advance_amount}) will be adjusted.",
+
+    "feedback": "Hi {customer_name}! 🌟\n\nHow was your *{service_name}* with {staff_name}?\n\nWe'd love your feedback:\n{rating_link}\n\nKeep up the great work! 📚✨",
+
+    "loyalty_reward": "🏆 Amazing {customer_name}!\n\nYou've completed *{visit_count} sessions* at {business_name}!\n\nAs a reward: 🎁 *FREE {service_name}* on your next booking!\n\nBook now: {booking_link}\n\n_Valid for 30 days._ ✨",
+
+    "marketing": "Hi {customer_name}! 📖\n\n*{business_name}* has something special for you:\n\n{offer_details}\n\nBook your session: {booking_link}"
+  },
+
+  "features": {
+    "packages": true,
+    "loyalty_program": true,
+    "inventory_tracking": false,
+    "video_calls": true,
+    "intake_forms": false,
+    "prescriptions": false,
+    "group_sessions": true,
+    "progress_tracking": true,
+    "assignments": true,
+    "medical_records": false
+  },
+
+  "booking_rules": {
+    "advance_booking_days": 30,
+    "min_advance_notice_hours": 2,
+    "cancellation_window_hours": 4,
+    "advance_payment_required": true,
+    "advance_payment_percentage": 35
+  },
+
+  "branding": {
+    "primary_color": "#34C759",
+    "secondary_color": "#C8E6C9",
+    "icon": "📚",
+    "theme": "green"
+  }
+}

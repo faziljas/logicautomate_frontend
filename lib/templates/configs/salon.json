@@ -1,0 +1,180 @@
+{
+  "terminology": {
+    "service_provider": "Stylist",
+    "service_providers": "Stylists",
+    "service": "Service",
+    "services": "Services",
+    "customer": "Client",
+    "customers": "Clients",
+    "booking": "Appointment",
+    "bookings": "Appointments"
+  },
+
+  "default_services": [
+    {
+      "name": "Haircut",
+      "description": "Professional haircut and blow-dry styling",
+      "duration_minutes": 45,
+      "price": 600,
+      "advance_amount": 200,
+      "category": "Hair",
+      "custom_fields": {
+        "includes_blowdry": true,
+        "gender": "unisex"
+      }
+    },
+    {
+      "name": "Hair Color",
+      "description": "Full hair coloring with premium products",
+      "duration_minutes": 120,
+      "price": 3500,
+      "advance_amount": 500,
+      "category": "Hair",
+      "custom_fields": {
+        "patch_test_required": true,
+        "includes_blowdry": true
+      }
+    },
+    {
+      "name": "Facial",
+      "description": "Rejuvenating deep-cleansing facial treatment",
+      "duration_minutes": 60,
+      "price": 1200,
+      "advance_amount": 300,
+      "category": "Skin",
+      "custom_fields": {
+        "skin_types": ["Normal", "Oily", "Dry", "Combination"]
+      }
+    },
+    {
+      "name": "Manicure",
+      "description": "Classic manicure with gel or regular polish",
+      "duration_minutes": 45,
+      "price": 800,
+      "advance_amount": 200,
+      "category": "Nail",
+      "custom_fields": {
+        "polish_types": ["Regular", "Gel", "Acrylic"]
+      }
+    },
+    {
+      "name": "Pedicure",
+      "description": "Relaxing spa pedicure with foot massage",
+      "duration_minutes": 60,
+      "price": 1000,
+      "advance_amount": 300,
+      "category": "Nail",
+      "custom_fields": {
+        "includes_foot_massage": true
+      }
+    }
+  ],
+
+  "customer_fields": [
+    {
+      "id": "hair_type",
+      "label": "Hair Type",
+      "type": "select",
+      "options": ["Straight", "Wavy", "Curly", "Coily"],
+      "required": false
+    },
+    {
+      "id": "hair_texture",
+      "label": "Hair Texture",
+      "type": "select",
+      "options": ["Fine", "Medium", "Thick"],
+      "required": false
+    },
+    {
+      "id": "allergies",
+      "label": "Product Allergies",
+      "type": "text",
+      "placeholder": "e.g. ammonia, peroxide, latex",
+      "required": false
+    },
+    {
+      "id": "preferred_products",
+      "label": "Preferred Brand / Products",
+      "type": "text",
+      "placeholder": "e.g. L'Oréal, Schwarzkopf",
+      "required": false
+    },
+    {
+      "id": "scalp_condition",
+      "label": "Scalp Condition",
+      "type": "select",
+      "options": ["Normal", "Dry", "Oily", "Sensitive", "Dandruff"],
+      "required": false
+    }
+  ],
+
+  "booking_fields": [
+    {
+      "id": "special_requests",
+      "label": "Special Requests",
+      "type": "textarea",
+      "placeholder": "Any specific style, product preference, or instructions",
+      "required": false
+    },
+    {
+      "id": "reference_image",
+      "label": "Reference Image URL",
+      "type": "text",
+      "placeholder": "Paste a photo link for your desired style",
+      "required": false,
+      "show_for_services": ["Hair Color", "Haircut"]
+    },
+    {
+      "id": "color_formula",
+      "label": "Previous Color Formula",
+      "type": "text",
+      "placeholder": "e.g. 7N + 20 vol",
+      "required": false,
+      "show_for_services": ["Hair Color"]
+    }
+  ],
+
+  "whatsapp_templates": {
+    "confirmation": "Hi {customer_name}! 🎉\n\nYour *{service_name}* appointment is confirmed!\n\n📅 Date: {date}\n⏰ Time: {time}\n💇 Stylist: {staff_name}\n📍 {business_name}\n💰 Advance paid: ₹{advance_amount}\n💰 Remaining: ₹{remaining_amount}\n\nNeed to cancel? {cancellation_link}\n\nSee you soon! ✨",
+
+    "reminder_24h": "Hi {customer_name}! 👋\n\nReminder: Your *{service_name}* is *TOMORROW!*\n\n⏰ {date} at {time}\n💇 With {staff_name}\n📍 {business_name}\n\nWe're looking forward to seeing you! 💕",
+
+    "reminder_2h": "Hi {customer_name}! ⏰\n\nYour appointment is in *2 hours!*\n\n🕐 Time: {time}\n📍 {business_name}\n\nSee you soon! 🌟",
+
+    "no_show_followup": "Hi {customer_name}, we missed you today! 😊\n\nWould you like to *reschedule* your {service_name}?\n\nReply *YES* and we'll find you a new slot.\nYour advance (₹{advance_amount}) will be fully adjusted. 💕",
+
+    "feedback": "Thank you for visiting *{business_name}*! 🙏\n\nHow was your *{service_name}* with {staff_name}?\n\nTap to rate us:\n{rating_link}\n\n4-5 stars? We'd love a Google review! ⭐",
+
+    "loyalty_reward": "🎉 Congratulations {customer_name}!\n\nYou've completed *{visit_count} visits* to {business_name}!\n\nAs a thank you: 🎁 *FREE {service_name}* on your next visit!\n\nBook now: {booking_link}\n\n_Valid for 30 days_ ✨",
+
+    "marketing": "Hi {customer_name}! 💇‍♀️\n\n{business_name} has a special offer just for you!\n\n{offer_details}\n\nBook now: {booking_link}"
+  },
+
+  "features": {
+    "packages": true,
+    "loyalty_program": true,
+    "inventory_tracking": false,
+    "video_calls": false,
+    "intake_forms": false,
+    "prescriptions": false,
+    "group_sessions": false,
+    "progress_tracking": false,
+    "assignments": false,
+    "medical_records": false
+  },
+
+  "booking_rules": {
+    "advance_booking_days": 30,
+    "min_advance_notice_hours": 1,
+    "cancellation_window_hours": 2,
+    "advance_payment_required": true,
+    "advance_payment_percentage": 30
+  },
+
+  "branding": {
+    "primary_color": "#FF69B4",
+    "secondary_color": "#FFB6C1",
+    "icon": "💇‍♀️",
+    "theme": "pink"
+  }
+}

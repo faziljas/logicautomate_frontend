@@ -1,0 +1,118 @@
+/* ============================================================
+   BookFlow — Template-Aware Booking Page Styles
+   CSS variables are set inline from template.branding
+   ============================================================ */
+
+.bookingPage {
+  --primary: var(--primary-color, #7c3aed);
+  --secondary: var(--secondary-color, #a78bfa);
+  --text: var(--text-color, #1f2937);
+  --bg: var(--bg-color, #f9fafb);
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.header {
+  background: var(--primary);
+  color: white;
+  padding: 1.25rem 1rem;
+}
+
+.headerContent {
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.serviceCard {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.serviceCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.serviceCardSelected {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, white);
+}
+
+.staffCard {
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.staffCardSelected {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, white);
+}
+
+.dateCell {
+  transition: all 0.1s ease;
+}
+
+.dateCellSelected {
+  background: var(--primary);
+  color: white;
+}
+
+.timeSlot {
+  transition: all 0.15s ease;
+}
+
+.timeSlotAvailable:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.timeSlotSelected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.ctaButton {
+  background: var(--primary);
+  color: white;
+  transition: opacity 0.2s, transform 0.05s;
+}
+
+.ctaButton:hover:not(:disabled) {
+  opacity: 0.95;
+}
+
+.ctaButton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.ctaButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.progressDot {
+  transition: all 0.2s ease;
+}
+
+.progressDotCurrent {
+  transform: scale(1.25);
+}
+
+/* Mobile-first: ensure touch targets are 44px+ */
+.touchTarget {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Pagination for many services */
+.servicesGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .servicesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
