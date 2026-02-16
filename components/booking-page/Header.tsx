@@ -57,6 +57,7 @@ export function Header({
           </div>
 
           <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-bold truncate">{businessName}</h1>
             {locationText && (
               <div className="flex items-center gap-1.5 mt-1 text-xs opacity-80">
                 <MapPin className="w-3.5 h-3.5 shrink-0" />
