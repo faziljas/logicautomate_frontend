@@ -111,6 +111,12 @@ export default function BookingList({
     setFiltersOpen(false);
   };
 
+  const resetFilters = () => {
+    setLocalFilters({});
+    onFiltersChange?.({});
+    setFiltersOpen(false);
+  };
+
   const STATUS_STYLES: Record<string, string> = {
     pending: "bg-amber-100 text-amber-800",
     confirmed: "bg-emerald-100 text-emerald-800",
@@ -196,6 +202,12 @@ export default function BookingList({
             className="self-end rounded-lg bg-violet-600 px-3 py-1.5 text-sm text-white hover:bg-violet-700"
           >
             Apply
+          </button>
+          <button
+            onClick={resetFilters}
+            className="self-end rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            Reset
           </button>
         </div>
       )}
