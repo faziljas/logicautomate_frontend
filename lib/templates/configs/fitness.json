@@ -1,0 +1,63 @@
+{
+  "terminology": {
+    "service_provider": "Trainer",
+    "service_providers": "Trainers",
+    "service": "Session",
+    "services": "Sessions",
+    "customer": "Member",
+    "customers": "Members",
+    "booking": "Booking",
+    "bookings": "Bookings"
+  },
+  "default_services": [
+    {"name": "Personal Training (1 Session)", "description": "1-on-1 training session with certified trainer", "duration_minutes": 60, "price": 1200, "advance_amount": 500, "category": "Personal", "custom_fields": {}},
+    {"name": "Yoga Class", "description": "Group yoga session", "duration_minutes": 60, "price": 400, "advance_amount": 200, "category": "Group", "custom_fields": {}},
+    {"name": "HIIT Class", "description": "High-intensity interval training", "duration_minutes": 45, "price": 350, "advance_amount": 150, "category": "Group", "custom_fields": {}},
+    {"name": "Body Assessment", "description": "Fitness assessment and goal setting", "duration_minutes": 45, "price": 800, "advance_amount": 400, "category": "Assessment", "custom_fields": {}},
+    {"name": "Monthly Membership (12 Sessions)", "description": "12 personal training sessions per month", "duration_minutes": 60, "price": 10000, "advance_amount": 5000, "category": "Package", "custom_fields": {}}
+  ],
+  "customer_fields": [
+    {"id": "fitness_goal", "label": "Fitness Goal", "type": "select", "options": ["Weight Loss", "Muscle Gain", "General Fitness", "Rehabilitation", "Sports Performance"], "required": false},
+    {"id": "medical_conditions", "label": "Medical Conditions / Injuries", "type": "textarea", "placeholder": "List any conditions we should know about", "required": false},
+    {"id": "experience_level", "label": "Experience Level", "type": "select", "options": ["Beginner", "Intermediate", "Advanced"], "required": false}
+  ],
+  "booking_fields": [
+    {"id": "focus_area", "label": "Focus Area Today", "type": "text", "placeholder": "e.g. Upper body, Cardio, Core", "required": false},
+    {"id": "session_type", "label": "Session Type", "type": "select", "options": ["In-person", "Online / Virtual"], "required": true},
+    {"id": "notes", "label": "Notes for Trainer", "type": "textarea", "required": false}
+  ],
+  "whatsapp_templates": {
+    "confirmation": "Hi {customer_name}! 🏋️\n\nYour *{service_name}* is confirmed!\n\n📅 Date: {date}\n⏰ Time: {time}\n💪 Trainer: {staff_name}\n📍 {business_name}\n💰 Advance: ₹{advance_amount}\n\nStay hydrated! Cancel: {cancellation_link}",
+    "reminder_24h": "Hi {customer_name}! Reminder: Your *{service_name}* is tomorrow at {time} with {staff_name}. Bring a towel and water! 💪",
+    "reminder_2h": "Hi {customer_name}! Your session is in 2 hours at {time}. See you at {business_address}!",
+    "no_show_followup": "Hi {customer_name}, we missed you today! Reply YES to reschedule. Advance ₹{advance_amount} will be adjusted.",
+    "feedback": "Great session! How was your *{service_name}* with {staff_name}? Rate us: {rating_link}",
+    "loyalty_reward": "🎉 {customer_name}! You've completed {visit_count} sessions! Reward: {offer_details}. Book: {booking_link}",
+    "marketing": "Hi {customer_name}! {business_name} has an offer: {offer_details}. Book: {booking_link}"
+  },
+  "features": {
+    "packages": true,
+    "loyalty_program": true,
+    "inventory_tracking": false,
+    "video_calls": true,
+    "intake_forms": true,
+    "prescriptions": false,
+    "group_sessions": true,
+    "progress_tracking": true,
+    "assignments": false,
+    "medical_records": false
+  },
+  "booking_rules": {
+    "advance_booking_days": 30,
+    "min_advance_notice_hours": 2,
+    "cancellation_window_hours": 4,
+    "advance_payment_required": true,
+    "advance_payment_percentage": 30
+  },
+  "branding": {
+    "primary_color": "#FF3B30",
+    "secondary_color": "#FFE5E5",
+    "icon": "🏋️",
+    "theme": "red"
+  }
+}

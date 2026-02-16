@@ -22,14 +22,20 @@ import { validateTemplateConfig, validatePartialConfig } from './validator';
 // with the codebase — DB is the source of
 // truth for customised business configs.
 // ─────────────────────────────────────────
-import salonConfig    from './configs/salon.json';
-import clinicConfig   from './configs/clinic.json';
-import coachingConfig from './configs/coaching.json';
+import salonConfig       from './configs/salon.json';
+import clinicConfig      from './configs/clinic.json';
+import coachingConfig    from './configs/coaching.json';
+import consultingConfig  from './configs/consulting.json';
+import fitnessConfig     from './configs/fitness.json';
+import photographyConfig from './configs/photography.json';
 
 const LOCAL_CONFIGS: Record<string, TemplateConfig> = {
-  salon:    salonConfig    as TemplateConfig,
-  clinic:   clinicConfig   as TemplateConfig,
-  coaching: coachingConfig as TemplateConfig,
+  salon:       salonConfig       as TemplateConfig,
+  clinic:      clinicConfig      as TemplateConfig,
+  coaching:    coachingConfig    as TemplateConfig,
+  consulting:  consultingConfig  as TemplateConfig,
+  fitness:     fitnessConfig     as TemplateConfig,
+  photography: photographyConfig as TemplateConfig,
 };
 
 // ─────────────────────────────────────────

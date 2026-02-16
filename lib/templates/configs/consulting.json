@@ -1,0 +1,63 @@
+{
+  "terminology": {
+    "service_provider": "Consultant",
+    "service_providers": "Consultants",
+    "service": "Session",
+    "services": "Sessions",
+    "customer": "Client",
+    "customers": "Clients",
+    "booking": "Appointment",
+    "bookings": "Appointments"
+  },
+  "default_services": [
+    {"name": "Discovery Call", "description": "Initial consultation to understand your needs", "duration_minutes": 30, "price": 0, "advance_amount": 0, "category": "Consultation", "custom_fields": {}},
+    {"name": "Strategy Session", "description": "1-on-1 strategy and planning session", "duration_minutes": 60, "price": 2500, "advance_amount": 1000, "category": "Consulting", "custom_fields": {}},
+    {"name": "Legal Consultation", "description": "Legal advice and document review", "duration_minutes": 60, "price": 3500, "advance_amount": 1500, "category": "Consulting", "custom_fields": {}},
+    {"name": "Financial Review", "description": "Financial planning and tax consultation", "duration_minutes": 90, "price": 4000, "advance_amount": 2000, "category": "Consulting", "custom_fields": {}},
+    {"name": "Retainer Package (4 Sessions)", "description": "Monthly retainer with 4 included sessions", "duration_minutes": 60, "price": 12000, "advance_amount": 6000, "category": "Package", "custom_fields": {}}
+  ],
+  "customer_fields": [
+    {"id": "company_name", "label": "Company / Organisation", "type": "text", "required": false},
+    {"id": "industry", "label": "Industry", "type": "text", "placeholder": "e.g. Tech, Retail, Healthcare", "required": false},
+    {"id": "referral_source", "label": "How did you hear about us?", "type": "select", "options": ["Google", "Referral", "LinkedIn", "Other"], "required": false}
+  ],
+  "booking_fields": [
+    {"id": "agenda", "label": "Agenda / Topics to Discuss", "type": "textarea", "placeholder": "What would you like to cover?", "required": false},
+    {"id": "session_mode", "label": "Session Mode", "type": "select", "options": ["In-person", "Video Call", "Phone"], "required": true},
+    {"id": "documents", "label": "Documents to Share", "type": "text", "placeholder": "List any documents you'll share beforehand", "required": false}
+  ],
+  "whatsapp_templates": {
+    "confirmation": "Hi {customer_name}! 💼\n\nYour *{service_name}* is confirmed!\n\n📅 Date: {date}\n⏰ Time: {time}\n👤 Consultant: {staff_name}\n📍 {business_name}\n💰 Advance: ₹{advance_amount}\n\nTo cancel: {cancellation_link}",
+    "reminder_24h": "Hi {customer_name}! Reminder: Your *{service_name}* is tomorrow at {time} with {staff_name} at {business_name}.",
+    "reminder_2h": "Hi {customer_name}! Your appointment is in 2 hours at {time}. See you at {business_address}!",
+    "no_show_followup": "Hi {customer_name}, we missed you today. Would you like to reschedule? Reply YES. Advance ₹{advance_amount} will be adjusted.",
+    "feedback": "Thank you for meeting with *{business_name}*! Share your experience: {rating_link}",
+    "loyalty_reward": "Thank you for your continued partnership! As a valued client: {offer_details}. Book: {booking_link}",
+    "marketing": "Hi {customer_name}! {business_name} has an update: {offer_details}. Book: {booking_link}"
+  },
+  "features": {
+    "packages": true,
+    "loyalty_program": false,
+    "inventory_tracking": false,
+    "video_calls": true,
+    "intake_forms": true,
+    "prescriptions": false,
+    "group_sessions": false,
+    "progress_tracking": false,
+    "assignments": false,
+    "medical_records": false
+  },
+  "booking_rules": {
+    "advance_booking_days": 60,
+    "min_advance_notice_hours": 24,
+    "cancellation_window_hours": 24,
+    "advance_payment_required": true,
+    "advance_payment_percentage": 40
+  },
+  "branding": {
+    "primary_color": "#5856D6",
+    "secondary_color": "#E5E5F7",
+    "icon": "💼",
+    "theme": "purple"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "terminology": {
+    "service_provider": "Photographer",
+    "service_providers": "Photographers",
+    "service": "Shoot",
+    "services": "Shoots",
+    "customer": "Client",
+    "customers": "Clients",
+    "booking": "Booking",
+    "bookings": "Bookings"
+  },
+  "default_services": [
+    {"name": "Portrait Session", "description": "Individual or couple portrait shoot", "duration_minutes": 90, "price": 5000, "advance_amount": 2000, "category": "Portrait", "custom_fields": {}},
+    {"name": "Event Coverage (Half Day)", "description": "4 hours of event photography", "duration_minutes": 240, "price": 15000, "advance_amount": 7500, "category": "Event", "custom_fields": {}},
+    {"name": "Product Photography", "description": "Studio product shoot with editing", "duration_minutes": 120, "price": 8000, "advance_amount": 4000, "category": "Commercial", "custom_fields": {}},
+    {"name": "Family Session", "description": "Family photo shoot at location of choice", "duration_minutes": 120, "price": 7000, "advance_amount": 3500, "category": "Portrait", "custom_fields": {}},
+    {"name": "Pre-Wedding Shoot", "description": "Full day pre-wedding / couple shoot", "duration_minutes": 480, "price": 35000, "advance_amount": 15000, "category": "Wedding", "custom_fields": {}}
+  ],
+  "customer_fields": [
+    {"id": "shoot_type", "label": "Type of Shoot", "type": "select", "options": ["Portrait", "Event", "Product", "Wedding", "Corporate", "Other"], "required": false},
+    {"id": "preferred_style", "label": "Preferred Style", "type": "text", "placeholder": "e.g. Candid, Classic, Editorial", "required": false},
+    {"id": "reference_images", "label": "Reference Images / Mood Board", "type": "text", "placeholder": "Link to Pinterest or Google Drive", "required": false}
+  ],
+  "booking_fields": [
+    {"id": "location", "label": "Shoot Location", "type": "text", "placeholder": "Indoor / Outdoor, address if known", "required": false},
+    {"id": "outfit_notes", "label": "Outfit / Styling Notes", "type": "textarea", "required": false},
+    {"id": "special_requests", "label": "Special Requests", "type": "textarea", "placeholder": "Props, specific shots, timing constraints", "required": false}
+  ],
+  "whatsapp_templates": {
+    "confirmation": "Hi {customer_name}! 📸\n\nYour *{service_name}* is confirmed!\n\n📅 Date: {date}\n⏰ Time: {time}\n📷 Photographer: {staff_name}\n📍 {business_name}\n💰 Advance: ₹{advance_amount}\n\nGallery delivery details will be shared post-shoot. Cancel: {cancellation_link}",
+    "reminder_24h": "Hi {customer_name}! Reminder: Your *{service_name}* is tomorrow at {time} with {staff_name}. Rest well and we'll capture great moments! 📸",
+    "reminder_2h": "Hi {customer_name}! Your shoot is in 2 hours at {time}. See you at {business_address}!",
+    "no_show_followup": "Hi {customer_name}, we missed you today. Reply YES to reschedule. Advance ₹{advance_amount} will be adjusted.",
+    "feedback": "Thank you for choosing *{business_name}!* How was your experience? Rate us: {rating_link}",
+    "loyalty_reward": "🎉 {customer_name}! As a returning client, enjoy {offer_details}. Book: {booking_link}",
+    "marketing": "Hi {customer_name}! {business_name} has an offer: {offer_details}. Book: {booking_link}"
+  },
+  "features": {
+    "packages": true,
+    "loyalty_program": true,
+    "inventory_tracking": false,
+    "video_calls": false,
+    "intake_forms": true,
+    "prescriptions": false,
+    "group_sessions": false,
+    "progress_tracking": false,
+    "assignments": false,
+    "medical_records": false
+  },
+  "booking_rules": {
+    "advance_booking_days": 90,
+    "min_advance_notice_hours": 48,
+    "cancellation_window_hours": 48,
+    "advance_payment_required": true,
+    "advance_payment_percentage": 40
+  },
+  "branding": {
+    "primary_color": "#FF9500",
+    "secondary_color": "#FFE8CC",
+    "icon": "📸",
+    "theme": "orange"
+  }
+}

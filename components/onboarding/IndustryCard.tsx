@@ -197,7 +197,6 @@ export const INDUSTRY_LIST: IndustryCardData[] = [
     description:  "Photographers & videographers",
     icon:         "📸",
     primaryColor: "#FF9500",
-    comingSoon:   true,
     features: [
       "Shoot scheduling",
       "Location management",
