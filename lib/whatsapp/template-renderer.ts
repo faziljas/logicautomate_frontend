@@ -143,7 +143,18 @@ export function renderTemplate(
     }
   }
 
+  // Aliases: Settings UI uses these names; renderer uses canonical keys
+  const ALIAS_TO_CANONICAL: Record<string, string> = {
+    booking_date: "date",
+    booking_time: "time",
+    duration_minutes: "duration_mins",
+    advance_paid: "advance_amount",
+    booking_url: "cancellation_link",
+  };
+
   const message = template.replace(/\{(\w+)\}/g, (_match, key: string) => {
+    const canon = ALIAS_TO_CANONICAL[key] ?? key;
+    if (canon in enriched) return enriched[canon];
     if (key in enriched) return enriched[key];
     missingVars.push(key);
     return `{${key}}`; // leave unreplaced rather than empty string
@@ -224,12 +235,15 @@ export function validateTemplate(
   }
 
   // Unknown placeholder names (not in our known set)
+  // Includes aliases shown in Settings UI: booking_date, booking_time, advance_paid, etc.
   const KNOWN_VARS = new Set<string>([
     "customer_name","customer_phone","service_name","staff_name",
     "date","time","duration_mins","business_name","business_address",
     "business_phone","advance_amount","remaining_amount","total_amount",
     "cancellation_link","rating_link","google_review_link","booking_link",
     "visit_count","offer_details",
+    "booking_date","booking_time","duration_minutes","advance_paid",
+    "booking_url","loyalty_reward",
   ]);
 
   for (const v of requiredVars) {
@@ -274,4 +288,5 @@ export const SAMPLE_VARIABLES: TemplateVariables = {
   booking_link:      "https://bookflow.app/salon-bliss",
   visit_count:       "5",
   offer_details:     "20% OFF on all services this weekend! 🎉",
+  loyalty_reward:    "1 FREE haircut on your next visit",
 };
