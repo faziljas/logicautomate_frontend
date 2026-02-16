@@ -223,6 +223,17 @@ export function DateTimePicker({
               {error}
             </div>
           ) : slots ? (
+            totalAvailable === 0 &&
+            slots.morning.length + slots.afternoon.length + slots.evening.length === 0 ? (
+            <div className="py-8 px-4 text-center rounded-xl bg-amber-50 border border-amber-100">
+              <p className="text-sm font-medium text-amber-800">
+                No slots available on this date
+              </p>
+              <p className="text-xs text-amber-600 mt-1">
+                Try another date, or add staff with working hours in your dashboard
+              </p>
+            </div>
+          ) : (
             <div className="space-y-5">
               {(["morning", "afternoon", "evening"] as const).map((period) => {
                 const periodSlots = slots[period];
@@ -256,6 +267,7 @@ export function DateTimePicker({
                 );
               })}
             </div>
+          )
           ) : null}
         </>
       )}

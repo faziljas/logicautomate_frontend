@@ -7,7 +7,7 @@
 // ============================================================
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { CheckCircle2, AlertCircle } from "lucide-react";
+import { CheckCircle2, AlertCircle, X } from "lucide-react";
 import { BookingProvider, useBooking } from "@/context/BookingContext";
 import { Header } from "@/components/booking-page/Header";
 import { ServiceGrid } from "@/components/booking-page/ServiceGrid";
@@ -110,6 +110,7 @@ function BookingFlowInner({
 
   const [step, setStep] = useState<Step>("service");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [showIncompleteMessage, setShowIncompleteMessage] = useState(false);
   const mainContentRef = useRef<HTMLElement>(null);
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [paymentOrderId, setPaymentOrderId] = useState<string | null>(null);
@@ -420,16 +421,43 @@ function BookingFlowInner({
         showBookNow={step !== "payment"}
         onBookNow={() => {
           if (step !== "service") {
-            setStep("service");
+            setShowIncompleteMessage(true);
+            mainContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+            setTimeout(() => setShowIncompleteMessage(false), 5000);
           } else {
             mainContentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         }}
       />
 
+      {showIncompleteMessage && (
+        <div
+          className="mx-4 mt-2 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-3"
+          role="alert"
+        >
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-amber-800">
+              Complete your booking first
+            </p>
+            <p className="text-xs text-amber-700 mt-0.5">
+              Please select a service, choose date & time, and enter your details below.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowIncompleteMessage(false)}
+            className="shrink-0 p-1 rounded hover:bg-amber-100 text-amber-600"
+            aria-label="Dismiss"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       <div className="bg-white border-b border-gray-100 px-4 py-3">
-        <div className="max-w-lg mx-auto flex items-center justify-between">
-          {(["service", "staff", "datetime", "details", "summary"] as Step[]).map(
+        <div className="max-w-lg mx-auto">
+          <div className="flex items-center justify-between mb-2">
+            {(["service", "staff", "datetime", "details", "summary"] as Step[]).map(
             (s, i) => {
               const idx = STEP_ORDER.indexOf(step);
               const sIdx = STEP_ORDER.indexOf(s);
@@ -462,6 +490,14 @@ function BookingFlowInner({
               );
             }
           )}
+          </div>
+          <p className="text-xs text-gray-500 text-center">
+            {step === "service" && "Select a service"}
+            {step === "staff" && "Choose your provider"}
+            {step === "datetime" && "Select date & time"}
+            {step === "details" && "Enter your details"}
+            {step === "summary" && "Review & confirm"}
+          </p>
         </div>
       </div>
 
