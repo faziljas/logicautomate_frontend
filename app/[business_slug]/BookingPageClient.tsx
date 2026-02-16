@@ -578,6 +578,7 @@ function BookingFlowInner({
             }}
             providerLabel={terminology?.service_provider ?? "Staff"}
             primaryColor={primaryColor}
+            bookingSlug={slug}
           />
         )}
 
