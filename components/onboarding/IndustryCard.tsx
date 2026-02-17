@@ -56,6 +56,10 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
       onClick={() => onSelect(industry.id)}
       className={cn(
         "group relative w-full text-left rounded-2xl border-2 p-5 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500",
+        // Use box-border to ensure border doesn't add to dimensions
+        "box-border",
+        // Ensure consistent minimum height to prevent layout shift
+        "min-h-[180px] flex flex-col",
         selected
           ? "border-violet-600 bg-violet-50 shadow-lg shadow-violet-100"
           : "border-gray-200 bg-white hover:border-violet-300 hover:shadow-md hover:shadow-violet-50"
@@ -82,10 +86,11 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
       )}
 
       {/* Icon + Name */}
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-3 flex-shrink-0">
         <span
           className={cn(
             "text-3xl w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-200",
+            // Use transform scale without affecting layout
             selected
               ? "bg-white shadow-sm scale-110"
               : "bg-gray-50 group-hover:bg-white group-hover:shadow-sm group-hover:scale-105"
@@ -109,9 +114,10 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
       </div>
 
       {/* Features list — shown on hover or when selected */}
+      {/* Use flex-1 to fill remaining space and prevent layout shift */}
       <ul
         className={cn(
-          "space-y-1 overflow-hidden transition-all duration-200",
+          "space-y-1 overflow-hidden transition-all duration-200 flex-1 mt-auto",
           selected
             ? "max-h-40 opacity-100"
             : "max-h-0 opacity-0 group-hover:max-h-40 group-hover:opacity-100"

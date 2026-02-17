@@ -106,7 +106,8 @@ function IndustrySelectionContent() {
         </div>
 
         {/* Industry grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Use align-items-start to prevent cards from stretching and causing layout shift */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {INDUSTRY_LIST.map((industry, index) => {
             // Strict comparison: ensure type match (both strings)
             // Only one industry can be selected at a time (single-select)
