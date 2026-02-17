@@ -1,8 +1,7 @@
 name: Run Migrations
 
 on:
-  push:
-    branches: [main]
+  # Only run manually or on deployment events (not on every push)
   workflow_dispatch:
   deployment:
     # Trigger on Vercel deployments
