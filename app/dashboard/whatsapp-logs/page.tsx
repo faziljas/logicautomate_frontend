@@ -113,6 +113,9 @@ export default function WhatsAppLogsPage() {
     });
   };
 
+  const failedCount = logs.filter((log) => log.status === "failed" || log.status === "undelivered").length;
+  const totalPages = Math.ceil(total / limit);
+
   if (ctxLoading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
@@ -128,9 +131,6 @@ export default function WhatsAppLogsPage() {
       </div>
     );
   }
-
-  const failedCount = logs.filter((log) => log.status === "failed" || log.status === "undelivered").length;
-  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="space-y-6">
