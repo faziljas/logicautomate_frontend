@@ -166,7 +166,8 @@ export default function CustomerBookingPage() {
                     >
                       {booking.status}
                     </span>
-                    {booking.businesses && (
+                    {/* Only show "Book again" for completed or cancelled bookings to avoid duplicates */}
+                    {booking.businesses && (booking.status === "completed" || booking.status === "cancelled") && (
                       <Link
                         href={`/${booking.businesses.slug}`}
                         className="text-sm text-violet-600 hover:underline"
