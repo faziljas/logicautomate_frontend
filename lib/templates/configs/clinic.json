@@ -186,7 +186,8 @@
 
     "loyalty_reward": "Dear {customer_name},\n\nAs a valued patient of *{business_name}*, you are eligible for a *complimentary {service_name}.* 🎁\n\nBook now: {booking_link}\n\n_Valid for 30 days._",
 
-    "marketing": "Dear {customer_name},\n\n*{business_name}* would like to inform you:\n\n{offer_details}\n\nFor appointments: {booking_link}"
+    "marketing": "Dear {customer_name},\n\n*{business_name}* would like to inform you:\n\n{offer_details}\n\nFor appointments: {booking_link}",
+    "staff_otp": "Your LogicAutomate staff login code is {otp}. Valid for 10 minutes."
   },
 
   "features": {

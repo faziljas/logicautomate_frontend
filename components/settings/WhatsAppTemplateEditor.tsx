@@ -57,6 +57,11 @@ const TEMPLATE_FIELDS: TemplateField[] = [
     label:       "Loyalty Reward",
     description: "Sent when a customer reaches a visit milestone.",
   },
+  {
+    key:         "staff_otp",
+    label:       "Staff OTP",
+    description: "Login code sent to staff via WhatsApp. Use {otp} placeholder.",
+  },
 ];
 
 const AVAILABLE_PLACEHOLDERS = [
@@ -76,6 +81,7 @@ const AVAILABLE_PLACEHOLDERS = [
   "{google_review_link}",
   "{visit_count}",
   "{loyalty_reward}",
+  "{otp}",
 ];
 
 interface Props {

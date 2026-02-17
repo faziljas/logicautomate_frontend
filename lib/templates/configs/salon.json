@@ -147,7 +147,9 @@
 
     "loyalty_reward": "🎉 Congratulations {customer_name}!\n\nYou've completed *{visit_count} visits* to {business_name}!\n\nAs a thank you: 🎁 *FREE {service_name}* on your next visit!\n\nBook now: {booking_link}\n\n_Valid for 30 days_ ✨",
 
-    "marketing": "Hi {customer_name}! 💇‍♀️\n\n{business_name} has a special offer just for you!\n\n{offer_details}\n\nBook now: {booking_link}"
+    "marketing": "Hi {customer_name}! 💇‍♀️\n\n{business_name} has a special offer just for you!\n\n{offer_details}\n\nBook now: {booking_link}",
+
+    "staff_otp": "Your LogicAutomate staff login code is {otp}. Valid for 10 minutes."
   },
 
   "features": {

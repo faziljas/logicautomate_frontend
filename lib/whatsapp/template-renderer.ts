@@ -241,7 +241,7 @@ export function validateTemplate(
     "date","time","duration_mins","business_name","business_address",
     "business_phone","advance_amount","remaining_amount","total_amount",
     "cancellation_link","rating_link","google_review_link","booking_link",
-    "visit_count","offer_details",
+    "visit_count","offer_details","otp",
     "booking_date","booking_time","duration_minutes","advance_paid",
     "booking_url","loyalty_reward",
   ]);
@@ -289,4 +289,5 @@ export const SAMPLE_VARIABLES: TemplateVariables = {
   visit_count:       "5",
   offer_details:     "20% OFF on all services this weekend! 🎉",
   loyalty_reward:    "1 FREE haircut on your next visit",
+  otp:               "123456",
 };

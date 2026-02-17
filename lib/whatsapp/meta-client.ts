@@ -28,6 +28,10 @@ export interface SendOptions {
   bookingId?: string;
   templateUsed?: string;
   customMessage?: string;
+  /** Override Meta template name (e.g. META_OTP_TEMPLATE_NAME for staff_otp) */
+  templateNameOverride?: string;
+  /** Override template params order (e.g. [otp] for staff_otp) */
+  templateParamsOverride?: string[];
 }
 
 export interface BookingForMessage {
@@ -199,43 +203,62 @@ export async function sendWhatsApp(options: SendOptions): Promise<SendResult> {
     );
 
     if (!rendered) {
-      return {
-        success: false,
-        messageSid: null,
-        error: `No template configured for message type: ${messageType}`,
-      };
+      if (messageType === "staff_otp" && variables.otp) {
+        messageBody = `Your LogicAutomate staff login code is ${variables.otp}. Valid for 10 minutes.`;
+      } else {
+        return {
+          success: false,
+          messageSid: null,
+          error: `No template configured for message type: ${messageType}`,
+        };
+      }
+    } else {
+      if (rendered.hasUnresolved) {
+        console.warn(
+          `[WhatsApp] Template "${messageType}" has unresolved vars:`,
+          rendered.missingVars
+        );
+      }
+      messageBody = rendered.message;
     }
-
-    if (rendered.hasUnresolved) {
-      console.warn(
-        `[WhatsApp] Template "${messageType}" has unresolved vars:`,
-        rendered.missingVars
-      );
-    }
-
-    messageBody = rendered.message;
   }
 
-  const templateName = process.env.META_TEMPLATE_NAME ?? "hello_world";
-  const templateParams =
-    templateName !== "hello_world" && options.variables
-      ? [
-          options.variables.customer_name ?? "Customer",
-          options.variables.service_name ?? "Service",
-          options.variables.date ?? "",
-          options.variables.time ?? "",
-          options.variables.business_name ?? "",
-        ].filter(Boolean)
-      : undefined;
+  const templateName =
+    options.templateNameOverride ??
+    process.env.META_TEMPLATE_NAME ??
+    "hello_world";
+  let templateParams: string[] | undefined = options.templateParamsOverride;
+  if (templateParams == null && templateName !== "hello_world" && options.variables) {
+    if (options.messageType === "staff_otp") {
+      templateParams = options.variables.otp ? [String(options.variables.otp)] : undefined;
+    } else {
+      templateParams = [
+        options.variables.customer_name ?? "Customer",
+        options.variables.service_name ?? "Service",
+        options.variables.date ?? "",
+        options.variables.time ?? "",
+        options.variables.business_name ?? "",
+      ].filter(Boolean);
+    }
+  }
+
+  // staff_otp: use template only when META_OTP_TEMPLATE_NAME is set (required for proactive).
+  // Otherwise use text (24h window only). Other types: META_USE_TEMPLATE controls text vs template.
+  const useTemplate =
+    options.messageType === "staff_otp"
+      ? !!process.env.META_OTP_TEMPLATE_NAME
+      : process.env.META_USE_TEMPLATE !== "false";
 
   let messageSid: string | null = null;
   let sendError: string | undefined;
   let status: "sent" | "failed" = "sent";
 
-  // META_USE_TEMPLATE=false → use "text" (works within 24h of customer message — "Lazy Developer Trick")
+  const metaTemplateName =
+    options.messageType === "staff_otp" ? (process.env.META_OTP_TEMPLATE_NAME ?? "staff_otp") : templateName;
+
   const metaResult = await sendViaMeta(phoneCheck.formatted, messageBody, {
-    useTemplate: process.env.META_USE_TEMPLATE !== "false",
-    templateName,
+    useTemplate,
+    templateName: metaTemplateName,
     templateParams,
   });
 

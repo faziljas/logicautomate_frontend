@@ -2,6 +2,8 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { jsonResponse, badRequest } from "@/lib/dashboard/api-helpers";
+import { getBusinessConfig, getLocalTemplateConfig } from "@/lib/templates/utils";
+import { sendWhatsApp } from "@/lib/whatsapp/meta-client";
 
 function getAdmin() {
   return createClient(
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
 
   const { data: staffRow } = await supabase
     .from("staff")
-    .select("id")
+    .select("id, business_id")
     .eq("user_id", user.id)
     .eq("is_active", true)
     .maybeSingle();
@@ -56,6 +58,8 @@ export async function POST(request: NextRequest) {
   if (!staffRow) {
     return jsonResponse({ error: "Staff account is inactive" }, { status: 403 });
   }
+
+  const businessId = (staffRow as { business_id: string }).business_id;
 
   try {
     await supabase.from("staff_otp").upsert(
@@ -67,36 +71,30 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: "Failed to store OTP" }, { status: 500 });
   }
 
-  // Send OTP via Meta WhatsApp if configured
+  // Send OTP via Meta WhatsApp (uses template when META_OTP_TEMPLATE_NAME is set)
   const token = process.env.META_WHATSAPP_TOKEN;
   const phoneId = process.env.META_PHONE_ID;
   if (token && phoneId) {
-    try {
-      const to = normalized.replace(/\D/g, "");
-      const url = `https://graph.facebook.com/v21.0/${phoneId}/messages`;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          to,
-          type: "text",
-          text: {
-            body: `Your BookFlow staff login code: ${otp}. Valid for 10 minutes.`,
-          },
-        }),
-      });
-      const data = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
-      if (!res.ok) {
-        console.error("[staff send-otp] Meta error:", data);
-        return jsonResponse({ error: data?.error?.message ?? "Failed to send OTP" }, { status: 500 });
-      }
-    } catch (err) {
-      console.error("[staff send-otp] Meta error", err);
-      return jsonResponse({ error: "Failed to send OTP" }, { status: 500 });
+    let config = await getBusinessConfig(businessId);
+    if (!config) {
+      config = getLocalTemplateConfig("salon") ?? getLocalTemplateConfig("clinic");
+    }
+    if (!config) {
+      return jsonResponse({ error: "Business template config not found" }, { status: 500 });
+    }
+    const result = await sendWhatsApp({
+      businessId,
+      to: normalized,
+      messageType: "staff_otp",
+      variables: { otp },
+      config,
+      templateUsed: "staff_otp",
+      templateNameOverride: process.env.META_OTP_TEMPLATE_NAME ?? "staff_otp",
+      templateParamsOverride: [otp],
+    });
+    if (!result.success) {
+      console.error("[staff send-otp] Meta error:", result.error);
+      return jsonResponse({ error: result.error ?? "Failed to send OTP" }, { status: 500 });
     }
   } else {
     console.log("[staff send-otp] No Meta WhatsApp config; OTP (dev):", otp);

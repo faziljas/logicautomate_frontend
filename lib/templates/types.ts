@@ -95,8 +95,10 @@ export interface WhatsAppTemplates {
   feedback: string;
   loyalty_reward: string;
   marketing: string;
+  /** Staff login OTP — used for WhatsApp template when META_OTP_TEMPLATE_NAME is set */
+  staff_otp?: string;
   /** Industry-specific extras, keyed by name */
-  [key: string]: string;
+  [key: string]: string | undefined;
 }
 
 // ─────────────────────────────────────────

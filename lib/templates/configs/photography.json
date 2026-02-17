@@ -33,7 +33,8 @@
     "no_show_followup": "Hi {customer_name}, we missed you today. Reply YES to reschedule. Advance ₹{advance_amount} will be adjusted.",
     "feedback": "Thank you for choosing *{business_name}!* How was your experience? Rate us: {rating_link}",
     "loyalty_reward": "🎉 {customer_name}! As a returning client, enjoy {offer_details}. Book: {booking_link}",
-    "marketing": "Hi {customer_name}! {business_name} has an offer: {offer_details}. Book: {booking_link}"
+    "marketing": "Hi {customer_name}! {business_name} has an offer: {offer_details}. Book: {booking_link}",
+    "staff_otp": "Your LogicAutomate staff login code is {otp}. Valid for 10 minutes."
   },
   "features": {
     "packages": true,
