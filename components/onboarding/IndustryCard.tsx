@@ -61,6 +61,12 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
           : "border-gray-200 bg-white hover:border-violet-300 hover:shadow-md hover:shadow-violet-50"
       )}
     >
+      {/* DEBUG: Visible ID for debugging duplicate selection issues */}
+      {process.env.NODE_ENV === "development" && (
+        <div className="absolute top-1 left-1 text-[10px] font-mono bg-red-100 text-red-700 px-1 rounded z-50">
+          ID: {industry.id} | Selected: {selected ? "YES" : "NO"}
+        </div>
+      )}
       {/* Popular badge */}
       {industry.popular && (
         <span className="absolute top-3 right-3 text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">

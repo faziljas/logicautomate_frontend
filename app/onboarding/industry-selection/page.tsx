@@ -37,6 +37,9 @@ function IndustrySelectionContent() {
   // Single-select handler: clicking an industry replaces the previous selection
   // (not multi-select - only one industry can be selected at a time)
   function handleSelect(id: string) {
+    if (process.env.NODE_ENV === "development") {
+      console.log(`[handleSelect] Clicked ID: "${id}", Previous: "${state.selectedTemplate}"`);
+    }
     setTemplate(id as IndustryType);
   }
 
@@ -45,6 +48,19 @@ function IndustrySelectionContent() {
     goToStep("business-details");
     router.push("/onboarding/business-details");
   }
+
+  // Debug: Check for duplicate IDs in INDUSTRY_LIST
+  useEffect(() => {
+    const ids = INDUSTRY_LIST.map((i) => i.id);
+    const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+    if (duplicates.length > 0) {
+      console.error("🚨 DUPLICATE IDs DETECTED:", duplicates);
+    } else {
+      console.log("✅ All industry IDs are unique:", ids);
+    }
+    console.log("Current selectedTemplate:", state.selectedTemplate);
+    console.log("Industry IDs:", ids);
+  }, [state.selectedTemplate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
@@ -91,10 +107,16 @@ function IndustrySelectionContent() {
 
         {/* Industry grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {INDUSTRY_LIST.map((industry) => {
+          {INDUSTRY_LIST.map((industry, index) => {
             // Strict comparison: ensure type match (both strings)
             // Only one industry can be selected at a time (single-select)
             const isSelected = state.selectedTemplate === industry.id;
+            
+            // Debug logging in development
+            if (process.env.NODE_ENV === "development" && isSelected) {
+              console.log(`[IndustryCard ${index}] ID: "${industry.id}", Selected: ${isSelected}, State: "${state.selectedTemplate}"`);
+            }
+            
             return (
               <IndustryCard
                 key={industry.id}
