@@ -39,10 +39,13 @@ export function TimeSlotGrid({
     setError(null);
     setSlots(null);
 
+    const now = new Date();
+    const clientDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const clientTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
     fetch("/api/bookings/check-availability", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ businessId, serviceId, staffId, date }),
+      body:    JSON.stringify({ businessId, serviceId, staffId, date, clientDate, clientTime }),
     })
       .then((r) => r.json())
       .then((data) => {

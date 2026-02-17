@@ -13,6 +13,9 @@ interface CheckAvailabilityBody {
   serviceId:  string;
   staffId?:   string; // optional; defaults to "any"
   date:       string; // YYYY-MM-DD
+  /** Client's local date (YYYY-MM-DD) and time (HH:MM) for correct timezone handling */
+  clientDate?: string;
+  clientTime?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -23,7 +26,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { businessId, serviceId, staffId = "any", date } = body;
+  const { businessId, serviceId, staffId = "any", date, clientDate, clientTime } = body;
 
   // ── Validation ──────────────────────────────────────────
   if (!businessId || !serviceId || !date) {
@@ -40,9 +43,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Reject past dates
-  const now = new Date();
-  const today = now.toISOString().split("T")[0];
+  // Reject past dates (use client date when provided for timezone correctness)
+  const serverNow = new Date();
+  const today = clientDate ?? serverNow.toISOString().split("T")[0];
   if (date < today) {
     return NextResponse.json(
       { error: "Cannot check availability for past dates" },
@@ -56,8 +59,13 @@ export async function POST(request: NextRequest) {
     isToday: boolean
   ): T[] {
     if (!isToday) return slots;
-    const [h, m] = [now.getHours(), now.getMinutes()];
-    const nowMinutes = h * 60 + m;
+    // Use client's local time when provided (fixes timezone mismatch: server UTC vs user IST)
+    const nowMinutes = clientTime
+      ? (() => {
+          const [h, m] = clientTime.split(":").map(Number);
+          return h * 60 + m;
+        })()
+      : serverNow.getHours() * 60 + serverNow.getMinutes();
     return slots.map((s) => {
       const [sh, sm] = s.time.split(":").map(Number);
       const slotMinutes = sh * 60 + sm;
