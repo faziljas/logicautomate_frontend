@@ -236,6 +236,8 @@ function BookingFlowInner({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [whatsappStatus, setWhatsappStatus] = useState<"sent" | "failed" | "skipped" | undefined>();
   const [whatsappError, setWhatsappError] = useState<string | undefined>();
+  const [slotAvailabilityError, setSlotAvailabilityError] = useState<string | null>(null);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
 
   // Simulate "X people viewing" (in production: websocket/polling)
   useEffect(() => {
@@ -342,6 +344,56 @@ function BookingFlowInner({
     customerDetails,
     staff,
   ]);
+
+  // Check availability when Review screen loads
+  useEffect(() => {
+    if (step === "summary" && selectedService && selectedDate && selectedTime && business) {
+      const resolvedStaffId = selectedStaffId === "any" ? staff[0]?.id : selectedStaffId;
+      if (!resolvedStaffId) return;
+
+      setCheckingAvailability(true);
+      setSlotAvailabilityError(null);
+
+      // Check if slot is still available
+      fetch("/api/bookings/check-availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessId: business.id,
+          serviceId: selectedService.id,
+          staffId: resolvedStaffId,
+          date: selectedDate,
+          clientDate: new Date().toISOString().split("T")[0],
+          clientTime: `${String(new Date().getHours()).padStart(2, "0")}:${String(new Date().getMinutes()).padStart(2, "0")}`,
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.error) {
+            setSlotAvailabilityError(data.error);
+            return;
+          }
+
+          // Check if the selected time is still available
+          const allSlots = [
+            ...(data.slots?.morning || []),
+            ...(data.slots?.afternoon || []),
+            ...(data.slots?.evening || []),
+          ];
+          const selectedSlot = allSlots.find((s: { time: string }) => s.time === selectedTime);
+
+          if (!selectedSlot || !selectedSlot.available) {
+            setSlotAvailabilityError("This time slot is no longer available. Please select another time.");
+          }
+        })
+        .catch(() => {
+          // Don't block user if check fails - let the create endpoint handle it
+        })
+        .finally(() => {
+          setCheckingAvailability(false);
+        });
+    }
+  }, [step, selectedService, selectedDate, selectedTime, selectedStaffId, business, staff]);
 
   const handlePayAtVenue = useCallback(async () => {
     const resolvedStaffId =
@@ -692,15 +744,41 @@ function BookingFlowInner({
         )}
 
         {step === "summary" && summaryData && (
-          <BookingSummary
-            data={summaryData}
-            primaryColor={primaryColor}
-            isSubmitting={isSubmitting}
-            onBack={goBack}
-            onConfirm={createBookingAndProceed}
-            showPayAtVenue
-            onPayAtVenue={handlePayAtVenue}
-          />
+          <>
+            {slotAvailabilityError && (
+              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-red-900">{slotAvailabilityError}</p>
+                    <button
+                      onClick={() => {
+                        setSlotAvailabilityError(null);
+                        setStep("datetime");
+                      }}
+                      className="mt-2 text-sm text-red-700 underline hover:text-red-900"
+                    >
+                      Go back and select another time
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {checkingAvailability && (
+              <div className="mb-4 rounded-xl border border-blue-200 bg-blue-50 p-4">
+                <p className="text-sm text-blue-700">Checking availability...</p>
+              </div>
+            )}
+            <BookingSummary
+              data={summaryData}
+              primaryColor={primaryColor}
+              isSubmitting={isSubmitting || checkingAvailability}
+              onBack={goBack}
+              onConfirm={slotAvailabilityError ? undefined : createBookingAndProceed}
+              showPayAtVenue
+              onPayAtVenue={slotAvailabilityError ? undefined : handlePayAtVenue}
+            />
+          </>
         )}
 
         {step === "payment" && bookingId && selectedService && (
