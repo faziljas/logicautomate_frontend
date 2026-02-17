@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     .from("bookings")
     .select(`
       id, business_id, booking_date, booking_time, duration_minutes,
-      total_amount, advance_paid,
+      total_amount, advance_paid, custom_data,
       customers(name, phone),
       services(name),
       staff(users(name)),
@@ -65,8 +65,9 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: "Business config not found" }, { status: 404 });
   }
 
+  const bookerName = (row as any).custom_data?.customer_name;
   const vars: TemplateVariables = {
-    customer_name: (row as any).customers?.name ?? "Customer",
+    customer_name: bookerName ?? (row as any).customers?.name ?? "Customer",
     customer_phone: (row as any).customers?.phone ?? "",
     service_name: (row as any).services?.name ?? "Service",
     staff_name: (row as any).staff?.users?.name ?? "Staff",
@@ -86,6 +87,14 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: "Customer has no phone" }, { status: 400 });
   }
 
+  // Check Meta config before attempting send
+  if (!process.env.META_WHATSAPP_TOKEN || !process.env.META_PHONE_ID) {
+    return jsonResponse(
+      { error: "WhatsApp not configured. Add META_WHATSAPP_TOKEN and META_PHONE_ID to Vercel environment variables." },
+      { status: 500 }
+    );
+  }
+
   try {
     const result = await sendWhatsApp({
       businessId: business.id,
@@ -98,9 +107,16 @@ export async function POST(request: NextRequest) {
     if (result.success) {
       return jsonResponse({ success: true, message: "Reminder sent" });
     }
-    return jsonResponse({ error: result.error ?? "Failed to send" }, { status: 500 });
+    return jsonResponse(
+      { error: result.error ?? "Failed to send" },
+      { status: 500 }
+    );
   } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
     console.error("[send-reminder]", e);
-    return jsonResponse({ error: "Failed to send reminder" }, { status: 500 });
+    return jsonResponse(
+      { error: `Failed to send reminder: ${msg}` },
+      { status: 500 }
+    );
   }
 }

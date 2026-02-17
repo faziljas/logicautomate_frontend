@@ -37,6 +37,7 @@ export default function BookingsPage() {
   const [reminderFeedback, setReminderFeedback] = useState<{
     sent: number;
     failed: number;
+    errorMessage?: string;
   } | null>(null);
   const [sendingReminders, setSendingReminders] = useState(false);
 
@@ -108,6 +109,7 @@ export default function BookingsPage() {
     setReminderFeedback(null);
     let sent = 0;
     let failed = 0;
+    let errorMessage: string | undefined;
     for (const id of ids) {
       try {
         const res = await fetch("/api/whatsapp/send-reminder", {
@@ -115,13 +117,21 @@ export default function BookingsPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ bookingId: id }),
         });
-        if (res.ok) sent++;
-        else failed++;
-      } catch {
+        if (res.ok) {
+          sent++;
+        } else {
+          failed++;
+          if (!errorMessage) {
+            const data = await res.json().catch(() => ({}));
+            errorMessage = data?.error ?? res.statusText;
+          }
+        }
+      } catch (e) {
         failed++;
+        if (!errorMessage) errorMessage = e instanceof Error ? e.message : "Network error";
       }
     }
-    setReminderFeedback({ sent, failed });
+    setReminderFeedback({ sent, failed, errorMessage });
     setSendingReminders(false);
     fetchBookings(page, filters);
     setTimeout(() => setReminderFeedback(null), 5000);
@@ -176,8 +186,8 @@ export default function BookingsPage() {
               {reminderFeedback.failed === 0
                 ? `Reminders sent successfully (${reminderFeedback.sent})`
                 : reminderFeedback.sent === 0
-                  ? `Failed to send reminders (${reminderFeedback.failed})`
-                  : `Reminders sent: ${reminderFeedback.sent}, failed: ${reminderFeedback.failed}`}
+                  ? `Failed to send reminders (${reminderFeedback.failed})${reminderFeedback.errorMessage ? ` — ${reminderFeedback.errorMessage}` : ""}`
+                  : `Reminders sent: ${reminderFeedback.sent}, failed: ${reminderFeedback.failed}${reminderFeedback.errorMessage ? ` — ${reminderFeedback.errorMessage}` : ""}`}
             </div>
           )}
           <BookingList
