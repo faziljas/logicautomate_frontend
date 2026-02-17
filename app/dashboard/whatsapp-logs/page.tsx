@@ -242,6 +242,21 @@ export default function WhatsAppLogsPage() {
                             </span>
                           </div>
                         </td>
+                        <td className="px-4 py-3 text-sm text-slate-700">
+                          {log.message_type.replace(/_/g, " ")}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-slate-700 font-mono">
+                          {log.customer_phone}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-slate-600 max-w-md">
+                          <div className="truncate" title={log.message_body}>
+                            {log.message_body.substring(0, 100)}
+                            {log.message_body.length > 100 && "..."}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-slate-600">
+                          {formatDate(log.sent_at)}
+                        </td>
                         <td className="px-4 py-3">
                           {retryCount > 0 ? (
                             <span
@@ -257,33 +272,19 @@ export default function WhatsAppLogsPage() {
                             <span className="text-slate-400 text-xs">—</span>
                           )}
                         </td>
-                      <td className="px-4 py-3 text-sm text-slate-700">
-                        {log.message_type.replace(/_/g, " ")}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-slate-700 font-mono">
-                        {log.customer_phone}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-slate-600 max-w-md">
-                        <div className="truncate" title={log.message_body}>
-                          {log.message_body.substring(0, 100)}
-                          {log.message_body.length > 100 && "..."}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-slate-600">
-                        {formatDate(log.sent_at)}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {log.error_message ? (
-                          <div className="text-red-600" title={log.error_code || undefined}>
-                            {log.error_message.substring(0, 50)}
-                            {log.error_message.length > 50 && "..."}
-                          </div>
-                        ) : (
-                          <span className="text-slate-400">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                        <td className="px-4 py-3 text-sm">
+                          {log.error_message ? (
+                            <div className="text-red-600" title={log.error_code || undefined}>
+                              {log.error_message.substring(0, 50)}
+                              {log.error_message.length > 50 && "..."}
+                            </div>
+                          ) : (
+                            <span className="text-slate-400">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
