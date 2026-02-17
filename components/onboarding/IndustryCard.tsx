@@ -4,7 +4,12 @@
 // BookFlow — Industry Selection Card
 // components/onboarding/IndustryCard.tsx
 // ============================================================
+// IMPORTANT: This component is stateless (no local useState).
+// It relies 100% on the `selected` prop from parent.
+// Parent controls single-select logic - only one industry can be selected.
+// ============================================================
 
+import { memo } from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +30,9 @@ interface IndustryCardProps {
   onSelect:   (id: string) => void;
 }
 
-export function IndustryCard({ industry, selected, onSelect }: IndustryCardProps) {
+// Stateless component - relies entirely on `selected` prop from parent
+// No local state to avoid conflicts with parent's single-select logic
+export const IndustryCard = memo(function IndustryCard({ industry, selected, onSelect }: IndustryCardProps) {
   if (industry.comingSoon) {
     return (
       <div className="relative rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 p-5 opacity-60 cursor-not-allowed select-none">
@@ -113,7 +120,7 @@ export function IndustryCard({ industry, selected, onSelect }: IndustryCardProps
       </ul>
     </button>
   );
-}
+});
 
 // ─────────────────────────────────────────
 // INDUSTRY DATA (all available templates)

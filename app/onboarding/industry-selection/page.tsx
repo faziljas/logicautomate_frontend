@@ -91,14 +91,19 @@ function IndustrySelectionContent() {
 
         {/* Industry grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {INDUSTRY_LIST.map((industry) => (
-            <IndustryCard
-              key={industry.id}
-              industry={industry}
-              selected={state.selectedTemplate === industry.id}
-              onSelect={handleSelect}
-            />
-          ))}
+          {INDUSTRY_LIST.map((industry) => {
+            // Strict comparison: ensure type match (both strings)
+            // Only one industry can be selected at a time (single-select)
+            const isSelected = state.selectedTemplate === industry.id;
+            return (
+              <IndustryCard
+                key={industry.id}
+                industry={industry}
+                selected={isSelected}
+                onSelect={handleSelect}
+              />
+            );
+          })}
         </div>
 
         {/* Selected preview */}
