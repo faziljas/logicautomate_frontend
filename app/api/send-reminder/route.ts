@@ -85,7 +85,7 @@ async function handler(request: NextRequest) {
   const { data: row } = await admin
     .from("bookings")
     .select(`
-      id, business_id, booking_date, booking_time, duration_minutes,
+      id, business_id, status, booking_date, booking_time, duration_minutes,
       total_amount, advance_paid, custom_data,
       customers(name, phone),
       services(name),
@@ -97,6 +97,14 @@ async function handler(request: NextRequest) {
 
   if (!row) {
     return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  }
+
+  const status = (row as { status?: string }).status;
+  if (status && !["pending", "confirmed"].includes(status)) {
+    return NextResponse.json(
+      { error: `Cannot send reminder for ${status} booking. Only pending or confirmed.` },
+      { status: 400 }
+    );
   }
 
   const config = await getBusinessConfig((row as { business_id: string }).business_id);

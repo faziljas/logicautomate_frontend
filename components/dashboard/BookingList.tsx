@@ -97,15 +97,19 @@ export default function BookingList({
   const [localFilters, setLocalFilters] = useState<Filters>({});
 
   const totalPages = Math.ceil(total / limit);
-  const toggleSelect = (id: string) => {
+  const reminderableStatuses = ["pending", "confirmed"];
+  const reminderableBookings = bookings.filter((b) => reminderableStatuses.includes(b.status));
+  const toggleSelect = (id: string, status: string) => {
+    if (!reminderableStatuses.includes(status)) return;
     const next = new Set(selected);
     if (next.has(id)) next.delete(id);
     else next.add(id);
     setSelected(next);
   };
   const toggleAll = () => {
-    if (selected.size === bookings.length) setSelected(new Set());
-    else setSelected(new Set(bookings.map((b) => b.id)));
+    const ids = reminderableBookings.map((b) => b.id);
+    if (ids.length > 0 && ids.every((id) => selected.has(id))) setSelected(new Set());
+    else setSelected(new Set(ids));
   };
 
   const applyFilters = () => {
@@ -229,12 +233,21 @@ export default function BookingList({
           <thead>
             <tr className="border-b border-slate-100">
               <th className="text-left px-4 py-2.5 w-10">
-                <input
-                  type="checkbox"
-                  checked={bookings.length > 0 && selected.size === bookings.length}
-                  onChange={toggleAll}
-                  className="rounded border-slate-300"
-                />
+                {onSendReminders ? (
+                  reminderableBookings.length > 0 ? (
+                    <input
+                      type="checkbox"
+                      checked={reminderableBookings.every((b) => selected.has(b.id))}
+                      onChange={toggleAll}
+                      className="rounded border-slate-300"
+                      title="Select all pending/confirmed"
+                    />
+                  ) : (
+                    <span className="inline-block w-4" aria-hidden />
+                  )
+                ) : (
+                  <span className="inline-block w-4" aria-hidden />
+                )}
               </th>
               <th className="text-left px-4 py-2.5 font-medium text-slate-600">Date</th>
               <th className="text-left px-4 py-2.5 font-medium text-slate-600">Time</th>
@@ -253,12 +266,20 @@ export default function BookingList({
                 onClick={() => onBookingClick?.(b)}
               >
                 <td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
-                  <input
-                    type="checkbox"
-                    checked={selected.has(b.id)}
-                    onChange={() => toggleSelect(b.id)}
-                    className="rounded border-slate-300"
-                  />
+                  {onSendReminders ? (
+                    reminderableStatuses.includes(b.status) ? (
+                      <input
+                        type="checkbox"
+                        checked={selected.has(b.id)}
+                        onChange={() => toggleSelect(b.id, b.status)}
+                        className="rounded border-slate-300"
+                      />
+                    ) : (
+                      <span className="inline-block w-4" aria-hidden />
+                    )
+                  ) : (
+                    <span className="inline-block w-4" aria-hidden />
+                  )}
                 </td>
                 <td className="px-4 py-2.5 text-slate-600">{formatDate(b.booking_date)}</td>
                 <td className="px-4 py-2.5 text-slate-600">{formatTime(b.booking_time)}</td>
