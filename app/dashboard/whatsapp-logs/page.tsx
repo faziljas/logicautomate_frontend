@@ -5,6 +5,8 @@
 // Shows all WhatsApp messages sent with their status
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect } from "react";
 import { Loader2, MessageSquare, CheckCircle2, XCircle, Clock, AlertCircle } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";

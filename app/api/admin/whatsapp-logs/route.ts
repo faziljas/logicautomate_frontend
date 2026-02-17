@@ -4,6 +4,8 @@
 // LogicAutomate founders can monitor all WhatsApp issues across all businesses
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@supabase/supabase-js";

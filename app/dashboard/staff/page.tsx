@@ -4,6 +4,8 @@
 // BookFlow — Staff Management
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect, useCallback } from "react";
 import { Loader2, UserPlus } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";

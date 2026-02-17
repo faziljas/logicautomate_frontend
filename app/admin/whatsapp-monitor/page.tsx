@@ -5,6 +5,8 @@
 // LogicAutomate founders can monitor all WhatsApp issues
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect } from "react";
 import { Loader2, AlertTriangle, MessageSquare, TrendingUp, XCircle, CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";

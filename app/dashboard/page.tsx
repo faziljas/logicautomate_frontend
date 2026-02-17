@@ -4,6 +4,8 @@
 // BookFlow — Today's Overview (Dashboard Home)
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {

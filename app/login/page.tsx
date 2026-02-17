@@ -5,6 +5,8 @@
 // Email magic link + Google sign-in via Supabase Auth
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Loader2, Mail } from "lucide-react";

@@ -4,6 +4,8 @@
 // BookFlow — Customers Database
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";

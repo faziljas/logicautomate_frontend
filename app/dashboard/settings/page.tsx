@@ -4,6 +4,8 @@
 // BookFlow — Settings (Owner only)
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState } from "react";
 import { Loader2, Building2, MessageSquare, CreditCard, Bell, Users, Copy, Check } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";

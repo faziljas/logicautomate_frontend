@@ -5,6 +5,8 @@
 // Comprehensive analytics: revenue, bookings, customers, services, staff
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect, useCallback } from "react";
 import {
   Loader2,

@@ -4,6 +4,8 @@
 // BookFlow — Services & Pricing
 // ============================================================
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect } from "react";
 import { Loader2, Plus, Pencil } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
