@@ -386,6 +386,18 @@ export async function isSlotAvailable(
   durationMins:     number,
   excludeBookingId?: string
 ): Promise<ConflictResult> {
+  // 0. Reject past slots when date is today
+  const today = new Date().toISOString().split("T")[0];
+  if (date === today) {
+    const now = new Date();
+    const nowMins = now.getHours() * 60 + now.getMinutes();
+    const [sh, sm] = startTime.split(":").map(Number);
+    const slotMins = sh * 60 + sm;
+    if (slotMins <= nowMins) {
+      return { hasConflict: true, conflictReason: "This time slot has already passed" };
+    }
+  }
+
   // 1. Working hours
   const schedule     = await getStaffWorkingHours(staffId);
   const workingHours = getWorkingHoursForDate(schedule, date);

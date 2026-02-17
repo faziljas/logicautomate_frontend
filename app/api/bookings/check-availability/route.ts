@@ -41,13 +41,42 @@ export async function POST(request: NextRequest) {
   }
 
   // Reject past dates
-  const today = new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const today = now.toISOString().split("T")[0];
   if (date < today) {
     return NextResponse.json(
       { error: "Cannot check availability for past dates" },
       { status: 400 }
     );
   }
+
+  /** When date is today, mark slots before current time as unavailable */
+  function excludePastSlots<T extends { time: string; available: boolean }>(
+    slots: T[],
+    isToday: boolean
+  ): T[] {
+    if (!isToday) return slots;
+    const [h, m] = [now.getHours(), now.getMinutes()];
+    const nowMinutes = h * 60 + m;
+    return slots.map((s) => {
+      const [sh, sm] = s.time.split(":").map(Number);
+      const slotMinutes = sh * 60 + sm;
+      return {
+        ...s,
+        available: s.available && slotMinutes > nowMinutes,
+      } as T;
+    });
+  }
+
+  function processSlots(s: { morning: { time: string; available: boolean }[]; afternoon: { time: string; available: boolean }[]; evening: { time: string; available: boolean }[] }, isToday: boolean) {
+    return {
+      morning: excludePastSlots(s.morning, isToday),
+      afternoon: excludePastSlots(s.afternoon, isToday),
+      evening: excludePastSlots(s.evening, isToday),
+    };
+  }
+
+  const isToday = date === today;
 
   try {
     const results = await getAvailableSlots(
@@ -94,12 +123,19 @@ export async function POST(request: NextRequest) {
         return h >= 17;
       });
 
+      const slotsProcessed = processSlots({ morning, afternoon, evening }, isToday);
+      const totalAvail = [
+        ...slotsProcessed.morning,
+        ...slotsProcessed.afternoon,
+        ...slotsProcessed.evening,
+      ].filter((s) => s.available).length;
+
       return NextResponse.json({
         date,
         staffId: "any",
         serviceId,
-        slots:          { morning, afternoon, evening },
-        totalAvailable: mergedFlat.filter((s) => s.available).length,
+        slots:          slotsProcessed,
+        totalAvailable: totalAvail,
       });
     }
 
@@ -115,14 +151,21 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    const slotsProcessed = processSlots(result.slots, isToday);
+    const totalAvail = [
+      ...slotsProcessed.morning,
+      ...slotsProcessed.afternoon,
+      ...slotsProcessed.evening,
+    ].filter((s) => s.available).length;
+
     return NextResponse.json({
       date,
       staffId,
       serviceId,
       durationMins:   result.durationMins,
       workingHours:   result.workingHours,
-      slots:          result.slots,
-      totalAvailable: result.totalAvailable,
+      slots:          slotsProcessed,
+      totalAvailable: totalAvail,
     });
   } catch (err) {
     console.error("[check-availability]", err);
