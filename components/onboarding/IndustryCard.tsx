@@ -58,8 +58,8 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
         "group relative w-full text-left rounded-2xl border-2 p-5 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500",
         // Use box-border to ensure border doesn't add to dimensions
         "box-border",
-        // Ensure consistent minimum height to prevent layout shift
-        "min-h-[180px] flex flex-col",
+        // Fixed height for all cards to prevent ANY layout shift
+        "h-[240px] flex flex-col",
         selected
           ? "border-violet-600 bg-violet-50 shadow-lg shadow-violet-100"
           : "border-gray-200 bg-white hover:border-violet-300 hover:shadow-md hover:shadow-violet-50"
@@ -114,22 +114,24 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
       </div>
 
       {/* Features list — shown on hover or when selected */}
-      {/* Use flex-1 to fill remaining space and prevent layout shift */}
-      <ul
-        className={cn(
-          "space-y-1 overflow-hidden transition-all duration-200 flex-1 mt-auto",
-          selected
-            ? "max-h-40 opacity-100"
-            : "max-h-0 opacity-0 group-hover:max-h-40 group-hover:opacity-100"
-        )}
-      >
-        {industry.features.map((f) => (
-          <li key={f} className="flex items-center gap-1.5 text-xs text-gray-600">
-            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />
-            {f}
-          </li>
-        ))}
-      </ul>
+      {/* Reserve fixed height space to prevent layout shift - always takes same space */}
+      <div className="flex-1 flex flex-col justify-end min-h-[100px]">
+        <ul
+          className={cn(
+            "space-y-1 overflow-hidden transition-all duration-200",
+            selected
+              ? "max-h-[140px] opacity-100"
+              : "max-h-0 opacity-0 group-hover:max-h-[140px] group-hover:opacity-100"
+          )}
+        >
+          {industry.features.map((f) => (
+            <li key={f} className="flex items-center gap-1.5 text-xs text-gray-600">
+              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />
+              {f}
+            </li>
+          ))}
+        </ul>
+      </div>
     </button>
   );
 });
