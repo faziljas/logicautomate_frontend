@@ -130,10 +130,12 @@ type Action =
 function reducer(state: OnboardingState, action: Action): OnboardingState {
   switch (action.type) {
     case "SET_TEMPLATE": {
+      // Single-select: replace the previous selection (not multi-select)
+      // Only one industry can be selected at a time
       const isChanging = state.selectedTemplate !== action.payload;
       return {
         ...state,
-        selectedTemplate: action.payload,
+        selectedTemplate: action.payload, // Single value, not an array
         // Clear form data when user switches to a different industry
         ...(isChanging && {
           businessDetails: BLANK_DETAILS,

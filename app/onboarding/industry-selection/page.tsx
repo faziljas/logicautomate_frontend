@@ -34,6 +34,8 @@ function IndustrySelectionContent() {
   }, [searchParams, dispatch, router]);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
+  // Single-select handler: clicking an industry replaces the previous selection
+  // (not multi-select - only one industry can be selected at a time)
   function handleSelect(id: string) {
     setTemplate(id as IndustryType);
   }
