@@ -32,6 +32,10 @@ export interface SendOptions {
   templateNameOverride?: string;
   /** Override template params order (e.g. [otp] for staff_otp) */
   templateParamsOverride?: string[];
+  /** Retry count (for retry mechanism) */
+  retryCount?: number;
+  /** Parent log ID (for retry mechanism) */
+  parentLogId?: string;
 }
 
 export interface BookingForMessage {
@@ -152,6 +156,10 @@ async function logMessage(
     messageBody: string;
     status: "sent" | "delivered" | "failed";
     providerId?: string;
+    errorMessage?: string;
+    errorCode?: string;
+    retryCount?: number;
+    parentLogId?: string;
   }
 ): Promise<string | undefined> {
   const { data: log } = await supabase
@@ -166,6 +174,13 @@ async function logMessage(
       status: data.status,
       provider_id: data.providerId ?? null,
       sent_at: new Date().toISOString(),
+      retry_count: data.retryCount ?? 0,
+      parent_log_id: data.parentLogId ?? null,
+      ...(data.status === "failed" && {
+        failed_at: new Date().toISOString(),
+        error_message: data.errorMessage ?? null,
+        error_code: data.errorCode ?? null,
+      }),
     })
     .select("id")
     .single();
@@ -187,6 +202,8 @@ export async function sendWhatsApp(options: SendOptions): Promise<SendResult> {
       templateUsed: String(options.templateUsed ?? messageType),
       messageBody: "(send failed — invalid phone)",
       status: "failed",
+      errorMessage: phoneCheck.error,
+      errorCode: "INVALID_PHONE",
     });
     return { success: false, messageSid: null, error: phoneCheck.error };
   }
@@ -278,6 +295,10 @@ export async function sendWhatsApp(options: SendOptions): Promise<SendResult> {
     messageBody,
     status,
     providerId: messageSid ?? undefined,
+    errorMessage: sendError,
+    errorCode: status === "failed" ? "META_API_ERROR" : undefined,
+    retryCount: options.retryCount,
+    parentLogId: options.parentLogId,
   });
 
   if (status === "failed") {

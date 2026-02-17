@@ -108,6 +108,8 @@ function ConfirmedScreen({
   businessName,
   bookingId,
   slug,
+  whatsappStatus,
+  whatsappError,
 }: {
   terminology?: { booking?: string };
   customerDetails: { phone: string };
@@ -117,6 +119,8 @@ function ConfirmedScreen({
   businessName: string;
   bookingId: string;
   slug: string;
+  whatsappStatus?: "sent" | "failed" | "skipped";
+  whatsappError?: string;
 }) {
   // Try window.close() after 4s; browser blocks it unless window was opened by script
   useEffect(() => {
@@ -159,9 +163,21 @@ function ConfirmedScreen({
         <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
           {terminology?.booking ?? "Appointment"} Confirmed! 🎉
         </h1>
-        <p className="text-gray-500 text-sm mb-6">
-          You&apos;ll receive a WhatsApp confirmation on {customerDetails.phone}
-        </p>
+        {whatsappStatus === "sent" ? (
+          <p className="text-green-600 text-sm mb-6 flex items-center justify-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            WhatsApp confirmation sent ✓
+          </p>
+        ) : whatsappStatus === "failed" ? (
+          <p className="text-amber-600 text-sm mb-6 flex items-center justify-center gap-2">
+            <AlertCircle className="w-4 h-4" />
+            WhatsApp confirmation not sent
+          </p>
+        ) : (
+          <p className="text-gray-500 text-sm mb-6">
+            WhatsApp confirmation will be sent shortly
+          </p>
+        )}
         <div className="bg-gray-50 rounded-xl border border-gray-100 p-5 text-left space-y-3">
           <SummaryRow label="Service" value={selectedService?.name ?? ""} />
           <SummaryRow label="Date" value={selectedDate ?? ""} />
@@ -218,6 +234,8 @@ function BookingFlowInner({
   const [paymentOrderId, setPaymentOrderId] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [whatsappStatus, setWhatsappStatus] = useState<"sent" | "failed" | "skipped" | undefined>();
+  const [whatsappError, setWhatsappError] = useState<string | undefined>();
 
   // Simulate "X people viewing" (in production: websocket/polling)
   useEffect(() => {
@@ -414,8 +432,12 @@ function BookingFlowInner({
             razorpaySignature: signature,
           }),
         });
-        if (res.ok) setStep("confirmed");
-        else {
+        if (res.ok) {
+          const data = await res.json();
+          setWhatsappStatus(data.whatsapp?.status || "skipped");
+          setWhatsappError(data.whatsapp?.error);
+          setStep("confirmed");
+        } else {
           const d = await res.json();
           alert(
             d.error ??
@@ -445,8 +467,12 @@ function BookingFlowInner({
           razorpaySignature: "skip",
         }),
       });
-      if (res.ok) setStep("confirmed");
-      else {
+      if (res.ok) {
+        const data = await res.json();
+        setWhatsappStatus(data.whatsapp?.status || "skipped");
+        setWhatsappError(data.whatsapp?.error);
+        setStep("confirmed");
+      } else {
         const d = await res.json();
         alert(d.error ?? "Could not confirm. Please try again.");
       }
@@ -477,6 +503,8 @@ function BookingFlowInner({
         businessName={business.name}
         bookingId={bookingId ?? ""}
         slug={slug}
+        whatsappStatus={whatsappStatus}
+        whatsappError={whatsappError}
       />
     );
   }

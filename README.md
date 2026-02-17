@@ -53,19 +53,38 @@ BookFlow/
 
 ---
 
-## Setup: Option B — Auto migrations on deploy (GitHub Actions)
+## Setup: Option B — Auto migrations on deploy (Automatic)
 
-Migrations (including templates seed) run automatically on every push to `main` via GitHub Actions.
+**Migrations now run automatically during deployment!** 🎉
 
-1. **Add `DATABASE_URL` secret** to your GitHub repo:
-   - Repo → Settings → Secrets and variables → Actions → New repository secret
-   - Name: `DATABASE_URL`
+### Vercel Deployments
+- Migrations run automatically during build process
+- Set `DATABASE_URL` in Vercel environment variables
+- Build fails if migrations fail (prevents broken deployments)
+
+### GitHub Actions
+- Migrations run automatically on push to `main`
+- Set `DATABASE_URL` secret in GitHub repository
+- See `.github/workflows/migrate.yml` and `.github/workflows/deploy.yml`
+
+### Setup Steps:
+
+1. **Add `DATABASE_URL` environment variable:**
+   - **Vercel**: Project Settings → Environment Variables
+   - **GitHub**: Repo Settings → Secrets and variables → Actions
    - Value: Supabase **Connection string (URI)** from Project Settings → Database
+   - Format: `postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres`
 
-2. **Run locally** (optional):
+2. **Deploy:**
+   - Push to `main` → Migrations run automatically ✅
+   - No manual steps required!
+
+3. **Run locally** (optional):
    ```bash
    DATABASE_URL="postgresql://..." npm run migrate
    ```
+
+See `DEPLOYMENT.md` for detailed deployment guide.
 
 ---
 

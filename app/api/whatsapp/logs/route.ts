@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
   const page       = parseInt(searchParams.get("page")  ?? "1");
   const limit      = Math.min(parseInt(searchParams.get("limit") ?? "50"), 100);
   const type       = searchParams.get("type");  // filter by message_type
+  const status     = searchParams.get("status");  // filter by status
 
   if (!businessId) return NextResponse.json({ error: "businessId required" }, { status: 400 });
 
@@ -43,6 +44,14 @@ export async function GET(request: NextRequest) {
     .range((page - 1) * limit, page * limit - 1);
 
   if (type) query = query.eq("message_type", type);
+  if (status) {
+    if (status === "failed") {
+      // Filter for both "failed" and "undelivered" statuses
+      query = query.in("status", ["failed", "undelivered"]);
+    } else {
+      query = query.eq("status", status);
+    }
+  }
 
   const { data: logs, error, count } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

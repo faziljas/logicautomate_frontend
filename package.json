@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:with-migrate": "node scripts/pre-build-migrate.js && next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "node scripts/migrate.js"
+    "migrate": "node scripts/migrate.js",
+    "prebuild": "node scripts/pre-build-migrate.js"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.10.0",

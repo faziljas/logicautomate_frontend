@@ -129,6 +129,8 @@ export async function POST(request: NextRequest) {
     .eq("id", bookingId);
 
   // ── 6. Send WhatsApp confirmation ────────────────────────
+  let whatsappStatus: "sent" | "failed" | "skipped" = "skipped";
+  let whatsappError: string | undefined;
   const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
   if (baseUrl) {
     try {
@@ -137,16 +139,34 @@ export async function POST(request: NextRequest) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bookingId, type: "confirmation" }),
       });
-      if (!waRes.ok) {
+      if (waRes.ok) {
+        const waData = await waRes.json();
+        whatsappStatus = waData.success ? "sent" : "failed";
+        whatsappError = waData.error;
+      } else {
+        whatsappStatus = "failed";
         const errText = await waRes.text();
+        whatsappError = errText || `HTTP ${waRes.status}`;
         console.warn("[confirm] WhatsApp send failed:", waRes.status, errText);
       }
     } catch (e) {
+      whatsappStatus = "failed";
+      whatsappError = e instanceof Error ? e.message : "Network error";
       console.warn("[confirm] WhatsApp fetch failed (non-fatal):", e);
     }
   } else {
     console.warn("[confirm] NEXT_PUBLIC_APP_URL not set — WhatsApp not sent");
   }
 
-  return NextResponse.json({ status: "confirmed", bookingId }, { status: 200 });
+  return NextResponse.json(
+    { 
+      status: "confirmed", 
+      bookingId,
+      whatsapp: {
+        status: whatsappStatus,
+        error: whatsappError,
+      },
+    },
+    { status: 200 }
+  );
 }

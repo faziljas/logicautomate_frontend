@@ -62,5 +62,20 @@ export async function POST(request: NextRequest) {
     ? await sendFeedbackRequest(booking, config)
     : await sendBookingConfirmation(booking, config);
 
+  // If failed and retry_count < 3, schedule retry (non-blocking)
+  if (!result.success && result.logId) {
+    // Trigger retry asynchronously after a delay
+    const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    if (baseUrl) {
+      setTimeout(() => {
+        fetch(`${baseUrl}/api/whatsapp/retry`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ logId: result.logId }),
+        }).catch((err) => console.error("[whatsapp/send] Retry trigger failed:", err));
+      }, 5000); // Retry after 5 seconds
+    }
+  }
+
   return NextResponse.json(result, { status: result.success ? 200 : 500 });
 }

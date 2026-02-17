@@ -21,6 +21,7 @@ import {
   Bell,
   LogOut,
   ChevronDown,
+  MessageSquare,
 } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/staff", label: "Staff", icon: UserCog },
   { href: "/dashboard/services", label: "Services", icon: Scissors },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/dashboard/whatsapp-logs", label: "WhatsApp Logs", icon: MessageSquare, ownerOnly: true },
   { href: "/dashboard/settings", label: "Settings", icon: Settings, ownerOnly: true },
 ];
 
