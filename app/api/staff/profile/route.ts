@@ -67,6 +67,13 @@ export async function GET(request: NextRequest) {
   const weekCompleted = completed(weekBookings ?? []);
   const monthCompleted = completed(monthBookings ?? []);
 
+  const { count: totalCompletedCount } = await supabase
+    .from("bookings")
+    .select("id", { count: "exact", head: true })
+    .eq("staff_id", payload.sub)
+    .eq("status", "completed");
+  const hasHandledCustomers = (totalCompletedCount ?? 0) > 0;
+
   return jsonResponse({
     staff: staffRow,
     stats: {
@@ -76,5 +83,6 @@ export async function GET(request: NextRequest) {
     },
     rating: staffRow.rating,
     totalReviews: staffRow.total_reviews,
+    hasHandledCustomers,
   });
 }

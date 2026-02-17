@@ -16,6 +16,7 @@ interface ProfileData {
   };
   rating: number;
   totalReviews: number;
+  hasHandledCustomers?: boolean;
 }
 
 export default function StaffProfilePage() {
@@ -62,6 +63,8 @@ export default function StaffProfilePage() {
             </div>
           </div>
 
+          {data.hasHandledCustomers && (
+            <>
           <h2 className="mt-6 text-sm font-medium text-slate-700">Your stats</h2>
           <div className="mt-2 grid grid-cols-3 gap-2">
             <div className="rounded-lg border border-slate-200 bg-white p-3 text-center">
@@ -83,6 +86,8 @@ export default function StaffProfilePage() {
               <p className="text-xs font-medium text-slate-700">₹{data.stats.month.revenue.toFixed(0)}</p>
             </div>
           </div>
+            </>
+          )}
 
           {data.staff?.working_hours && Object.keys(data.staff.working_hours).length > 0 && (
             <div className="mt-6">
