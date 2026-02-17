@@ -69,7 +69,12 @@ export function validatePhoneNumber(phone: string): {
   return { valid: true, formatted: result.e164 };
 }
 
-async function sendViaMeta(phone: string, text: string): Promise<{ success: boolean; messageId?: string; error?: string }> {
+/** Meta requires template messages for proactive/business-initiated messages. Text only works within 24h of customer reply. */
+async function sendViaMeta(
+  phone: string,
+  text: string,
+  options?: { useTemplate?: boolean; templateName?: string; templateParams?: string[] }
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
   const token = process.env.META_WHATSAPP_TOKEN;
   const phoneId = process.env.META_PHONE_ID;
   if (!token || !phoneId) {
@@ -77,7 +82,40 @@ async function sendViaMeta(phone: string, text: string): Promise<{ success: bool
   }
 
   const to = phone.replace(/\D/g, "");
-  const url = `https://graph.facebook.com/v21.0/${phoneId}/messages`;
+  const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
+  const templateName = options?.templateName ?? process.env.META_TEMPLATE_NAME ?? "hello_world";
+  const useTemplate = options?.useTemplate ?? process.env.META_USE_TEMPLATE !== "false";
+
+  let body: Record<string, unknown>;
+
+  if (useTemplate) {
+    const template: Record<string, unknown> = {
+      name: templateName,
+      language: { code: process.env.META_TEMPLATE_LANGUAGE ?? "en_US" },
+    };
+    const params = options?.templateParams;
+    if (params && params.length > 0) {
+      template.components = [
+        {
+          type: "body",
+          parameters: params.map((p) => ({ type: "text", text: String(p) })),
+        },
+      ];
+    }
+    body = {
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template,
+    };
+  } else {
+    body = {
+      messaging_product: "whatsapp",
+      to,
+      type: "text",
+      text: { body: text },
+    };
+  }
 
   const res = await fetch(url, {
     method: "POST",
@@ -85,12 +123,7 @@ async function sendViaMeta(phone: string, text: string): Promise<{ success: bool
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      messaging_product: "whatsapp",
-      to,
-      type: "text",
-      text: { body: text },
-    }),
+    body: JSON.stringify(body),
   });
 
   const data = (await res.json().catch(() => ({}))) as { messages?: Array<{ id: string }>; error?: { message?: string } };
@@ -183,11 +216,27 @@ export async function sendWhatsApp(options: SendOptions): Promise<SendResult> {
     messageBody = rendered.message;
   }
 
+  const templateName = process.env.META_TEMPLATE_NAME ?? "hello_world";
+  const templateParams =
+    templateName !== "hello_world" && options.variables
+      ? [
+          options.variables.customer_name ?? "Customer",
+          options.variables.service_name ?? "Service",
+          options.variables.date ?? "",
+          options.variables.time ?? "",
+          options.variables.business_name ?? "",
+        ].filter(Boolean)
+      : undefined;
+
   let messageSid: string | null = null;
   let sendError: string | undefined;
   let status: "sent" | "failed" = "sent";
 
-  const metaResult = await sendViaMeta(phoneCheck.formatted, messageBody);
+  const metaResult = await sendViaMeta(phoneCheck.formatted, messageBody, {
+    useTemplate: true,
+    templateName,
+    templateParams,
+  });
 
   if (!metaResult.success) {
     sendError = metaResult.error;

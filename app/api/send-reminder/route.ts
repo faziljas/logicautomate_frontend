@@ -19,7 +19,7 @@ function getAdmin() {
   );
 }
 
-async function sendWhatsAppMessage(phone: string, text: string): Promise<{ success: boolean; error?: string }> {
+async function sendWhatsAppMessage(phone: string, _text: string): Promise<{ success: boolean; error?: string }> {
   const token = process.env.META_WHATSAPP_TOKEN;
   const phoneId = process.env.META_PHONE_ID;
   if (!token || !phoneId) {
@@ -27,7 +27,7 @@ async function sendWhatsAppMessage(phone: string, text: string): Promise<{ succe
   }
 
   const to = phone.replace(/\D/g, "");
-  const url = `https://graph.facebook.com/v21.0/${phoneId}/messages`;
+  const url = `https://graph.facebook.com/v22.0/${phoneId}/messages`;
 
   const res = await fetch(url, {
     method: "POST",
@@ -38,8 +38,11 @@ async function sendWhatsAppMessage(phone: string, text: string): Promise<{ succe
     body: JSON.stringify({
       messaging_product: "whatsapp",
       to,
-      type: "text",
-      text: { body: text },
+      type: "template",
+      template: {
+        name: process.env.META_TEMPLATE_NAME ?? "hello_world",
+        language: { code: process.env.META_TEMPLATE_LANGUAGE ?? "en_US" },
+      },
     }),
   });
 
