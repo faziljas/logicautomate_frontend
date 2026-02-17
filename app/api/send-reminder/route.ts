@@ -145,10 +145,13 @@ async function handler(request: NextRequest) {
   }
 }
 
+// Use placeholders when keys are missing so build succeeds (e.g. on Vercel where
+// env vars may not be available at build time). At runtime, real keys from Vercel
+// will be used; if missing, verification fails (403) which is correct.
 export const POST = verifySignatureAppRouter(
   handler as (req: NextRequest) => Promise<Response>,
   {
-    currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY,
-    nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY,
+    currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY || "build-time-placeholder",
+    nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY || "build-time-placeholder",
   }
 );
