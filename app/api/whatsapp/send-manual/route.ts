@@ -7,7 +7,7 @@ import { NextRequest, NextResponse }   from "next/server";
 import { createRouteHandlerClient }    from "@supabase/auth-helpers-nextjs";
 import { createClient }                from "@supabase/supabase-js";
 import { cookies }                     from "next/headers";
-import { sendWhatsApp }                from "@/lib/whatsapp/twilio-client";
+import { sendWhatsApp }                from "@/lib/whatsapp/meta-client";
 import { renderTemplate }              from "@/lib/whatsapp/template-renderer";
 import { getBusinessConfig }           from "@/lib/templates/utils";
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       results.errors.push(`${customer.phone}: ${res.error}`);
     }
 
-    // Rate limit: 10 messages/second Twilio sandbox limit
+    // Rate limit: avoid hitting Meta API limits
     await new Promise((r) => setTimeout(r, 100));
   }
 

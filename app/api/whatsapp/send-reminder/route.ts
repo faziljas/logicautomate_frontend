@@ -14,7 +14,7 @@ import {
 import { createClient } from "@supabase/supabase-js";
 import { type TemplateVariables } from "@/lib/whatsapp/template-renderer";
 import { getBusinessConfig } from "@/lib/templates/utils";
-import { sendWhatsApp } from "@/lib/whatsapp/twilio-client";
+import { sendWhatsApp } from "@/lib/whatsapp/meta-client";
 
 function getAdmin() {
   return createClient(

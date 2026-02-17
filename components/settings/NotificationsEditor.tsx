@@ -145,7 +145,7 @@ export default function NotificationsEditor({
       </div>
 
       <p className="text-xs text-slate-500">
-        Note: Email and SMS require integration (e.g. Resend, Twilio). When
+        Note: Email and SMS require integration (e.g. Resend). WhatsApp uses Meta.
         configured, these toggles will control delivery. WhatsApp remains the
         primary channel.
       </p>

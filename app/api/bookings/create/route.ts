@@ -11,6 +11,7 @@ import { createClient }              from "@supabase/supabase-js";
 import Razorpay                      from "razorpay";
 import { isSlotAvailable, addMinutes, getServiceDuration } from "@/lib/booking/availability-checker";
 import { validatePhone } from "@/lib/phone-utils";
+import { scheduleReminders } from "@/lib/qstash/schedule-reminders";
 
 interface CustomerDetails {
   name:         string;
@@ -273,6 +274,19 @@ export async function POST(request: NextRequest) {
       console.error("[create-booking] razorpay:", rpErr);
       razorpayOrderId = `mock_order_${bookingId}`;
       razorpayAmount  = advanceAmount;
+    }
+  }
+
+  // ── 7. QStash: Schedule reminder messages (24h and 2h before) ─
+  if (process.env.QSTASH_TOKEN) {
+    const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
+    if (baseUrl) {
+      const bookingTimeIso = `${date}T${time}:00`;
+      scheduleReminders(
+        `${baseUrl}/api/send-reminder`,
+        { bookingId },
+        bookingTimeIso
+      ).catch((err) => console.error("[create-booking] QStash schedule:", err));
     }
   }
 

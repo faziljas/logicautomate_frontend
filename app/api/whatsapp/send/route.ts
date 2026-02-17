@@ -5,7 +5,7 @@ import {
   sendBookingConfirmation,
   sendFeedbackRequest,
   type BookingForMessage,
-} from "@/lib/whatsapp/twilio-client";
+} from "@/lib/whatsapp/meta-client";
 import { getBusinessConfig } from "@/lib/templates/utils";
 
 function getAdmin() {

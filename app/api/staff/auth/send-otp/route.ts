@@ -67,24 +67,39 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ error: "Failed to store OTP" }, { status: 500 });
   }
 
-  // Send SMS via Twilio if configured
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
-  const fromSms = process.env.TWILIO_SMS_FROM;
-  if (sid && token && fromSms) {
+  // Send OTP via Meta WhatsApp if configured
+  const token = process.env.META_WHATSAPP_TOKEN;
+  const phoneId = process.env.META_PHONE_ID;
+  if (token && phoneId) {
     try {
-      const twilio = require("twilio")(sid, token);
-      await twilio.messages.create({
-        body: `Your BookFlow staff login code: ${otp}. Valid for 10 minutes.`,
-        from: fromSms,
-        to: normalized,
+      const to = normalized.replace(/\D/g, "");
+      const url = `https://graph.facebook.com/v21.0/${phoneId}/messages`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to,
+          type: "text",
+          text: {
+            body: `Your BookFlow staff login code: ${otp}. Valid for 10 minutes.`,
+          },
+        }),
       });
+      const data = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
+      if (!res.ok) {
+        console.error("[staff send-otp] Meta error:", data);
+        return jsonResponse({ error: data?.error?.message ?? "Failed to send OTP" }, { status: 500 });
+      }
     } catch (err) {
-      console.error("[staff send-otp] Twilio error", err);
-      return jsonResponse({ error: "Failed to send SMS" }, { status: 500 });
+      console.error("[staff send-otp] Meta error", err);
+      return jsonResponse({ error: "Failed to send OTP" }, { status: 500 });
     }
   } else {
-    console.log("[staff send-otp] No Twilio SMS config; OTP (dev):", otp);
+    console.log("[staff send-otp] No Meta WhatsApp config; OTP (dev):", otp);
   }
 
   return jsonResponse({ success: true, message: "OTP sent" });

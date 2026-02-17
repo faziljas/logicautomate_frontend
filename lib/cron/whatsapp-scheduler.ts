@@ -3,7 +3,7 @@
 // lib/cron/whatsapp-scheduler.ts
 // ============================================================
 // Runs every 5 minutes. Finds bookings that need automated
-// messages and fires them via the Twilio client.
+// messages and fires them via the Meta WhatsApp client.
 // ============================================================
 
 import { createClient }       from "@supabase/supabase-js";
@@ -14,7 +14,7 @@ import {
   sendFeedbackRequest,
   sendLoyaltyReward,
   type BookingForMessage,
-} from "@/lib/whatsapp/twilio-client";
+} from "@/lib/whatsapp/meta-client";
 import { getBusinessConfig }  from "@/lib/templates/utils";
 import type { TemplateConfig } from "@/lib/templates/types";
 

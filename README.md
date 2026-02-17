@@ -107,13 +107,12 @@ RAZORPAY_KEY_SECRET=your_razorpay_secret
 NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_xxxxx
 RAZORPAY_WEBHOOK_SECRET=your_webhook_secret   # For webhook signature verification
 
-# App URL (for webhook → WhatsApp callback)
+# App URL (for webhooks)
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# Twilio (WhatsApp)
-TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxx
-TWILIO_AUTH_TOKEN=your_auth_token
-TWILIO_WHATSAPP_NUMBER=+14155238886
+# Meta WhatsApp Cloud API
+META_WHATSAPP_TOKEN=your_meta_whatsapp_token
+META_PHONE_ID=your_phone_number_id
 ```
 
 ---

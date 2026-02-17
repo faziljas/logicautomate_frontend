@@ -333,7 +333,7 @@ export default function WhatsAppTemplateEditor({
                 {/* Character count hint */}
                 {activeTemplate.length > 1600 && (
                   <p className="mt-2 text-xs text-red-600">
-                    ⚠ Message exceeds 1,600 characters — Twilio may split it.
+                    ⚠ Message exceeds 1,600 characters — Meta may split it.
                   </p>
                 )}
               </div>

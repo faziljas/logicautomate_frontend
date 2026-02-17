@@ -33,9 +33,9 @@ export async function POST(request: NextRequest) {
     charCount:    rendered.message.length,
   };
 
-  // If ?send=true and sendTo phone provided — actually send via Twilio
-  if (sendTo && process.env.TWILIO_ACCOUNT_SID) {
-    const { sendWhatsApp } = await import("@/lib/whatsapp/twilio-client");
+  // If ?send=true and sendTo phone provided — actually send via Meta
+  if (sendTo && process.env.META_WHATSAPP_TOKEN) {
+    const { sendWhatsApp } = await import("@/lib/whatsapp/meta-client");
     const result = await sendWhatsApp({
       businessId:   "test",
       to:           sendTo,

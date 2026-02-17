@@ -2,7 +2,7 @@
 // Sends a sample confirmation message to the given number
 import { NextRequest, NextResponse } from "next/server";
 import { renderTemplate, SAMPLE_VARIABLES } from "@/lib/whatsapp/template-renderer";
-import { sendWhatsApp }              from "@/lib/whatsapp/twilio-client";
+import { sendWhatsApp }              from "@/lib/whatsapp/meta-client";
 import { getLocalTemplateConfig }    from "@/lib/templates/utils";
 import type { IndustryType }         from "@/lib/templates/types";
 
