@@ -232,8 +232,9 @@ export async function sendWhatsApp(options: SendOptions): Promise<SendResult> {
   let sendError: string | undefined;
   let status: "sent" | "failed" = "sent";
 
+  // META_USE_TEMPLATE=false → use "text" (works within 24h of customer message — "Lazy Developer Trick")
   const metaResult = await sendViaMeta(phoneCheck.formatted, messageBody, {
-    useTemplate: true,
+    useTemplate: process.env.META_USE_TEMPLATE !== "false",
     templateName,
     templateParams,
   });
