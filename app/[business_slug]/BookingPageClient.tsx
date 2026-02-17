@@ -305,8 +305,20 @@ function BookingFlowInner({
       const data = await res.json();
 
       if (!res.ok) {
-        if (data.errors) setFormErrors(data.errors);
-        else alert(data.error ?? "Failed to create booking");
+        if (data.errors) {
+          setFormErrors(data.errors);
+        } else {
+          const errorMsg = data.error ?? "Failed to create booking";
+          // If slot unavailable, show error banner and prevent booking
+          if (res.status === 409 && errorMsg.includes("time slot")) {
+            setSlotAvailabilityError(errorMsg);
+            setIsSubmitting(false);
+            return;
+          } else {
+            alert(errorMsg);
+          }
+        }
+        setIsSubmitting(false);
         return;
       }
 
