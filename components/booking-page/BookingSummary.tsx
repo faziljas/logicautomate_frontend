@@ -33,7 +33,7 @@ interface BookingSummaryProps {
   primaryColor?: string;
   isSubmitting?: boolean;
   onBack: () => void;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   onPayAtVenue?: () => void;
   showPayAtVenue?: boolean;
   couponEnabled?: boolean;
@@ -206,7 +206,7 @@ export function BookingSummary({
         {razorpayButton ?? (
           <button
             onClick={onConfirm}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !onConfirm}
             className="w-full py-4 rounded-xl font-bold text-white text-base transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2"
             style={{ backgroundColor: primaryColor }}
           >
@@ -221,7 +221,7 @@ export function BookingSummary({
         {showPayAtVenue && data.advanceAmount > 0 && onPayAtVenue && (
           <button
             onClick={onPayAtVenue}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !onPayAtVenue}
             className="w-full py-3 rounded-xl font-medium text-gray-600 text-sm border border-gray-200 hover:bg-gray-50 transition-colors"
           >
             Pay at venue instead
