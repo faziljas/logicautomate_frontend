@@ -48,6 +48,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [newBookingBadge, setNewBookingBadge] = useState(false);
+  const [notifications, setNotifications] = useState<Array<{
+    id: string;
+    type: string;
+    title: string;
+    message: string;
+    status: string;
+    timeAgo: string;
+    createdAt: string;
+    bookingId: string;
+  }>>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
 
   // Redirect to /enter if no business (after loading completes)
   useEffect(() => {
@@ -56,13 +68,56 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [loading, business, router]);
 
+  // Fetch notifications
   useEffect(() => {
     if (!business?.id) return;
+    
+    const fetchNotifications = async () => {
+      setLoadingNotifications(true);
+      try {
+        const res = await fetch(`/api/dashboard/notifications?limit=10`);
+        if (res.ok) {
+          const data = await res.json();
+          setNotifications(data.notifications ?? []);
+          setUnreadCount(data.unreadCount ?? 0);
+          setNewBookingBadge((data.unreadCount ?? 0) > 0);
+        }
+      } catch (err) {
+        console.error("[Layout] Failed to fetch notifications:", err);
+      } finally {
+        setLoadingNotifications(false);
+      }
+    };
+
+    fetchNotifications();
     const unsubscribe = subscribeToNewBookings(business.id, () => {
-      setNewBookingBadge(true);
+      fetchNotifications(); // Refresh notifications when new booking arrives
     });
     return unsubscribe;
   }, [business?.id]);
+
+  // Refresh notifications when dropdown opens
+  useEffect(() => {
+    if (notificationsOpen && business?.id) {
+      const fetchNotifications = async () => {
+        setLoadingNotifications(true);
+        try {
+          const res = await fetch(`/api/dashboard/notifications?limit=10`);
+          if (res.ok) {
+            const data = await res.json();
+            setNotifications(data.notifications ?? []);
+            setUnreadCount(data.unreadCount ?? 0);
+            setNewBookingBadge((data.unreadCount ?? 0) > 0);
+          }
+        } catch (err) {
+          console.error("[Layout] Failed to fetch notifications:", err);
+        } finally {
+          setLoadingNotifications(false);
+        }
+      };
+      fetchNotifications();
+    }
+  }, [notificationsOpen, business?.id]);
 
   const filteredNav = NAV_ITEMS.filter(
     (item) => !item.ownerOnly || role === "owner"
@@ -163,24 +218,97 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-2">
             <div className="relative">
               <button
-                onClick={() => { setNotificationsOpen(!notificationsOpen); setNewBookingBadge(false); }}
+                onClick={() => { setNotificationsOpen(!notificationsOpen); }}
                 className="p-2 rounded-lg hover:bg-slate-100 text-slate-600 relative"
                 aria-label="Notifications"
               >
                 <Bell className="w-5 h-5" />
-                {newBookingBadge && (
-                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-violet-500" id="notification-badge" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[18px] h-[18px] rounded-full bg-violet-500 text-white text-[10px] font-semibold flex items-center justify-center px-1">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
                 )}
               </button>
               {notificationsOpen && (
-                <div className="absolute right-0 top-full mt-1 w-72 rounded-xl border border-slate-200 bg-white shadow-lg py-2 z-50">
-                  <div className="px-3 py-2 text-sm text-slate-500 border-b border-slate-100">
-                    Notifications
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setNotificationsOpen(false)}
+                  />
+                  <div className="absolute right-0 top-full mt-1 w-80 rounded-xl border border-slate-200 bg-white shadow-lg z-50 max-h-[500px] flex flex-col">
+                    <div className="px-4 py-3 text-sm font-semibold text-slate-900 border-b border-slate-100 flex items-center justify-between">
+                      <span>Notifications</span>
+                      {unreadCount > 0 && (
+                        <span className="text-xs font-normal text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">
+                          {unreadCount} new
+                        </span>
+                      )}
+                    </div>
+                    <div className="overflow-y-auto flex-1">
+                      {loadingNotifications ? (
+                        <div className="px-4 py-8 text-sm text-slate-400 text-center">
+                          Loading...
+                        </div>
+                      ) : notifications.length === 0 ? (
+                        <div className="px-4 py-8 text-sm text-slate-400 text-center">
+                          No notifications
+                        </div>
+                      ) : (
+                        <div className="py-1">
+                          {notifications.map((notif) => {
+                            const isUnread = new Date(notif.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000);
+                            return (
+                              <Link
+                                key={notif.id}
+                                href={`/dashboard/bookings?highlight=${notif.bookingId}`}
+                                onClick={() => setNotificationsOpen(false)}
+                                className={`block px-4 py-3 hover:bg-slate-50 border-b border-slate-50 transition-colors ${
+                                  isUnread ? "bg-violet-50/30" : ""
+                                }`}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
+                                    isUnread ? "bg-violet-500" : "bg-slate-300"
+                                  }`} />
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium text-slate-900 truncate">
+                                      {notif.title}
+                                    </p>
+                                    <p className="text-xs text-slate-600 mt-0.5 truncate">
+                                      {notif.message}
+                                    </p>
+                                    <p className="text-xs text-slate-400 mt-1">
+                                      {notif.timeAgo}
+                                    </p>
+                                  </div>
+                                  <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${
+                                    notif.status === "confirmed" ? "bg-emerald-100 text-emerald-700" :
+                                    notif.status === "pending" ? "bg-amber-100 text-amber-700" :
+                                    notif.status === "cancelled" ? "bg-red-100 text-red-700" :
+                                    "bg-slate-100 text-slate-600"
+                                  }`}>
+                                    {notif.status}
+                                  </span>
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                    {notifications.length > 0 && (
+                      <div className="px-4 py-2 border-t border-slate-100">
+                        <Link
+                          href="/dashboard/bookings"
+                          onClick={() => setNotificationsOpen(false)}
+                          className="text-xs text-violet-600 hover:text-violet-700 font-medium text-center block"
+                        >
+                          View all bookings →
+                        </Link>
+                      </div>
+                    )}
                   </div>
-                  <div className="px-3 py-4 text-sm text-slate-400 text-center">
-                    No new notifications
-                  </div>
-                </div>
+                </>
               )}
             </div>
             <div className="relative">
