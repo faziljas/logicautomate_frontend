@@ -229,6 +229,11 @@ export default function CustomizationPage() {
   }, [state.selectedTemplate, state.services.length, dispatch]);
 
   const activeServices = state.services.filter((s) => !s.isDeleted);
+  // For free tier, only show the first 2 services (hide the rest to avoid awkward UI)
+  const displayServices = isFreeTier 
+    ? activeServices.slice(0, FREE_TIER.maxServices)
+    : activeServices;
+  const hasMoreServices = isFreeTier && activeServices.length > FREE_TIER.maxServices;
   const atServiceLimit = isFreeTier && activeServices.length >= FREE_TIER.maxServices;
 
   function addService() {
@@ -301,41 +306,42 @@ export default function CustomizationPage() {
 
         {/* Services list */}
         <div className="space-y-2 mb-4">
-          {activeServices.map((service, index) => {
-            const isLocked = isFreeTier && index >= FREE_TIER.maxServices;
-            return (
-              <div key={service.id} className="relative">
-                {isLocked && (
-                  <div className="absolute inset-0 bg-slate-900/80 rounded-xl z-10 flex items-center justify-center border border-amber-500/40">
-                    <div className="text-center px-4">
-                      <p className="text-xs font-semibold text-amber-400 mb-1">Upgrade to Pro</p>
-                      <p className="text-xs text-amber-300/80">Free plan includes {FREE_TIER.maxServices} services</p>
-                    </div>
-                  </div>
-                )}
-                <ServiceRow
-                  service={service}
-                  onUpdate={(data) =>
-                    !isLocked && dispatch({ type: "UPDATE_SERVICE", payload: { id: service.id, data } })
-                  }
-                  onDelete={() =>
-                    !isLocked && dispatch({ type: "DELETE_SERVICE", payload: service.id })
-                  }
-                />
-              </div>
-            );
-          })}
+          {displayServices.map((service) => (
+            <ServiceRow
+              key={service.id}
+              service={service}
+              onUpdate={(data) =>
+                dispatch({ type: "UPDATE_SERVICE", payload: { id: service.id, data } })
+              }
+              onDelete={() =>
+                dispatch({ type: "DELETE_SERVICE", payload: service.id })
+              }
+            />
+          ))}
         </div>
+
+        {/* Subtle message for free tier users with more services available */}
+        {hasMoreServices && (
+          <div className="mb-4 p-3 bg-slate-800/50 border border-slate-700 rounded-xl">
+            <p className="text-xs text-slate-400 text-center">
+              <span className="text-slate-300">+{activeServices.length - FREE_TIER.maxServices} more service{activeServices.length - FREE_TIER.maxServices !== 1 ? 's' : ''} available.</span>{" "}
+              <a href="/pricing" className="text-violet-400 hover:text-violet-300 underline">
+                Upgrade to Pro
+              </a>{" "}
+              to customize all services.
+            </p>
+          </div>
+        )}
 
         {/* Add service */}
         {atServiceLimit ? (
-          <div className="w-full p-3 bg-amber-500/20 border border-amber-500/40 rounded-xl text-center">
-            <p className="text-xs text-amber-300">
-              Free plan includes up to {FREE_TIER.maxServices} services.{" "}
-              <a href="/pricing" className="underline font-semibold hover:text-amber-200">
+          <div className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl">
+            <p className="text-xs text-slate-400 text-center">
+              You've added {FREE_TIER.maxServices} services.{" "}
+              <a href="/pricing" className="text-violet-400 hover:text-violet-300 underline font-medium">
                 Upgrade to Pro
               </a>{" "}
-              for more.
+              to add more.
             </p>
           </div>
         ) : (
@@ -368,7 +374,7 @@ export default function CustomizationPage() {
               <><Loader2 className="w-4 h-4 animate-spin" /> One moment…</>
             ) : (
               <>
-                Continue ({activeServices.length} service{activeServices.length !== 1 ? "s" : ""})
+                Continue ({displayServices.length} service{displayServices.length !== 1 ? "s" : ""})
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
