@@ -59,7 +59,7 @@ async function sendWhatsAppMessage(phone: string, _text: string): Promise<{ succ
 }
 
 async function handler(request: NextRequest) {
-  let body: { bookingId?: string; phoneNumber?: string; message?: string };
+  let body: { bookingId?: string; reminderType?: "24h" | "2h"; phoneNumber?: string; message?: string };
   try {
     body = await request.json();
   } catch {
