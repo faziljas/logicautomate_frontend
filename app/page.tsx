@@ -84,6 +84,19 @@ export default function LandingPage() {
           Customers book via your link:{" "}
           <span className="font-mono text-gray-600">logicautomate.app/your-business</span>
         </p>
+
+        {/* Footer */}
+        <footer className="mt-16 pt-8 border-t border-gray-200 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
+          <Link href="/pricing" className="hover:text-violet-600 transition-colors">
+            Pricing
+          </Link>
+          <Link href="/privacy" className="hover:text-violet-600 transition-colors">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-violet-600 transition-colors">
+            Terms
+          </Link>
+        </footer>
       </div>
     </div>
   );
