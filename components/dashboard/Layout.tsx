@@ -22,6 +22,7 @@ import {
   LogOut,
   ChevronDown,
   MessageSquare,
+  Sparkles,
 } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
 import { cn } from "@/lib/utils";
@@ -113,6 +114,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 );
               })}
             </ul>
+            <div className="mt-4 pt-3 border-t border-slate-200">
+              <Link
+                href="/pricing"
+                onClick={() => setSidebarOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold bg-violet-500 text-white hover:bg-violet-600 transition-colors"
+              >
+                <Sparkles className="w-5 h-5 shrink-0" />
+                Upgrade to Pro
+              </Link>
+            </div>
           </nav>
         </div>
       </aside>
@@ -171,6 +182,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     onClick={() => setUserMenuOpen(false)}
                   />
                   <div className="absolute right-0 top-full mt-1 w-48 rounded-xl border border-slate-200 bg-white shadow-lg py-1 z-50">
+                    <Link
+                      href="/pricing"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-violet-600 hover:bg-violet-50"
+                    >
+                      <Sparkles className="w-4 h-4" /> Upgrade to Pro
+                    </Link>
                     <Link
                       href="/dashboard/settings"
                       onClick={() => setUserMenuOpen(false)}

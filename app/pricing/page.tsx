@@ -80,7 +80,7 @@ export default function PricingPage() {
                 }`}
               >
                 {plan.highlighted && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-violet-500 text-white text-xs font-semibold">
+                  <span className="absolute top-4 right-4 px-3 py-0.5 rounded-full bg-violet-500 text-white text-xs font-semibold">
                     Popular
                   </span>
                 )}
