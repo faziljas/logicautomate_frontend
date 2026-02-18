@@ -151,7 +151,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Email uniqueness (if provided)
+  // Email uniqueness check: Only block if email exists in users table AND user already has a business
+  // (Allow if user signed in with Google but hasn't created a business yet)
   if (email) {
     const { data: existingEmail } = await supabase
       .from("users")
@@ -160,10 +161,19 @@ export async function POST(request: NextRequest) {
       .maybeSingle();
 
     if (existingEmail) {
-      return NextResponse.json(
-        { errors: { email: "An account with this email already exists" } },
-        { status: 422 }
-      );
+      // Check if this user already has a business (free tier: only 1 allowed)
+      const { count: businessCount } = await supabase
+        .from("businesses")
+        .select("id", { count: "exact", head: true })
+        .eq("owner_id", existingEmail.id);
+      
+      if (businessCount != null && businessCount >= 1) {
+        return NextResponse.json(
+          { errors: { email: "An account with this email already exists and has a business. Free plan allows one business per account." } },
+          { status: 422 }
+        );
+      }
+      // User exists but no business - they can proceed (will update existing user record)
     }
   }
 
@@ -190,49 +200,104 @@ export async function POST(request: NextRequest) {
     finalSlug = await generateUniqueSlug(businessName.trim());
   }
 
-  // ── 5. Create Supabase Auth user (for dashboard login) ────
+  // ── 5. Get or create Supabase Auth user (for dashboard login) ────
   const authEmail = email!.toLowerCase();
-  const { data: authUser, error: authErr } = await supabase.auth.admin.createUser({
-    email:          authEmail,
-    password:       crypto.randomUUID(),
-    email_confirm:  true,
-    user_metadata:  { role: "owner", phone: phoneE164 },
-  });
+  
+  // Check if auth user already exists (e.g., from Google sign-in)
+  let authUserId: string;
+  let authUserWasCreated = false;
+  const { data: existingAuthUsers } = await supabase.auth.admin.listUsers();
+  const existingAuthUser = existingAuthUsers?.users?.find((u) => u.email?.toLowerCase() === authEmail);
+  
+  if (existingAuthUser) {
+    // User already signed in with Google/OAuth - use existing auth user
+    authUserId = existingAuthUser.id;
+    // Update metadata if needed
+    await supabase.auth.admin.updateUserById(authUserId, {
+      user_metadata: { role: "owner", phone: phoneE164 },
+    });
+  } else {
+    // Create new auth user
+    authUserWasCreated = true;
+    const { data: authUser, error: authErr } = await supabase.auth.admin.createUser({
+      email:          authEmail,
+      password:       crypto.randomUUID(),
+      email_confirm:  true,
+      user_metadata:  { role: "owner", phone: phoneE164 },
+    });
 
-  if (authErr || !authUser.user) {
-    console.error("[onboarding] create auth user:", authErr);
-    return NextResponse.json(
-      { error: authErr?.message ?? "Failed to create login account" },
-      { status: 500 }
-    );
+    if (authErr || !authUser.user) {
+      console.error("[onboarding] create auth user:", authErr);
+      return NextResponse.json(
+        { error: authErr?.message ?? "Failed to create login account" },
+        { status: 500 }
+      );
+    }
+
+    authUserId = authUser.user.id;
   }
 
-  const authUserId = authUser.user.id;
-
-  // ── 6. Create owner in users table (same id as auth user) ─
-  const { data: user, error: userErr } = await supabase
+  // ── 6. Create or update owner in users table (same id as auth user) ─
+  // Check if user record already exists (from Google sign-in)
+  const { data: existingUser } = await supabase
     .from("users")
-    .insert({
-      id:       authUserId,
-      name:     businessName.trim(),
-      phone:    phoneE164,
-      email:    authEmail,
-      role:     "owner",
-      metadata: { onboarding_complete: false },
-    })
-    .select()
-    .single();
+    .select("id")
+    .eq("id", authUserId)
+    .maybeSingle();
 
-  if (userErr || !user) {
-    console.error("[onboarding] create user:", userErr);
-    // Cleanup auth user on failure
-    await supabase.auth.admin.deleteUser(authUserId);
-    // Return helpful message for common issues
-    const code = (userErr as { code?: string })?.code;
-    let message = "Failed to create user account";
-    if (code === "23505") message = "Email or phone already in use. Try a different email.";
-    else if (userErr?.message) message = userErr.message;
-    return NextResponse.json({ error: message }, { status: 500 });
+  let user;
+  if (existingUser) {
+    // Update existing user record
+    const { data: updatedUser, error: updateErr } = await supabase
+      .from("users")
+      .update({
+        name:     businessName.trim(),
+        phone:    phoneE164,
+        email:    authEmail,
+        role:     "owner",
+        metadata: { onboarding_complete: false },
+      })
+      .eq("id", authUserId)
+      .select()
+      .single();
+
+    if (updateErr || !updatedUser) {
+      console.error("[onboarding] update user:", updateErr);
+      const code = (updateErr as { code?: string })?.code;
+      let message = "Failed to update user account";
+      if (updateErr?.message) message = updateErr.message;
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
+    user = updatedUser;
+  } else {
+    // Create new user record
+    const { data: newUser, error: userErr } = await supabase
+      .from("users")
+      .insert({
+        id:       authUserId,
+        name:     businessName.trim(),
+        phone:    phoneE164,
+        email:    authEmail,
+        role:     "owner",
+        metadata: { onboarding_complete: false },
+      })
+      .select()
+      .single();
+
+    if (userErr || !newUser) {
+      console.error("[onboarding] create user:", userErr);
+      // Only cleanup auth user if we created it (not if it was from Google)
+      if (authUserWasCreated) {
+        await supabase.auth.admin.deleteUser(authUserId);
+      }
+      // Return helpful message for common issues
+      const code = (userErr as { code?: string })?.code;
+      let message = "Failed to create user account";
+      if (code === "23505") message = "Email or phone already in use. Try a different email.";
+      else if (userErr?.message) message = userErr.message;
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
+    user = newUser;
   }
 
   // ── 6b. Free plan: 1 business location only ──────────────
