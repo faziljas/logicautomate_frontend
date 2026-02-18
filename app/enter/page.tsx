@@ -107,10 +107,12 @@ export default function EnterPage() {
         </p>
       </div>
 
-      <footer className="mt-auto pt-8 pb-6 border-t border-slate-800 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-slate-500">
-        <Link href="/pricing" className="hover:text-violet-400 transition-colors">Pricing</Link>
-        <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy</Link>
-        <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms</Link>
+      <footer className="mt-auto pt-8 pb-6 px-4 border-t border-slate-800 flex flex-wrap justify-between items-center gap-4 text-sm text-slate-500">
+        <div className="flex flex-wrap justify-center sm:justify-start gap-x-6 gap-y-2">
+          <Link href="/pricing" className="hover:text-violet-400 transition-colors">Pricing</Link>
+          <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy</Link>
+          <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms</Link>
+        </div>
         <button
           type="button"
           onClick={handleSignOut}
