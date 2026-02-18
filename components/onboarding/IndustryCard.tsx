@@ -35,15 +35,15 @@ interface IndustryCardProps {
 export const IndustryCard = memo(function IndustryCard({ industry, selected, onSelect }: IndustryCardProps) {
   if (industry.comingSoon) {
     return (
-      <div className="relative rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 p-5 opacity-60 cursor-not-allowed select-none">
+      <div className="relative rounded-2xl border-2 border-dashed border-slate-600 bg-slate-800/50 p-5 opacity-60 cursor-not-allowed select-none">
         <div className="flex items-start gap-3">
           <span className="text-3xl grayscale">{industry.icon}</span>
           <div>
-            <p className="font-semibold text-gray-400 text-sm">{industry.name}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{industry.description}</p>
+            <p className="font-semibold text-slate-500 text-sm">{industry.name}</p>
+            <p className="text-xs text-slate-500 mt-0.5">{industry.description}</p>
           </div>
         </div>
-        <span className="absolute top-3 right-3 text-[10px] font-semibold bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full">
+        <span className="absolute top-3 right-3 text-[10px] font-semibold bg-slate-700 text-slate-400 px-2 py-0.5 rounded-full">
           Coming Soon
         </span>
       </div>
@@ -61,26 +61,26 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
         // Fixed height for all cards to prevent ANY layout shift
         "h-[240px] flex flex-col",
         selected
-          ? "border-violet-600 bg-violet-50 shadow-lg shadow-violet-100"
-          : "border-gray-200 bg-white hover:border-violet-300 hover:shadow-md hover:shadow-violet-50"
+          ? "border-violet-500 bg-slate-800/80 shadow-lg shadow-violet-500/10"
+          : "border-slate-700 bg-slate-800/50 hover:border-violet-500/50 hover:bg-slate-800/80"
       )}
     >
       {/* DEBUG: Visible ID for debugging duplicate selection issues */}
       {process.env.NODE_ENV === "development" && (
-        <div className="absolute top-1 left-1 text-[10px] font-mono bg-red-100 text-red-700 px-1 rounded z-50">
+        <div className="absolute top-1 left-1 text-[10px] font-mono bg-red-900/80 text-red-300 px-1 rounded z-50">
           ID: {industry.id} | Selected: {selected ? "YES" : "NO"}
         </div>
       )}
       {/* Popular badge */}
       {industry.popular && (
-        <span className="absolute top-3 right-3 text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+        <span className="absolute top-3 right-3 text-[10px] font-bold bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">
           ⭐ Popular
         </span>
       )}
 
       {/* Selected checkmark */}
       {selected && (
-        <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-violet-600 flex items-center justify-center">
+        <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center">
           <Check className="w-3 h-3 text-white" />
         </span>
       )}
@@ -92,8 +92,8 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
             "text-3xl w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-200",
             // Use transform scale without affecting layout
             selected
-              ? "bg-white shadow-sm scale-110"
-              : "bg-gray-50 group-hover:bg-white group-hover:shadow-sm group-hover:scale-105"
+              ? "bg-slate-700 scale-110"
+              : "bg-slate-700/50 group-hover:bg-slate-700 group-hover:scale-105"
           )}
         >
           {industry.icon}
@@ -102,12 +102,12 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
           <h3
             className={cn(
               "font-bold text-sm leading-tight",
-              selected ? "text-violet-700" : "text-gray-800"
+              selected ? "text-violet-300" : "text-white"
             )}
           >
             {industry.name}
           </h3>
-          <p className="text-xs text-gray-500 mt-0.5 leading-tight">
+          <p className="text-xs text-slate-400 mt-0.5 leading-tight">
             {industry.description}
           </p>
         </div>
@@ -125,7 +125,7 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
           )}
         >
           {industry.features.map((f) => (
-            <li key={f} className="flex items-center gap-1.5 text-xs text-gray-600">
+            <li key={f} className="flex items-center gap-1.5 text-xs text-slate-400">
               <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />
               {f}
             </li>

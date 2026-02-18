@@ -169,10 +169,11 @@ export default function LoginPage() {
         </button>
 
         <p className="text-center text-sm text-slate-500 mt-6">
-          New?{" "}
+          New? Sign in first — you&apos;ll then see the option to{" "}
           <Link href="/onboarding/industry-selection" className="text-violet-400 font-medium hover:underline">
-            Create your business
-          </Link>
+            create your business
+          </Link>{" "}
+          on the next screen.
         </p>
       </div>
     </div>

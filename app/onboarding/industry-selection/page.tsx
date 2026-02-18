@@ -63,61 +63,49 @@ function IndustrySelectionContent() {
   }, [state.selectedTemplate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+    <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
+      <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold text-violet-600">📅 LogicAutomate</span>
+      <header className="sticky top-0 z-10 bg-slate-950/90 backdrop-blur-sm border-b border-slate-800">
+        <div className="relative max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+          <span className="text-xl font-bold text-violet-400">📅 LogicAutomate</span>
           <div className="flex items-center gap-3">
-          <a
-            href="/onboarding/industry-selection?reset=1"
-            className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-violet-600 px-3 py-1.5 rounded-full hover:bg-violet-50 transition-colors"
-            title="Clear previous session and start fresh (use after clearing DB)"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Start fresh</span>
-          </a>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full">
-            <Clock className="w-3.5 h-3.5" />
-            <span>Setup takes ~3 minutes</span>
+            <a
+              href="/onboarding/industry-selection?reset=1"
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-violet-400 px-3 py-1.5 rounded-full hover:bg-slate-800 transition-colors"
+              title="Clear previous session and start fresh"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Start fresh</span>
+            </a>
+            <div className="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-800 px-3 py-1.5 rounded-full">
+              <Clock className="w-3.5 h-3.5" />
+              <span>Setup takes ~3 minutes</span>
+            </div>
           </div>
-        </div>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 pb-28 pt-8">
-        {/* Progress */}
-        <ProgressIndicator
-          currentStep={state.currentStep}
-          className="mb-10"
-        />
+      <main className="relative max-w-3xl mx-auto px-4 pb-28 pt-6 sm:pt-8">
+        <ProgressIndicator currentStep={state.currentStep} className="mb-8" />
 
-        {/* Headline */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
             What type of business
             <br />
-            <span className="text-violet-600">do you run?</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">do you run?</span>
           </h1>
-          <p className="mt-3 text-gray-500 text-base">
-            We'll pre-configure everything for your industry — services,
-            WhatsApp messages, and more.
+          <p className="mt-3 text-slate-400 text-base">
+            We'll pre-configure everything for your industry — services, WhatsApp messages, and more.
           </p>
         </div>
 
-        {/* Industry grid */}
-        {/* Use align-items-start to prevent cards from stretching and causing layout shift */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {INDUSTRY_LIST.map((industry, index) => {
-            // Strict comparison: ensure type match (both strings)
-            // Only one industry can be selected at a time (single-select)
             const isSelected = state.selectedTemplate === industry.id;
-            
-            // Debug logging in development
             if (process.env.NODE_ENV === "development" && isSelected) {
               console.log(`[IndustryCard ${index}] ID: "${industry.id}", Selected: ${isSelected}, State: "${state.selectedTemplate}"`);
             }
-            
             return (
               <IndustryCard
                 key={industry.id}
@@ -129,19 +117,16 @@ function IndustrySelectionContent() {
           })}
         </div>
 
-        {/* Selected preview */}
-        {state.selectedTemplate && !INDUSTRY_LIST.find(
-          (i) => i.id === state.selectedTemplate
-        )?.comingSoon && (
-          <div className="mt-6 p-4 rounded-xl bg-violet-50 border border-violet-100 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        {state.selectedTemplate && !INDUSTRY_LIST.find((i) => i.id === state.selectedTemplate)?.comingSoon && (
+          <div className="mt-6 p-4 rounded-xl bg-slate-800/60 border border-violet-500/30 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <span className="text-2xl">
               {INDUSTRY_LIST.find((i) => i.id === state.selectedTemplate)?.icon}
             </span>
             <div>
-              <p className="text-sm font-semibold text-violet-700">
+              <p className="text-sm font-semibold text-violet-300">
                 {INDUSTRY_LIST.find((i) => i.id === state.selectedTemplate)?.name} selected
               </p>
-              <p className="text-xs text-violet-500">
+              <p className="text-xs text-slate-400">
                 We'll set up default services and templates for you
               </p>
             </div>
@@ -149,19 +134,18 @@ function IndustrySelectionContent() {
         )}
       </main>
 
-      {/* Sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-100 px-4 py-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-sm border-t border-slate-800 px-4 py-4">
         <div className="max-w-3xl mx-auto">
           <button
             onClick={handleContinue}
             disabled={!state.selectedTemplate}
-            className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200 shadow-lg shadow-violet-200 disabled:shadow-none"
+            className="w-full flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-400 disabled:bg-slate-700 disabled:text-slate-500 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200"
           >
             Continue
             <ArrowRight className="w-4 h-4" />
           </button>
           {!state.selectedTemplate && (
-            <p className="text-center text-xs text-gray-400 mt-2">
+            <p className="text-center text-xs text-slate-500 mt-2">
               Select your industry to continue
             </p>
           )}
@@ -173,7 +157,7 @@ function IndustrySelectionContent() {
 
 export default function IndustrySelectionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400">Loading...</div>}>
       <IndustrySelectionContent />
     </Suspense>
   );

@@ -41,10 +41,10 @@ export function ProgressIndicator({
                   className={cn(
                     "w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-all duration-300",
                     isComplete
-                      ? "bg-violet-600 border-violet-600 text-white"
+                      ? "bg-violet-500 border-violet-500 text-white"
                       : isCurrent
-                      ? "bg-white border-violet-600 text-violet-600 shadow-md shadow-violet-100"
-                      : "bg-white border-gray-200 text-gray-400"
+                      ? "bg-slate-800 border-violet-500 text-violet-400"
+                      : "bg-slate-800 border-slate-600 text-slate-500"
                   )}
                 >
                   {isComplete ? (
@@ -57,10 +57,10 @@ export function ProgressIndicator({
                   className={cn(
                     "mt-1.5 text-xs font-medium whitespace-nowrap",
                     isCurrent
-                      ? "text-violet-600"
+                      ? "text-violet-400"
                       : isComplete
-                      ? "text-violet-500"
-                      : "text-gray-400"
+                      ? "text-violet-400"
+                      : "text-slate-500"
                   )}
                 >
                   {STEP_LABELS[step]}
@@ -72,7 +72,7 @@ export function ProgressIndicator({
                 <div
                   className={cn(
                     "h-0.5 w-16 mx-1 mb-5 transition-all duration-500",
-                    idx < currentIndex ? "bg-violet-600" : "bg-gray-200"
+                    idx < currentIndex ? "bg-violet-500" : "bg-slate-700"
                   )}
                 />
               )}
@@ -84,16 +84,16 @@ export function ProgressIndicator({
       {/* Mobile: progress bar + step label */}
       <div className="sm:hidden">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-violet-600">
+          <span className="text-sm font-semibold text-violet-400">
             {STEP_LABELS[currentStep]}
           </span>
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-slate-500">
             Step {currentIndex + 1} of {ONBOARDING_STEPS.length}
           </span>
         </div>
-        <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-violet-500 to-purple-600 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500"
             style={{
               width: `${Math.round(
                 (currentIndex / (ONBOARDING_STEPS.length - 1)) * 100
@@ -101,14 +101,13 @@ export function ProgressIndicator({
             }}
           />
         </div>
-        {/* Step dots */}
         <div className="flex justify-between mt-1.5 px-0.5">
           {ONBOARDING_STEPS.map((step, idx) => (
             <div
               key={step}
               className={cn(
                 "w-1.5 h-1.5 rounded-full transition-all duration-300",
-                idx <= currentIndex ? "bg-violet-600" : "bg-gray-200"
+                idx <= currentIndex ? "bg-violet-500" : "bg-slate-600"
               )}
             />
           ))}

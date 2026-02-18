@@ -138,37 +138,33 @@ export default function CompletePage() {
       {/* Confetti */}
       {showConfetti && <Confetti />}
 
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-        {/* Header */}
-        <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100">
+      <div className="min-h-screen bg-slate-950 text-white">
+        <header className="sticky top-0 z-10 bg-slate-950/90 backdrop-blur-sm border-b border-slate-800">
           <div className="max-w-lg mx-auto px-4 py-4">
-            <span className="text-xl font-bold text-violet-600">📅 LogicAutomate</span>
+            <span className="text-xl font-bold text-violet-400">📅 LogicAutomate</span>
           </div>
         </header>
 
-        <main className="max-w-lg mx-auto px-4 pb-28 pt-8">
-          <ProgressIndicator currentStep="complete" className="mb-10" />
+        <main className="max-w-lg mx-auto px-4 pb-28 pt-6 sm:pt-8">
+          <ProgressIndicator currentStep="complete" className="mb-8" />
 
-          {/* Hero */}
           <div className="text-center mb-8">
             <div className="relative inline-block mb-4">
               <span className="text-6xl animate-bounce inline-block">🎉</span>
               <span className="absolute -top-1 -right-2 text-2xl animate-spin-slow">✨</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
               Your booking page is{" "}
-              <span className="text-violet-600">live!</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">live!</span>
             </h1>
-            <p className="text-gray-500 text-base">
+            <p className="text-slate-400 text-base">
               Share the link below and start accepting appointments right away.
             </p>
           </div>
 
-          {/* Business card */}
-          <div className="relative bg-white rounded-2xl shadow-xl shadow-violet-100 border border-violet-100 p-6 mb-6 overflow-hidden">
-            {/* Background accent */}
+          <div className="relative bg-slate-900/80 rounded-2xl border border-slate-700 p-6 mb-6 overflow-hidden">
             <div
-              className="absolute inset-0 opacity-5"
+              className="absolute inset-0 opacity-10"
               style={{
                 background: `linear-gradient(135deg, ${selectedIndustry?.primaryColor ?? "#7C3AED"}, transparent)`,
               }}
@@ -177,21 +173,20 @@ export default function CompletePage() {
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-4xl">{selectedIndustry?.icon ?? "🏢"}</span>
                 <div>
-                  <h2 className="font-bold text-gray-900 text-lg leading-tight">
+                  <h2 className="font-bold text-white text-lg leading-tight">
                     {state.businessDetails.name || "Your Business"}
                   </h2>
-                  <p className="text-sm text-gray-500">{state.businessDetails.city}</p>
+                  <p className="text-sm text-slate-400">{state.businessDetails.city}</p>
                 </div>
               </div>
 
-              {/* URL display */}
-              <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-4 py-3 border border-gray-100">
-                <span className="text-xs text-gray-400 font-medium truncate flex-1 font-mono">
+              <div className="flex items-center gap-2 bg-slate-800 rounded-xl px-4 py-3 border border-slate-600">
+                <span className="text-xs text-slate-400 font-medium truncate flex-1 font-mono">
                   {bookingUrl}
                 </span>
                 <button
                   onClick={copyLink}
-                  className="shrink-0 flex items-center gap-1.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200"
+                  className="shrink-0 flex items-center gap-1.5 bg-violet-500 hover:bg-violet-400 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200"
                 >
                   {copied ? (
                     <><Check className="w-3 h-3" /> Copied!</>
@@ -203,9 +198,8 @@ export default function CompletePage() {
             </div>
           </div>
 
-          {/* Share options */}
           <div className="mb-6">
-            <p className="text-sm font-semibold text-gray-600 mb-3 flex items-center gap-2">
+            <p className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
               <Share2 className="w-4 h-4" /> Share your booking page
             </p>
             <div className="flex flex-wrap gap-2">
@@ -234,14 +228,13 @@ export default function CompletePage() {
                 icon={ExternalLink}
                 label="Preview Page"
                 onClick={() => window.open(bookingUrl, "_blank")}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+                className="bg-slate-700 hover:bg-slate-600 text-white"
               />
             </div>
           </div>
 
-          {/* Next steps */}
-          <div className="bg-violet-50 border border-violet-100 rounded-2xl p-5 mb-6">
-            <p className="text-sm font-bold text-violet-700 mb-3 flex items-center gap-2">
+          <div className="bg-slate-800/60 border border-violet-500/20 rounded-2xl p-5 mb-6">
+            <p className="text-sm font-bold text-violet-300 mb-3 flex items-center gap-2">
               <Sparkles className="w-4 h-4" /> What's next?
             </p>
             <ul className="space-y-2">
@@ -251,7 +244,7 @@ export default function CompletePage() {
                 "Set up Razorpay for payments",
                 "Customise your booking page colours",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-2 text-sm text-violet-700">
+                <li key={item} className="flex items-center gap-2 text-sm text-slate-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />
                   {item}
                 </li>
@@ -260,18 +253,17 @@ export default function CompletePage() {
           </div>
         </main>
 
-        {/* Sticky CTA */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-100 px-4 py-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-sm border-t border-slate-800 px-4 py-4">
           <div className="max-w-lg mx-auto">
             <button
               onClick={goToDashboard}
-              className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200 shadow-lg shadow-violet-200"
+              className="w-full flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-400 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200"
             >
               <LayoutDashboard className="w-4 h-4" />
               Go to Dashboard
               <ArrowRight className="w-4 h-4" />
             </button>
-            <p className="text-center text-xs text-gray-400 mt-2">
+            <p className="text-center text-xs text-slate-500 mt-2">
               Manage bookings, staff, and analytics from your dashboard
             </p>
           </div>

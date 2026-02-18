@@ -44,23 +44,19 @@ function ConfigAnimation({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-8 text-center">
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+      <div className="w-full max-w-sm bg-slate-900/80 border border-slate-700 rounded-2xl p-8 text-center">
         <div className="text-4xl mb-4 animate-bounce">🎉</div>
-        <h2 className="text-xl font-bold text-gray-900 mb-1">
+        <h2 className="text-xl font-bold text-white mb-1">
           Setting up your business…
         </h2>
-        <p className="text-sm text-gray-500 mb-6">Just a moment!</p>
-
-        {/* Progress bar */}
-        <div className="h-2 bg-gray-100 rounded-full overflow-hidden mb-6">
+        <p className="text-sm text-slate-400 mb-6">Just a moment!</p>
+        <div className="h-2 bg-slate-800 rounded-full overflow-hidden mb-6">
           <div
-            className="h-full bg-gradient-to-r from-violet-500 to-purple-600 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
-
-        {/* Step list */}
         <ul className="space-y-2 text-left">
           {CONFIG_STEPS_TEXT.map((step) => (
             <li
@@ -68,8 +64,8 @@ function ConfigAnimation({ onDone }: { onDone: () => void }) {
               className={cn(
                 "text-sm transition-all duration-300",
                 visibleSteps.includes(step)
-                  ? "text-gray-700 opacity-100 translate-y-0"
-                  : "text-gray-300 opacity-0 translate-y-2"
+                  ? "text-slate-200 opacity-100 translate-y-0"
+                  : "text-slate-600 opacity-0 translate-y-2"
               )}
             >
               {step}
@@ -108,45 +104,45 @@ function ServiceRow({
 
   if (editing) {
     return (
-      <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 space-y-3">
+      <div className="bg-slate-800 border border-slate-600 rounded-xl p-4 space-y-3">
         <input
           value={draft.name}
           onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-          className="w-full px-3 py-2 rounded-lg border border-violet-200 bg-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-violet-400"
+          className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-800 text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-violet-400"
           placeholder="Service name"
         />
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Price (₹)</label>
+            <label className="text-xs text-slate-400 mb-1 block">Price (₹)</label>
             <input
               type="number"
               value={draft.price}
               onChange={(e) => setDraft({ ...draft, price: Number(e.target.value) })}
-              className="w-full px-3 py-2 rounded-lg border border-violet-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Duration (mins)</label>
+            <label className="text-xs text-slate-400 mb-1 block">Duration (mins)</label>
             <input
               type="number"
               value={draft.duration_minutes}
               onChange={(e) =>
                 setDraft({ ...draft, duration_minutes: Number(e.target.value) })
               }
-              className="w-full px-3 py-2 rounded-lg border border-violet-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+              className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
             />
           </div>
         </div>
         <div className="flex gap-2">
           <button
             onClick={saveEdit}
-            className="flex items-center gap-1 bg-violet-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-violet-700 transition-colors"
+            className="flex items-center gap-1 bg-violet-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-violet-400 transition-colors"
           >
             <Check className="w-3 h-3" /> Save
           </button>
           <button
             onClick={cancelEdit}
-            className="flex items-center gap-1 bg-gray-100 text-gray-600 text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-gray-200 transition-colors"
+            className="flex items-center gap-1 bg-slate-700 text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-slate-600 transition-colors"
           >
             <X className="w-3 h-3" /> Cancel
           </button>
@@ -156,10 +152,10 @@ function ServiceRow({
   }
 
   return (
-    <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-xl p-3 group hover:border-violet-200 transition-colors">
+    <div className="flex items-center gap-3 bg-slate-800/60 border border-slate-700 rounded-xl p-3 group hover:border-violet-500/30 transition-colors">
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-gray-800 truncate">{service.name}</p>
-        <p className="text-xs text-gray-500">
+        <p className="text-sm font-semibold text-white truncate">{service.name}</p>
+        <p className="text-xs text-slate-400">
           ₹{service.price.toLocaleString()} &nbsp;·&nbsp; {service.duration_minutes} mins
           {service.advance_amount > 0 && (
             <> &nbsp;·&nbsp; ₹{service.advance_amount} advance</>
@@ -169,13 +165,13 @@ function ServiceRow({
       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={() => setEditing(true)}
-          className="p-1.5 rounded-lg hover:bg-violet-50 text-gray-400 hover:text-violet-600 transition-colors"
+          className="p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-violet-400 transition-colors"
         >
           <Edit2 className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={onDelete}
-          className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+          className="p-1.5 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -252,20 +248,19 @@ export default function CustomizationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100">
+    <div className="min-h-screen bg-slate-950 text-white">
+      <header className="sticky top-0 z-10 bg-slate-950/90 backdrop-blur-sm border-b border-slate-800">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center gap-3">
           <button
             onClick={() => { goBack(); router.push("/onboarding/business-details"); }}
-            className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
+            className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <span className="text-xl font-bold text-violet-600">📅 LogicAutomate</span>
+          <span className="text-xl font-bold text-violet-400">📅 LogicAutomate</span>
           <button
             onClick={handleSkip}
-            className="ml-auto flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            className="ml-auto flex items-center gap-1 text-sm text-slate-400 hover:text-white transition-colors"
           >
             <SkipForward className="w-3.5 h-3.5" /> Skip for now
           </button>
@@ -277,13 +272,13 @@ export default function CustomizationPage() {
 
         <div className="flex items-center gap-3 mb-2">
           <span className="text-3xl">{selectedIndustry?.icon ?? "🏢"}</span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">
             Review your services
           </h1>
         </div>
-        <p className="text-gray-500 text-sm mb-7">
+        <p className="text-slate-400 text-sm mb-7">
           We've pre-loaded the most common services for{" "}
-          <span className="font-semibold text-violet-600">
+          <span className="font-semibold text-violet-400">
             {selectedIndustry?.name}
           </span>
           . Edit, remove, or add more.
@@ -308,14 +303,14 @@ export default function CustomizationPage() {
         {/* Add service */}
         <button
           onClick={addService}
-          className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-violet-200 text-violet-500 hover:border-violet-400 hover:text-violet-600 hover:bg-violet-50 rounded-xl py-3 text-sm font-semibold transition-all duration-200"
+          className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-slate-600 text-violet-400 hover:border-violet-500 hover:text-violet-300 hover:bg-slate-800/80 rounded-xl py-3 text-sm font-semibold transition-all duration-200"
         >
           <Plus className="w-4 h-4" /> Add Service
         </button>
 
         {/* Info card */}
-        <div className="mt-6 p-4 bg-amber-50 border border-amber-100 rounded-xl">
-          <p className="text-xs text-amber-700 leading-relaxed">
+        <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+          <p className="text-xs text-amber-300 leading-relaxed">
             💡 <span className="font-semibold">You can always change this later</span> from
             your dashboard. These services will be shown on your public booking page.
           </p>
@@ -323,12 +318,12 @@ export default function CustomizationPage() {
       </main>
 
       {/* Sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-100 px-4 py-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-sm border-t border-slate-800 px-4 py-4">
         <div className="max-w-lg mx-auto">
           <button
             onClick={handleContinue}
             disabled={isNavigating || activeServices.length === 0}
-            className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200 shadow-lg shadow-violet-200 disabled:shadow-none"
+            className="w-full flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-400 disabled:bg-slate-700 disabled:text-slate-500 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200"
           >
             {isNavigating ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> One moment…</>
