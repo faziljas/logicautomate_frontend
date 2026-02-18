@@ -41,15 +41,15 @@ export default function EnterPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden flex flex-col">
       <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
+      <button
+        type="button"
+        onClick={handleSignOut}
+        className="absolute top-4 right-4 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-violet-400 transition-colors z-10"
+      >
+        <LogOut className="w-4 h-4" />
+        Sign out
+      </button>
       <div className="relative flex-1 max-w-2xl mx-auto w-full px-4 py-8 sm:py-12">
-        <button
-          type="button"
-          onClick={handleSignOut}
-          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-violet-400 mb-8 transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          Sign out
-        </button>
         <div className="text-center mb-10 sm:mb-12">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-2">
             <span className="text-violet-400">Logic</span>Automate
