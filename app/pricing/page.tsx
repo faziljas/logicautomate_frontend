@@ -62,66 +62,66 @@ const plans = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      <div className="max-w-6xl mx-auto px-4 py-16 sm:py-24">
+    <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
+      <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
+      <div className="relative max-w-6xl mx-auto px-4 py-8 sm:py-12">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-violet-600 mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-violet-400 mb-8 transition-colors"
         >
           ← Back to home
         </Link>
 
-        <div className="text-center mb-16">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-3">
-            Simple, transparent <span className="text-violet-600">pricing</span>
+        <div className="text-center mb-10 sm:mb-14">
+          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-2">
+            Simple, transparent{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">
+              pricing
+            </span>
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-slate-400 max-w-2xl mx-auto">
             Start free. Upgrade when you need WhatsApp, SMS, or more locations.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {plans.map((plan) => {
             const Icon = plan.icon;
             return (
               <div
                 key={plan.name}
-                className={`relative rounded-2xl border-2 p-6 sm:p-8 flex flex-col ${
+                className={`relative rounded-2xl border p-6 sm:p-8 flex flex-col ${
                   plan.highlighted
-                    ? "border-violet-400 bg-white shadow-xl shadow-violet-100/50 scale-[1.02]"
-                    : "border-gray-200 bg-white hover:border-violet-200"
+                    ? "border-violet-500/40 bg-slate-900/80 shadow-lg shadow-violet-500/10"
+                    : "border-slate-700/50 bg-slate-900/50 hover:border-slate-600"
                 }`}
               >
                 {plan.highlighted && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-violet-600 text-white text-xs font-semibold">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-violet-500 text-white text-xs font-semibold">
                     Popular
                   </span>
                 )}
                 <div className="flex items-center gap-3 mb-4">
                   <div
                     className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      plan.highlighted ? "bg-violet-100" : "bg-gray-100"
+                      plan.highlighted ? "bg-violet-500/20" : "bg-slate-700/50"
                     }`}
                   >
-                    <Icon
-                      className={plan.highlighted ? "w-5 h-5 text-violet-600" : "w-5 h-5 text-gray-600"}
-                    />
+                    <Icon className={plan.highlighted ? "w-5 h-5 text-violet-400" : "w-5 h-5 text-slate-400"} />
                   </div>
                   <div>
-                    <h2 className="font-bold text-gray-900 text-lg">{plan.name}</h2>
-                    <p className="text-sm text-gray-500">{plan.description}</p>
+                    <h2 className="font-bold text-white text-lg">{plan.name}</h2>
+                    <p className="text-sm text-slate-400">{plan.description}</p>
                   </div>
                 </div>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-3xl font-bold text-gray-900">{plan.price}</span>
-                  {plan.period && (
-                    <span className="text-gray-500 font-medium">{plan.period}</span>
-                  )}
+                  <span className="text-3xl font-bold text-white">{plan.price}</span>
+                  {plan.period && <span className="text-slate-400 font-medium">{plan.period}</span>}
                 </div>
                 <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm text-gray-600">
-                      <Check className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                    <li key={feature} className="flex items-start gap-2 text-sm text-slate-400">
+                      <Check className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                       {feature}
                     </li>
                   ))}
@@ -130,8 +130,8 @@ export default function PricingPage() {
                   href={plan.href}
                   className={`inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-semibold transition-colors ${
                     plan.highlighted
-                      ? "bg-violet-600 hover:bg-violet-700 text-white"
-                      : "bg-gray-100 hover:bg-gray-200 text-gray-900"
+                      ? "bg-violet-500 hover:bg-violet-400 text-white"
+                      : "bg-slate-800 hover:bg-slate-700 text-white border border-slate-600"
                   }`}
                 >
                   {plan.cta}
@@ -142,21 +142,15 @@ export default function PricingPage() {
           })}
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-12">
+        <p className="text-center text-sm text-slate-500 mt-10">
           All plans include a 14-day free trial of Pro features. No credit card required to start.
         </p>
 
-        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-wrap justify-center gap-6 text-sm">
-          <Link href="/privacy" className="text-gray-500 hover:text-violet-600">
-            Privacy Policy
-          </Link>
-          <Link href="/terms" className="text-gray-500 hover:text-violet-600">
-            Terms of Service
-          </Link>
-          <Link href="/" className="text-gray-500 hover:text-violet-600">
-            Home
-          </Link>
-        </div>
+        <footer className="mt-10 pt-8 border-t border-slate-800 flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+          <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms of Service</Link>
+          <Link href="/" className="hover:text-violet-400 transition-colors">Home</Link>
+        </footer>
       </div>
     </div>
   );

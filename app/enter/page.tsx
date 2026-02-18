@@ -1,8 +1,7 @@
 "use client";
 
 // ============================================================
-// LogicAutomate — Enter / Portal (post sign-in)
-// Shown only when signed in. No sign-in on this page.
+// LogicAutomate — Enter / Portal (post sign-in) — Dark
 // ============================================================
 
 import { useEffect, useState } from "react";
@@ -28,61 +27,60 @@ export default function EnterPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-gray-500">Loading…</div>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="text-slate-400">Loading…</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      <div className="max-w-2xl mx-auto px-4 py-16 sm:py-24">
+    <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
+      <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
+      <div className="relative max-w-2xl mx-auto px-4 py-8 sm:py-12">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-violet-600 mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-violet-400 mb-8 transition-colors"
         >
           ← Back to home
         </Link>
 
-        {/* Logo & Hero */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-3">
-            <span className="text-violet-600">Logic</span>Automate
+        <div className="text-center mb-10 sm:mb-12">
+          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-2">
+            <span className="text-violet-400">Logic</span>Automate
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-slate-400">
             Appointment booking for salons, clinics, and service businesses
           </p>
         </div>
 
-        {/* Cards — no sign-in here; Owner goes to dashboard */}
         <div className="space-y-4">
           <Link
             href="/dashboard"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-white border-2 border-violet-100 hover:border-violet-300 hover:shadow-lg shadow-violet-100 transition-all duration-200 group"
+            className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-violet-500/30 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors">
-                <LayoutDashboard className="w-6 h-6 text-violet-600" />
+              <div className="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center group-hover:bg-violet-500/30 transition-colors">
+                <LayoutDashboard className="w-6 h-6 text-violet-400" />
               </div>
               <div className="text-left">
-                <h2 className="font-bold text-gray-900 text-lg">Owner Dashboard</h2>
-                <p className="text-sm text-gray-500">Manage bookings, staff, and analytics</p>
+                <h2 className="font-bold text-white text-lg">Owner Dashboard</h2>
+                <p className="text-sm text-slate-400">Manage bookings, staff, and analytics</p>
               </div>
             </div>
-            <ArrowRight className="w-5 h-5 text-violet-500 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5 text-violet-400 group-hover:translate-x-1 transition-transform" />
           </Link>
 
           <Link
             href="/staff/login"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-white border-2 border-slate-100 hover:border-slate-300 hover:shadow-lg shadow-slate-100 transition-all duration-200 group"
+            className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-slate-600 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center group-hover:bg-pink-200 transition-colors">
-                <UserCog className="w-6 h-6 text-pink-600" />
+              <div className="w-12 h-12 rounded-xl bg-fuchsia-500/20 flex items-center justify-center group-hover:bg-fuchsia-500/30 transition-colors">
+                <UserCog className="w-6 h-6 text-fuchsia-400" />
               </div>
               <div className="text-left">
-                <h2 className="font-bold text-gray-900 text-lg">Staff Portal</h2>
-                <p className="text-sm text-gray-500">View schedule, complete appointments</p>
+                <h2 className="font-bold text-white text-lg">Staff Portal</h2>
+                <p className="text-sm text-slate-400">View schedule, complete appointments</p>
               </div>
             </div>
             <ArrowRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
@@ -90,37 +88,30 @@ export default function EnterPage() {
 
           <Link
             href="/onboarding/industry-selection"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-white border-2 border-emerald-100 hover:border-emerald-300 hover:shadow-lg shadow-emerald-100 transition-all duration-200 group"
+            className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-emerald-500/30 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                <Calendar className="w-6 h-6 text-emerald-600" />
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-colors">
+                <Calendar className="w-6 h-6 text-emerald-400" />
               </div>
               <div className="text-left">
-                <h2 className="font-bold text-gray-900 text-lg">Create your business</h2>
-                <p className="text-sm text-gray-500">Set up in ~3 minutes, start taking bookings</p>
+                <h2 className="font-bold text-white text-lg">Create your business</h2>
+                <p className="text-sm text-slate-400">Set up in ~3 minutes, start taking bookings</p>
               </div>
             </div>
-            <ArrowRight className="w-5 h-5 text-emerald-500 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        <p className="text-center text-sm text-gray-400 mt-8">
+        <p className="text-center text-sm text-slate-500 mt-8">
           Customers book via your link:{" "}
-          <span className="font-mono text-gray-600">logicautomate.app/your-business</span>
+          <span className="font-mono text-slate-400">logicautomate.app/your-business</span>
         </p>
 
-        {/* Footer */}
-        <footer className="mt-16 pt-8 border-t border-gray-200 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
-          <Link href="/pricing" className="hover:text-violet-600 transition-colors">
-            Pricing
-          </Link>
-          <Link href="/privacy" className="hover:text-violet-600 transition-colors">
-            Privacy
-          </Link>
-          <Link href="/terms" className="hover:text-violet-600 transition-colors">
-            Terms
-          </Link>
+        <footer className="mt-12 pt-8 border-t border-slate-800 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-500">
+          <Link href="/pricing" className="hover:text-violet-400 transition-colors">Pricing</Link>
+          <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy</Link>
+          <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms</Link>
         </footer>
       </div>
     </div>

@@ -46,48 +46,42 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      <div className="max-w-3xl mx-auto px-4 py-16 sm:py-24">
+    <div className="min-h-screen bg-slate-950 text-white">
+      <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-violet-600 mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-violet-400 mb-8 transition-colors"
         >
           ← Back to home
         </Link>
 
-        <header className="mb-12">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+        <header className="mb-10">
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
             Privacy Policy
           </h1>
-          <p className="text-gray-600">
+          <p className="text-slate-400">
             Last updated: February 2025. LogicAutomate (“we”, “us”) is committed to protecting your privacy.
           </p>
         </header>
 
-        <div className="prose prose-gray max-w-none">
-          <p className="text-gray-600 mb-10">
+        <div className="max-w-none">
+          <p className="text-slate-400 mb-8">
             This privacy policy explains how we collect, use, store, and protect your information when you use LogicAutomate and related services.
           </p>
 
           {sections.map((section) => (
-            <section key={section.title} className="mb-10">
-              <h2 className="text-xl font-bold text-gray-900 mb-3">{section.title}</h2>
-              <p className="text-gray-600 leading-relaxed">{section.content}</p>
+            <section key={section.title} className="mb-8">
+              <h2 className="text-lg font-bold text-white mb-2">{section.title}</h2>
+              <p className="text-slate-400 leading-relaxed">{section.content}</p>
             </section>
           ))}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-wrap gap-6 text-sm">
-          <Link href="/" className="text-gray-500 hover:text-violet-600">
-            Home
-          </Link>
-          <Link href="/pricing" className="text-gray-500 hover:text-violet-600">
-            Pricing
-          </Link>
-          <Link href="/terms" className="text-gray-500 hover:text-violet-600">
-            Terms of Service
-          </Link>
-        </div>
+        <footer className="mt-12 pt-8 border-t border-slate-800 flex flex-wrap gap-6 text-sm text-slate-500">
+          <Link href="/" className="hover:text-violet-400 transition-colors">Home</Link>
+          <Link href="/pricing" className="hover:text-violet-400 transition-colors">Pricing</Link>
+          <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms of Service</Link>
+        </footer>
       </div>
     </div>
   );
