@@ -88,7 +88,7 @@ export default function BusinessDetailsPage() {
       e.name = "Business name must be 50 characters or fewer";
     const phoneRes = validatePhone(bd.phone.trim());
     if (!bd.phone.trim() || !phoneRes.valid)
-      e.phone = phoneRes.error ?? "Enter a valid phone number with country code (e.g. +1 234 567 8900, +91 98765 43210, +65 9123 4567)";
+      e.phone = phoneRes.error ?? "Enter a valid Indian phone number with country code (e.g. +91 98765 43210)";
     if (!bd.email.trim())
       e.email = "Email is required for dashboard login";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bd.email))
@@ -229,7 +229,7 @@ export default function BusinessDetailsPage() {
                 type="tel"
                 value={bd.phone}
                 onChange={(e) => setField("phone", e.target.value)}
-                placeholder="+1 234 567 8900, +91 98765 43210, +65 9123 4567"
+                placeholder="+91 98765 43210"
                 className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-400 ${
                   errors.phone
                     ? inputError
@@ -241,7 +241,7 @@ export default function BusinessDetailsPage() {
               <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
             ) : (
               <p className="mt-1 text-xs text-slate-500">
-                Include country code (US +1, India +91, UK +44, Singapore +65). Confirmations & reminders sent via WhatsApp.
+                Include country code +91 for India. Confirmations & reminders sent via WhatsApp.
               </p>
             )}
           </div>

@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
 
   const phoneValidation = validatePhone(phone ?? "");
   if (!phone || !phoneValidation.valid) {
-    errors.phone = phoneValidation.error ?? "Enter a valid phone number with country code (e.g. +1 234 567 8900, +91 98765 43210, +65 9123 4567)";
+    errors.phone = phoneValidation.error ?? "Enter a valid Indian phone number with country code (e.g. +91 98765 43210)";
   }
 
   if (!email?.trim()) {

@@ -51,7 +51,7 @@ export function CustomerForm({
             type="tel"
             value={value.phone}
             onChange={(e) => set("phone", e.target.value)}
-            placeholder="+1 234 567 8900, +91 98765 43210, +65 9123 4567"
+            placeholder="+91 98765 43210"
             className={inputCls(!!errors.phone)}
           />
         </Field>

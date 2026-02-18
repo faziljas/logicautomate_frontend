@@ -23,9 +23,9 @@ export type PhoneValidationResult = {
 
 /**
  * Validates and normalises a phone number to E.164.
- * Supports US (+1), India (+91), UK (+44), Europe, Singapore (+65), etc.
+ * Supports India (+91) phone numbers.
  *
- * @param phone - Raw input (e.g. "+1 234 567 8900", "+91 98765 43210")
+ * @param phone - Raw input (e.g. "+91 98765 43210")
  * @param defaultCountry - Used when number has no country code (e.g. "9876543210" → India)
  */
 export function validatePhone(phone: string, defaultCountry?: CountryCode): PhoneValidationResult {
@@ -48,7 +48,7 @@ export function validatePhone(phone: string, defaultCountry?: CountryCode): Phon
     return {
       valid: false,
       e164: "",
-      error: "Enter a valid phone number with country code (e.g. +1 234 567 8900, +91 98765 43210, +65 9123 4567)",
+      error: "Enter a valid Indian phone number with country code (e.g. +91 98765 43210)",
     };
   }
 
@@ -56,7 +56,7 @@ export function validatePhone(phone: string, defaultCountry?: CountryCode): Phon
     return {
       valid: false,
       e164: "",
-      error: "Enter a valid phone number for your country",
+      error: "Enter a valid Indian phone number",
     };
   }
 

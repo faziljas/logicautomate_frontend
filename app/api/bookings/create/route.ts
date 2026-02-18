@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     : null;
   if (!customerDetails?.phone?.trim()) errors["customerDetails.phone"] = "Phone is required";
   else if (phoneValidation && !phoneValidation.valid) {
-    errors["customerDetails.phone"] = phoneValidation.error ?? "Enter a valid phone number with country code";
+    errors["customerDetails.phone"] = phoneValidation.error ?? "Enter a valid Indian phone number with country code (e.g. +91 98765 43210)";
   }
 
   if (Object.keys(errors).length > 0) {

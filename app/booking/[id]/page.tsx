@@ -102,7 +102,7 @@ export default function CustomerBookingPage() {
               Enter the phone number you used when booking
             </p>
             <p className="text-gray-500 text-xs mb-6">
-              Include your country code (e.g. +65 for Singapore, +91 for India, +44 for UK)
+              Include country code +91 for India
             </p>
             <form
               onSubmit={(e) => {
@@ -120,7 +120,7 @@ export default function CustomerBookingPage() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="e.g. +65 8153 2064, +91 98765 43210"
+                  placeholder="e.g. +91 98765 43210"
                   required
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                 />

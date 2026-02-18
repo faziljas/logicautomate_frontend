@@ -261,7 +261,7 @@ function BookingFlowInner({
       ? validatePhone(customerDetails.phone, "IN")
       : { valid: false, error: "Phone is required" };
     if (!customerDetails.phone.trim()) e.phone = "Phone is required";
-    else if (!phoneRes.valid) e.phone = phoneRes.error ?? "Enter a valid phone number with country code";
+    else if (!phoneRes.valid) e.phone = phoneRes.error ?? "Enter a valid Indian phone number with country code (e.g. +91 98765 43210)";
     setFormErrors(e);
     return Object.keys(e).length === 0;
   }, [customerDetails]);
