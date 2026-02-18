@@ -8,7 +8,7 @@ export const metadata = {
 const sections = [
   {
     title: "1. Acceptance of terms",
-    content: `By accessing or using LogicAutomate (“Service”), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service. We may update these terms from time to time; continued use after changes means you accept the updated terms.`,
+    content: `By accessing or using AnyBooking (“Service”), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service. We may update these terms from time to time; continued use after changes means you accept the updated terms.`,
   },
   {
     title: "2. Description of service",
@@ -78,7 +78,7 @@ export default function TermsPage() {
 
         <div className="max-w-none">
           <p className="text-slate-400 mb-8">
-            These Terms of Service (“Terms”) govern your use of the LogicAutomate website, platform, and related services.
+            These Terms of Service (“Terms”) govern your use of the AnyBooking website, platform, and related services.
           </p>
 
           {sections.map((section) => (

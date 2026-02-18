@@ -60,7 +60,7 @@ export default function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="text-slate-400">
-            Last updated: February 2025. LogicAutomate (“we”, “us”) is committed to protecting your privacy.
+            Last updated: February 2025. AnyBooking (“we”, “us”) is committed to protecting your privacy.
           </p>
         </header>
 
