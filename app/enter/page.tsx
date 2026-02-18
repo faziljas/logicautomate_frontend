@@ -37,13 +37,6 @@ export default function EnterPage() {
     <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
       <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
       <div className="relative max-w-2xl mx-auto px-4 py-8 sm:py-12">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-violet-400 mb-8 transition-colors"
-        >
-          ← Back to home
-        </Link>
-
         <div className="text-center mb-10 sm:mb-12">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-2">
             <span className="text-violet-400">Logic</span>Automate
