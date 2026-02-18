@@ -2,91 +2,114 @@
 
 // ============================================================
 // LogicAutomate — Landing Page (Root)
-// Entry point: Google sign-in on page, staff login, onboarding
+// Marketing page: no sign-in. CTAs go to /enter for sign-in.
 // ============================================================
 
 import Link from "next/link";
-import { LayoutDashboard, UserCog, Calendar, ArrowRight } from "lucide-react";
-import { GoogleSignInButton } from "@/components/landing/GoogleSignInButton";
+import { ArrowRight, Calendar, Users, Bell } from "lucide-react";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      <div className="max-w-2xl mx-auto px-4 py-16 sm:py-24">
-        {/* Logo & Hero */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-3">
+      <div className="max-w-4xl mx-auto px-4 py-16 sm:py-24">
+        {/* Header */}
+        <header className="flex items-center justify-between mb-16 sm:mb-24">
+          <span className="text-xl font-bold text-gray-900">
             <span className="text-violet-600">Logic</span>Automate
-          </h1>
-          <p className="text-lg text-gray-600">
-            Appointment booking for salons, clinics, and service businesses
-          </p>
-        </div>
+          </span>
+          <nav className="flex items-center gap-6 text-sm">
+            <Link href="/pricing" className="text-gray-600 hover:text-violet-600 transition-colors">
+              Pricing
+            </Link>
+            <Link href="/enter" className="text-violet-600 font-semibold hover:text-violet-700">
+              Sign in
+            </Link>
+            <Link
+              href="/enter"
+              className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl bg-violet-600 text-white font-semibold hover:bg-violet-700 transition-colors"
+            >
+              Get started
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </nav>
+        </header>
 
-        {/* Cards */}
-        <div className="space-y-4">
-          {/* Owner Dashboard — Google sign-in on landing page */}
-          <div className="p-5 rounded-2xl bg-white border-2 border-violet-100 shadow-violet-100 transition-all duration-200">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center">
-                <LayoutDashboard className="w-6 h-6 text-violet-600" />
-              </div>
-              <div className="text-left">
-                <h2 className="font-bold text-gray-900 text-lg">Owner Dashboard</h2>
-                <p className="text-sm text-gray-500">Manage bookings, staff, and analytics</p>
-              </div>
+        {/* Hero */}
+        <section className="text-center mb-20 sm:mb-28">
+          <h1 className="text-4xl sm:text-6xl font-extrabold text-gray-900 mb-4 tracking-tight">
+            Appointment booking for{" "}
+            <span className="text-violet-600">salons, clinics</span> and service businesses
+          </h1>
+          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-10">
+            Set up in minutes. Let customers book 24/7. Manage staff and schedules in one place.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/enter"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-8 rounded-xl bg-violet-600 text-white font-semibold text-lg hover:bg-violet-700 transition-colors shadow-lg shadow-violet-200"
+            >
+              Get started free
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              href="/pricing"
+              className="w-full sm:w-auto inline-flex items-center justify-center py-4 px-8 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:border-violet-300 hover:bg-violet-50/50 transition-colors"
+            >
+              View pricing
+            </Link>
+          </div>
+        </section>
+
+        {/* Value props */}
+        <section className="grid sm:grid-cols-3 gap-6 mb-20 sm:mb-28">
+          <div className="p-6 rounded-2xl bg-white border border-violet-100 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-4">
+              <Calendar className="w-5 h-5 text-violet-600" />
             </div>
-            <GoogleSignInButton variant="card" redirectTo="/dashboard">
-              Continue with Google
-            </GoogleSignInButton>
-            <p className="text-center text-sm text-gray-500 mt-3">
-              Or{" "}
-              <Link href="/login" className="text-violet-600 font-medium hover:underline">
-                sign in with email
-              </Link>
+            <h3 className="font-bold text-gray-900 mb-2">Online booking</h3>
+            <p className="text-sm text-gray-600">
+              Your own booking page. Customers book anytime; you get fewer no-shows with reminders.
             </p>
           </div>
-
-          <Link
-            href="/staff/login"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-white border-2 border-slate-100 hover:border-slate-300 hover:shadow-lg shadow-slate-100 transition-all duration-200 group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center group-hover:bg-pink-200 transition-colors">
-                <UserCog className="w-6 h-6 text-pink-600" />
-              </div>
-              <div className="text-left">
-                <h2 className="font-bold text-gray-900 text-lg">Staff Portal</h2>
-                <p className="text-sm text-gray-500">View schedule, complete appointments</p>
-              </div>
+          <div className="p-6 rounded-2xl bg-white border border-violet-100 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-4">
+              <Users className="w-5 h-5 text-violet-600" />
             </div>
-            <ArrowRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </Link>
-
-          <Link
-            href="/onboarding/industry-selection"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-white border-2 border-emerald-100 hover:border-emerald-300 hover:shadow-lg shadow-emerald-100 transition-all duration-200 group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                <Calendar className="w-6 h-6 text-emerald-600" />
-              </div>
-              <div className="text-left">
-                <h2 className="font-bold text-gray-900 text-lg">Create your business</h2>
-                <p className="text-sm text-gray-500">Set up in ~3 minutes, start taking bookings</p>
-              </div>
+            <h3 className="font-bold text-gray-900 mb-2">Staff & calendar</h3>
+            <p className="text-sm text-gray-600">
+              Manage staff, services, and availability. One dashboard for your whole team.
+            </p>
+          </div>
+          <div className="p-6 rounded-2xl bg-white border border-violet-100 shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center mb-4">
+              <Bell className="w-5 h-5 text-violet-600" />
             </div>
-            <ArrowRight className="w-5 h-5 text-emerald-500 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
+            <h3 className="font-bold text-gray-900 mb-2">Reminders</h3>
+            <p className="text-sm text-gray-600">
+              Email, SMS, and WhatsApp reminders so customers show up and you stay full.
+            </p>
+          </div>
+        </section>
 
-        <p className="text-center text-sm text-gray-400 mt-8">
-          Customers book via your link:{" "}
-          <span className="font-mono text-gray-600">logicautomate.app/your-business</span>
-        </p>
+        {/* CTA */}
+        <section className="text-center p-8 sm:p-12 rounded-3xl bg-white border-2 border-violet-100 shadow-violet-100/50">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+            Ready to take bookings?
+          </h2>
+          <p className="text-gray-600 mb-6 max-w-lg mx-auto">
+            Create your business in a few minutes. No credit card required.
+          </p>
+          <Link
+            href="/enter"
+            className="inline-flex items-center gap-2 py-3 px-6 rounded-xl bg-violet-600 text-white font-semibold hover:bg-violet-700 transition-colors"
+          >
+            Sign in or get started
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </section>
 
         {/* Footer */}
-        <footer className="mt-16 pt-8 border-t border-gray-200 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
+        <footer className="mt-20 pt-8 border-t border-gray-200 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
           <Link href="/pricing" className="hover:text-violet-600 transition-colors">
             Pricing
           </Link>

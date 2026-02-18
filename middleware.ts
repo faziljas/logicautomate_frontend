@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 
 const RESERVED_PATHS = new Set([
   "", "dashboard", "login", "onboarding", "staff", "booking", "api", "auth",
+  "enter", "pricing", "privacy", "terms",
   "_next", "favicon.ico", "manifest.json", "sitemap.xml", "robots.txt",
 ]);
 
