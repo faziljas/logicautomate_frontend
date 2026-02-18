@@ -2,11 +2,12 @@
 
 // ============================================================
 // LogicAutomate — Landing Page (Root)
-// Entry point: dashboard login, staff login, onboarding
+// Entry point: Google sign-in on page, staff login, onboarding
 // ============================================================
 
 import Link from "next/link";
 import { LayoutDashboard, UserCog, Calendar, ArrowRight } from "lucide-react";
+import { GoogleSignInButton } from "@/components/landing/GoogleSignInButton";
 
 export default function LandingPage() {
   return (
@@ -24,12 +25,10 @@ export default function LandingPage() {
 
         {/* Cards */}
         <div className="space-y-4">
-          <Link
-            href="/login"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-white border-2 border-violet-100 hover:border-violet-300 hover:shadow-lg shadow-violet-100 transition-all duration-200 group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors">
+          {/* Owner Dashboard — Google sign-in on landing page */}
+          <div className="p-5 rounded-2xl bg-white border-2 border-violet-100 shadow-violet-100 transition-all duration-200">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center">
                 <LayoutDashboard className="w-6 h-6 text-violet-600" />
               </div>
               <div className="text-left">
@@ -37,8 +36,16 @@ export default function LandingPage() {
                 <p className="text-sm text-gray-500">Manage bookings, staff, and analytics</p>
               </div>
             </div>
-            <ArrowRight className="w-5 h-5 text-violet-500 group-hover:translate-x-1 transition-transform" />
-          </Link>
+            <GoogleSignInButton variant="card" redirectTo="/dashboard">
+              Continue with Google
+            </GoogleSignInButton>
+            <p className="text-center text-sm text-gray-500 mt-3">
+              Or{" "}
+              <Link href="/login" className="text-violet-600 font-medium hover:underline">
+                sign in with email
+              </Link>
+            </p>
+          </div>
 
           <Link
             href="/staff/login"
