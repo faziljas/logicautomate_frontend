@@ -7,7 +7,8 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, Clock, RotateCcw } from "lucide-react";
+import { ArrowRight, Clock, RotateCcw, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { useOnboarding } from "@/context/OnboardingContext";
 import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
 import { IndustryCard, INDUSTRY_LIST } from "@/components/onboarding/IndustryCard";
@@ -87,6 +88,13 @@ function IndustrySelectionContent() {
       </header>
 
       <main className="relative max-w-3xl mx-auto px-4 pb-28 pt-6 sm:pt-8">
+        <Link
+          href="/enter"
+          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-violet-400 mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Link>
         <ProgressIndicator currentStep={state.currentStep} className="mb-8" />
 
         <div className="text-center mb-6 sm:mb-8">
