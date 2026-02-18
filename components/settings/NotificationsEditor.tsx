@@ -145,8 +145,8 @@ export default function NotificationsEditor({
       </div>
 
       <p className="text-xs text-slate-500">
-        Note: Email and SMS require integration (e.g. Resend). WhatsApp uses Meta.
-        configured, these toggles will control delivery. WhatsApp remains the
+        Note: Email reminders use Resend (set RESEND_API_KEY). WhatsApp uses Meta.
+        Once configured, these toggles control delivery. WhatsApp remains the
         primary channel.
       </p>
 

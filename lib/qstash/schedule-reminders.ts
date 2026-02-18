@@ -20,12 +20,12 @@ function getQStashClient() {
  * - 2 hours before bookingTime
  *
  * @param targetUrl Full URL of /api/send-reminder (e.g. https://yourapp.com/api/send-reminder)
- * @param body Payload to send { bookingId } or { phoneNumber, message }
+ * @param body Payload to send { bookingId, reminderType? } or { phoneNumber, message }
  * @param bookingTime ISO string (e.g. "2026-02-20T14:00:00") or Date
  */
 export async function scheduleReminders(
   targetUrl: string,
-  body: { bookingId?: string; phoneNumber?: string; message?: string },
+  body: { bookingId?: string; reminderType?: "24h" | "2h"; phoneNumber?: string; message?: string },
   bookingTime: string | Date
 ): Promise<{ messageId24h?: string; messageId2h?: string }> {
   const client = getQStashClient();
@@ -43,7 +43,7 @@ export async function scheduleReminders(
   if (notBefore24h > nowSec) {
     const res24 = await client.publishJSON({
       url: targetUrl,
-      body,
+      body: { ...body, reminderType: "24h" as const },
       notBefore: notBefore24h,
     });
     results.messageId24h = (res24 as { messageId?: string })?.messageId;
@@ -52,7 +52,7 @@ export async function scheduleReminders(
   if (notBefore2h > nowSec) {
     const res2 = await client.publishJSON({
       url: targetUrl,
-      body,
+      body: { ...body, reminderType: "2h" as const },
       notBefore: notBefore2h,
     });
     results.messageId2h = (res2 as { messageId?: string })?.messageId;

@@ -1,12 +1,13 @@
 // ============================================================
 // POST /api/send-reminder
 // QStash callback — verifies signature, sends reminder.
-// Body: { bookingId } for real WhatsApp, or { phoneNumber, message } for demo.
+// Body: { bookingId, reminderType?: "24h"|"2h" } for WhatsApp + optional email, or { phoneNumber, message } for demo.
 // ============================================================
 
 import { NextRequest, NextResponse } from "next/server";
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import { createClient } from "@supabase/supabase-js";
+import { Resend } from "resend";
 import { getBusinessConfig } from "@/lib/templates/utils";
 import { sendWhatsApp } from "@/lib/whatsapp/meta-client";
 import type { TemplateVariables } from "@/lib/whatsapp/template-renderer";
@@ -75,8 +76,8 @@ async function handler(request: NextRequest) {
     return NextResponse.json({ success: true, demo: true });
   }
 
-  // Real mode: bookingId → send WhatsApp
-  const { bookingId } = body;
+  // Real mode: bookingId → send WhatsApp + optional email
+  const { bookingId, reminderType = "24h" } = body;
   if (!bookingId) {
     return NextResponse.json({ error: "bookingId or (phoneNumber + message) required" }, { status: 400 });
   }
@@ -87,10 +88,10 @@ async function handler(request: NextRequest) {
     .select(`
       id, business_id, status, booking_date, booking_time, duration_minutes,
       total_amount, advance_paid, custom_data,
-      customers(name, phone),
+      customers(name, phone, email),
       services(name),
       staff(users(name)),
-      businesses(name, address, phone, slug, google_review_link)
+      businesses(name, address, phone, slug, google_review_link, custom_config)
     `)
     .eq("id", bookingId)
     .single();
@@ -137,11 +138,38 @@ async function handler(request: NextRequest) {
     return NextResponse.json({ error: "Customer has no phone" }, { status: 400 });
   }
 
+  const messageType = reminderType === "2h" ? "reminder_2h" : "reminder_24h";
+  const notifications = (row as { businesses?: { custom_config?: { notifications?: Record<string, boolean> } } }).businesses?.custom_config?.notifications;
+  const emailEnabled = reminderType === "2h" ? notifications?.email_reminder_2h : notifications?.email_reminder_24h;
+  const customerEmail = (row as { customers?: { email?: string } }).customers?.email;
+  const businessName = (row as { businesses?: { name?: string } }).businesses?.name ?? "";
+  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "reminders@logicautomate.app";
+
+  // Send email reminder when enabled and Resend is configured
+  if (emailEnabled && customerEmail && process.env.RESEND_API_KEY) {
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const subject = reminderType === "2h"
+        ? `Reminder: Your appointment is in 2 hours — ${businessName}`
+        : `Reminder: Your appointment is tomorrow — ${businessName}`;
+      const text = `Hi ${vars.customer_name},\n\nYour ${vars.service_name} appointment is ${reminderType === "2h" ? "in 2 hours" : "in 24 hours"}.\n\nDate: ${vars.date}\nTime: ${vars.time}\n${businessName}${vars.business_address ? `\n${vars.business_address}` : ""}\n\nSee you soon!`;
+      await resend.emails.send({
+        from: fromEmail,
+        to: customerEmail,
+        subject,
+        text,
+      });
+    } catch (e) {
+      console.error("[send-reminder] Email failed:", e);
+      // Continue; WhatsApp may still succeed
+    }
+  }
+
   try {
     const result = await sendWhatsApp({
       businessId: (row as { business_id: string }).business_id,
       to,
-      messageType: "reminder_24h",
+      messageType,
       variables: vars,
       config,
       bookingId,

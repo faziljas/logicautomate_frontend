@@ -235,6 +235,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 
+  // ── 6b. Free plan: 1 business location only ──────────────
+  const { count: existingBusinessCount } = await supabase
+    .from("businesses")
+    .select("id", { count: "exact", head: true })
+    .eq("owner_id", user.id);
+
+  if (existingBusinessCount != null && existingBusinessCount >= 1) {
+    await supabase.from("users").delete().eq("id", user.id);
+    await supabase.auth.admin.deleteUser(authUserId);
+    return NextResponse.json(
+      { error: "Free plan includes one business location. Upgrade to Pro for more locations." },
+      { status: 403 }
+    );
+  }
+
   // ── 7. Create business ───────────────────────────────────
   const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app").replace(/\/+$/, "");
   const bookingUrl = `${baseUrl}/${finalSlug}`;

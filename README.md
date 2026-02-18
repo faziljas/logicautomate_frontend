@@ -270,6 +270,16 @@ curl -X POST "https://YOUR_DOMAIN/api/admin/apply-template" \
 
 ---
 
+## Pricing & Free plan features
+
+| Feature | Status |
+|--------|--------|
+| **1 business location** | Enforced: free/trial accounts are limited to one business. Onboarding rejects a second business with a clear message; upgrade to Pro for more. |
+| **Email reminders** | Implemented: 24h and 2h reminders are sent when **Settings → Notifications** has "Email 24h reminder" / "Email 2h reminder" enabled and `RESEND_API_KEY` (and optional `RESEND_FROM_EMAIL`) are set. Customer must have an email. |
+| **Staff portal** | Implemented: staff sign in at `/staff/login` (WhatsApp OTP), then access profile, today’s bookings, and customers at `/staff/*`. |
+
+---
+
 ## Next Steps
 
 Module 2 will add the Next.js project scaffold with Supabase client setup.
