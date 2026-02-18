@@ -6,17 +6,28 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ArrowLeft, Loader2, Mail } from "lucide-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const nextUrl = useMemo(
+    () => searchParams.get("next") || "/enter",
+    [searchParams]
+  );
   const supabase = createClientComponentClient();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function getRedirectUrl() {
+    if (typeof window === "undefined") return "";
+    return `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`;
+  }
 
   async function handleMagicLink(e: React.FormEvent) {
     e.preventDefault();
@@ -27,11 +38,10 @@ export default function LoginPage() {
     }
     setLoading(true);
     try {
+      const redirectTo = getRedirectUrl() || `${typeof window !== "undefined" ? window.location.origin : ""}/auth/callback?next=/enter`;
       const { error: err } = await supabase.auth.signInWithOtp({
         email: email.trim().toLowerCase(),
-        options: {
-          emailRedirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/enter`,
-        },
+        options: { emailRedirectTo: redirectTo },
       });
       if (err) {
         setError(err.message ?? "Failed to send magic link");
@@ -50,11 +60,10 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
+      const redirectTo = getRedirectUrl() || `${typeof window !== "undefined" ? window.location.origin : ""}/auth/callback?next=/enter`;
       const { error: err } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: {
-          redirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/auth/callback?next=/enter`,
-        },
+        options: { redirectTo },
       });
       if (err) {
         setError(err.message ?? "Google sign-in failed");
