@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, ArrowRight, Zap, Building2, Sparkles } from "lucide-react";
+import { Check, ArrowRight, Zap, Building2 } from "lucide-react";
 
 export const metadata = {
   title: "Pricing — LogicAutomate",
@@ -41,23 +41,6 @@ const plans = [
     href: "/login",
     highlighted: true,
   },
-  {
-    name: "Enterprise",
-    description: "Custom solutions",
-    price: "Custom",
-    period: "",
-    icon: Sparkles,
-    features: [
-      "Everything in Pro",
-      "Multiple locations",
-      "API access",
-      "Dedicated account manager",
-      "SLA & custom terms",
-    ],
-    cta: "Contact us",
-    href: "mailto:hello@logicautomate.app",
-    highlighted: false,
-  },
 ];
 
 export default function PricingPage() {
@@ -84,7 +67,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto">
           {plans.map((plan) => {
             const Icon = plan.icon;
             return (
