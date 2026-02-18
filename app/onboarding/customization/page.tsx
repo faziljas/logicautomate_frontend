@@ -233,7 +233,6 @@ export default function CustomizationPage() {
   const displayServices = isFreeTier 
     ? activeServices.slice(0, FREE_TIER.maxServices)
     : activeServices;
-  const hasMoreServices = isFreeTier && activeServices.length > FREE_TIER.maxServices;
   const atServiceLimit = isFreeTier && activeServices.length >= FREE_TIER.maxServices;
 
   function addService() {
@@ -320,28 +319,14 @@ export default function CustomizationPage() {
           ))}
         </div>
 
-        {/* Subtle message for free tier users with more services available */}
-        {hasMoreServices && (
-          <div className="mb-4 p-3 bg-slate-800/50 border border-slate-700 rounded-xl">
-            <p className="text-xs text-slate-400 text-center">
-              <span className="text-slate-300">+{activeServices.length - FREE_TIER.maxServices} more service{activeServices.length - FREE_TIER.maxServices !== 1 ? 's' : ''} available.</span>{" "}
-              <a href="/pricing" className="text-violet-400 hover:text-violet-300 underline">
-                Upgrade to Pro
-              </a>{" "}
-              to customize all services.
-            </p>
-          </div>
-        )}
-
         {/* Add service */}
         {atServiceLimit ? (
           <div className="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl">
             <p className="text-xs text-slate-400 text-center">
-              You've added {FREE_TIER.maxServices} services.{" "}
+              Want to add or customize more services?{" "}
               <a href="/pricing" className="text-violet-400 hover:text-violet-300 underline font-medium">
                 Upgrade to Pro
-              </a>{" "}
-              to add more.
+              </a>
             </p>
           </div>
         ) : (
