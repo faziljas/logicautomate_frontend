@@ -21,7 +21,7 @@ const plans = [
       "Email reminders",
     ],
     cta: "Get started free",
-    href: "/onboarding/industry-selection",
+    href: "/login",
     highlighted: false,
   },
   {
@@ -38,7 +38,7 @@ const plans = [
       "Priority support",
     ],
     cta: "Start free trial",
-    href: "/onboarding/industry-selection",
+    href: "/login",
     highlighted: true,
   },
   {
