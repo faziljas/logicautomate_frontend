@@ -46,48 +46,13 @@ export function StaffSelector({
         Choose your {providerLabel}
       </h2>
       {!hasStaff && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-800 text-sm">
-          <p className="font-medium">No {providerLabel} available</p>
-          <p className="mt-1 text-amber-700">
-            No team members are set up for this booking page.
-            {bookingSlug && (
-              <>
-                {" "}
-                You&apos;re viewing{" "}
-                <code className="text-xs bg-amber-100 px-1 py-0.5 rounded">
-                  /{bookingSlug}
-                </code>
-                . In{" "}
-                <a
-                  href="/dashboard/settings"
-                  className="underline font-medium hover:text-amber-900"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Dashboard → Settings
-                </a>
-                , confirm your &quot;Booking URL slug&quot; matches this. If you
-                added staff but see this, use the exact URL from Settings.
-              </>
-            )}
-            {!bookingSlug && (
-              <>
-                {" "}
-                If you run this business, add staff in{" "}
-                <a
-                  href="/dashboard/staff"
-                  className="underline font-medium hover:text-amber-900"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Dashboard → Staff
-                </a>
-                , then ensure you use your business&apos;s correct booking URL
-                (see Settings).
-              </>
-            )}
-            {" "}
-            Otherwise, please try again later or contact the business.
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
+          <div className="text-4xl mb-3">👥</div>
+          <p className="font-semibold text-amber-900 text-base mb-2">
+            No {providerLabel} Available Right Now
+          </p>
+          <p className="text-amber-700 text-sm leading-relaxed">
+            We&apos;re currently setting up our team schedule. Please check back soon or contact us directly to book your appointment.
           </p>
         </div>
       )}
