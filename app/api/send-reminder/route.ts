@@ -91,7 +91,7 @@ async function handler(request: NextRequest) {
       customers(name, phone, email),
       services(name),
       staff(users(name)),
-      businesses(name, address, phone, slug, google_review_link, custom_config)
+      businesses(name, address, phone, slug, google_review_link, custom_config, created_at, subscription_tier)
     `)
     .eq("id", bookingId)
     .single();
@@ -108,7 +108,62 @@ async function handler(request: NextRequest) {
     );
   }
 
-  const config = await getBusinessConfig((row as { business_id: string }).business_id);
+  const businessId = (row as { business_id: string }).business_id;
+  const businessCreatedAt = (row as { businesses?: { created_at?: string } }).businesses?.created_at;
+  const businessTier = (row as { businesses?: { subscription_tier?: string } }).businesses?.subscription_tier;
+  
+  // Check WhatsApp trial period for free tier users
+  const { isFreeTier, isInWhatsAppTrial } = await import("@/lib/plan-limits");
+  if (isFreeTier(businessTier) && !isInWhatsAppTrial(businessCreatedAt, businessTier)) {
+    // Trial expired - only send email, skip WhatsApp
+    const emailEnabled = reminderType === "2h" 
+      ? (row as { businesses?: { custom_config?: { notifications?: Record<string, boolean> } } }).businesses?.custom_config?.notifications?.email_reminder_2h
+      : (row as { businesses?: { custom_config?: { notifications?: Record<string, boolean> } } }).businesses?.custom_config?.notifications?.email_reminder_24h;
+    const customerEmail = (row as { customers?: { email?: string } }).customers?.email;
+    
+    if (emailEnabled && customerEmail && process.env.RESEND_API_KEY) {
+      // Send email only
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const businessName = (row as { businesses?: { name?: string } }).businesses?.name ?? "";
+        const bookerName = (row as { custom_data?: { customer_name?: string } }).custom_data?.customer_name;
+        const customerName = bookerName ?? (row as { customers?: { name?: string } }).customers?.name ?? "Customer";
+        const serviceName = (row as { services?: { name?: string } }).services?.name ?? "Service";
+        const bookingDate = new Date((row as { booking_date: string }).booking_date).toLocaleDateString("en-IN");
+        const bookingTime = (row as { booking_time?: string }).booking_time ?? "";
+        const businessAddress = (row as { businesses?: { address?: string } }).businesses?.address ?? "";
+        const fromEmail = process.env.RESEND_FROM_EMAIL ?? "reminders@logicautomate.app";
+        
+        const subject = reminderType === "2h"
+          ? `Reminder: Your appointment is in 2 hours — ${businessName}`
+          : `Reminder: Your appointment is tomorrow — ${businessName}`;
+        const text = `Hi ${customerName},\n\nYour ${serviceName} appointment is ${reminderType === "2h" ? "in 2 hours" : "in 24 hours"}.\n\nDate: ${bookingDate}\nTime: ${bookingTime}\n${businessName}${businessAddress ? `\n${businessAddress}` : ""}\n\nSee you soon!`;
+        
+        await resend.emails.send({
+          from: fromEmail,
+          to: customerEmail,
+          subject,
+          text,
+        });
+        
+        return NextResponse.json({ 
+          success: true, 
+          message: "Email reminder sent (WhatsApp trial expired - upgrade to Pro for WhatsApp reminders)" 
+        });
+      } catch (e) {
+        console.error("[send-reminder] Email failed:", e);
+        return NextResponse.json({ 
+          error: "WhatsApp trial expired. Upgrade to Pro for WhatsApp reminders. Email reminder failed." 
+        }, { status: 403 });
+      }
+    }
+    
+    return NextResponse.json({ 
+      error: "WhatsApp trial expired. Upgrade to Pro for WhatsApp reminders." 
+    }, { status: 403 });
+  }
+
+  const config = await getBusinessConfig(businessId);
   if (!config) {
     return NextResponse.json({ error: "Business config not found" }, { status: 404 });
   }

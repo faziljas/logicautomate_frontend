@@ -164,6 +164,8 @@ export default function SettingsPage() {
                 businessId={business.id}
                 initialPrefs={(business.custom_config as Record<string, unknown>)?.notifications as NotificationPrefs | undefined}
                 onSaved={refetch}
+                businessCreatedAt={(business as { created_at?: string }).created_at}
+                subscriptionTier={business.subscription_tier}
               />
             </div>
           )}

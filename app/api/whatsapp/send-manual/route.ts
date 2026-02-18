@@ -46,12 +46,20 @@ export async function POST(request: NextRequest) {
   const supabase = getAdmin();
   const { data: business } = await supabase
     .from("businesses")
-    .select("id, owner_id, name")
+    .select("id, owner_id, name, created_at, subscription_tier")
     .eq("id", businessId)
     .single();
 
   if (!business || business.owner_id !== session.user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // ── Check WhatsApp trial period for free tier ────────────
+  const { isFreeTier, isInWhatsAppTrial } = await import("@/lib/plan-limits");
+  if (isFreeTier(business.subscription_tier) && !isInWhatsAppTrial(business.created_at, business.subscription_tier)) {
+    return NextResponse.json({ 
+      error: "WhatsApp trial expired. Upgrade to Pro to send WhatsApp messages." 
+    }, { status: 403 });
   }
 
   // ── Fetch target customers ───────────────────────────────

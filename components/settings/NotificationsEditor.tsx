@@ -5,7 +5,9 @@
 // ============================================================
 
 import React, { useState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { isFreeTier, isInWhatsAppTrial, FREE_TIER } from "@/lib/plan-limits";
 
 export interface NotificationPrefs {
   email_new_booking?: boolean;
@@ -31,12 +33,16 @@ interface Props {
   businessId: string;
   initialPrefs?: NotificationPrefs | null;
   onSaved?: () => void;
+  businessCreatedAt?: string | null;
+  subscriptionTier?: string | null;
 }
 
 export default function NotificationsEditor({
   businessId,
   initialPrefs,
   onSaved,
+  businessCreatedAt,
+  subscriptionTier,
 }: Props) {
   const [prefs, setPrefs] = useState<NotificationPrefs>({
     ...DEFAULT_PREFS,
@@ -80,8 +86,52 @@ export default function NotificationsEditor({
   const toggle = (key: keyof NotificationPrefs, value: boolean) =>
     setPrefs((p) => ({ ...p, [key]: value }));
 
+  const isFree = isFreeTier(subscriptionTier);
+  const inTrial = isInWhatsAppTrial(businessCreatedAt, subscriptionTier);
+  const daysRemaining = businessCreatedAt 
+    ? Math.max(0, FREE_TIER.whatsappTrialDays - Math.floor((Date.now() - new Date(businessCreatedAt).getTime()) / (1000 * 60 * 60 * 24)))
+    : 0;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {isFree && (
+        <div className={`rounded-lg border p-4 ${
+          inTrial 
+            ? "bg-violet-50 border-violet-200 text-violet-800" 
+            : "bg-amber-50 border-amber-200 text-amber-800"
+        }`}>
+          <div className="flex items-start gap-3">
+            <Sparkles className="w-5 h-5 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              {inTrial ? (
+                <>
+                  <p className="font-semibold text-sm mb-1">
+                    WhatsApp Trial Active — {daysRemaining} day{daysRemaining !== 1 ? 's' : ''} remaining
+                  </p>
+                  <p className="text-xs">
+                    You're currently enjoying WhatsApp reminders for free. After {FREE_TIER.whatsappTrialDays} days, upgrade to Pro to continue using WhatsApp reminders.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="font-semibold text-sm mb-1">
+                    WhatsApp Trial Expired
+                  </p>
+                  <p className="text-xs mb-2">
+                    Your {FREE_TIER.whatsappTrialDays}-day WhatsApp trial has ended. Email reminders will continue to work. Upgrade to Pro for unlimited WhatsApp reminders.
+                  </p>
+                  <Link 
+                    href="/pricing" 
+                    className="inline-flex items-center gap-1 text-xs font-medium underline hover:no-underline"
+                  >
+                    Upgrade to Pro →
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <p className="text-sm text-slate-600">
         Configure email and SMS notifications. WhatsApp reminders are configured
         via WhatsApp Templates and sent automatically when enabled.
