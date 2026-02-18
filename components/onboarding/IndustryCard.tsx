@@ -20,7 +20,6 @@ export interface IndustryCardData {
   icon:        string;
   primaryColor: string;
   features:    string[];
-  popular?:    boolean;
   comingSoon?: boolean;
 }
 
@@ -71,13 +70,6 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
           ID: {industry.id} | Selected: {selected ? "YES" : "NO"}
         </div>
       )}
-      {/* Popular badge — left side so it doesn't overlap the selected checkmark */}
-      {industry.popular && (
-        <span className="absolute top-3 left-3 text-xs font-bold bg-amber-500 text-white px-2.5 py-1 rounded-full shadow-sm">
-          Popular
-        </span>
-      )}
-
       {/* Selected checkmark — right side */}
       {selected && (
         <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center">
@@ -146,7 +138,6 @@ export const INDUSTRY_LIST: IndustryCardData[] = [
     description:  "Hair, beauty, nails & wellness",
     icon:         "💇‍♀️",
     primaryColor: "#FF69B4",
-    popular:      true,
     features: [
       "Stylist scheduling",
       "Loyalty rewards",
@@ -161,7 +152,6 @@ export const INDUSTRY_LIST: IndustryCardData[] = [
     description:  "Doctors, dentists & specialists",
     icon:         "🏥",
     primaryColor: "#4A90E2",
-    popular:      true,
     features: [
       "Patient intake forms",
       "Medical records",
