@@ -16,6 +16,7 @@ import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
 import { getLocalTemplateConfig } from "@/lib/templates/utils";
 import { INDUSTRY_LIST } from "@/components/onboarding/IndustryCard";
 import { cn } from "@/lib/utils";
+import { FREE_TIER } from "@/lib/plan-limits";
 
 // ─────────────────────────────────────────
 // CONFIG ANIMATION (plays once per session)
@@ -189,12 +190,24 @@ export default function CustomizationPage() {
 
   const [showAnimation, setShowAnimation] = useState(state.services.length === 0);
   const [isNavigating, setIsNavigating]   = useState(false);
+  const [isFreeTier, setIsFreeTier] = useState(true); // Default to free tier for new signups
 
   const selectedIndustry = INDUSTRY_LIST.find(
     (i) => i.id === state.selectedTemplate
   );
 
-  // Load default services from template on first visit
+  // Check if user already has a business (to determine tier)
+  useEffect(() => {
+    fetch("/api/onboarding/status", { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        // If they have a business, check tier; otherwise assume free tier for new signups
+        setIsFreeTier(!data.hasBusiness || !data.subscriptionTier || data.subscriptionTier === "trial" || data.subscriptionTier === "starter");
+      })
+      .catch(() => setIsFreeTier(true)); // Default to free tier on error
+  }, []);
+
+  // Load default services from template on first visit (show all, but mark extras as locked for free tier)
   useEffect(() => {
     if (state.services.length === 0 && state.selectedTemplate) {
       const tpl = getLocalTemplateConfig(state.selectedTemplate as any);
@@ -216,8 +229,10 @@ export default function CustomizationPage() {
   }, [state.selectedTemplate, state.services.length, dispatch]);
 
   const activeServices = state.services.filter((s) => !s.isDeleted);
+  const atServiceLimit = isFreeTier && activeServices.length >= FREE_TIER.maxServices;
 
   function addService() {
+    if (atServiceLimit) return; // Prevent adding more than limit
     const newSvc: OnboardingService = {
       id:               `svc-new-${Date.now()}`,
       name:             "New Service",
@@ -286,27 +301,51 @@ export default function CustomizationPage() {
 
         {/* Services list */}
         <div className="space-y-2 mb-4">
-          {activeServices.map((service) => (
-            <ServiceRow
-              key={service.id}
-              service={service}
-              onUpdate={(data) =>
-                dispatch({ type: "UPDATE_SERVICE", payload: { id: service.id, data } })
-              }
-              onDelete={() =>
-                dispatch({ type: "DELETE_SERVICE", payload: service.id })
-              }
-            />
-          ))}
+          {activeServices.map((service, index) => {
+            const isLocked = isFreeTier && index >= FREE_TIER.maxServices;
+            return (
+              <div key={service.id} className="relative">
+                {isLocked && (
+                  <div className="absolute inset-0 bg-slate-900/80 rounded-xl z-10 flex items-center justify-center border border-amber-500/40">
+                    <div className="text-center px-4">
+                      <p className="text-xs font-semibold text-amber-400 mb-1">Upgrade to Pro</p>
+                      <p className="text-xs text-amber-300/80">Free plan includes {FREE_TIER.maxServices} services</p>
+                    </div>
+                  </div>
+                )}
+                <ServiceRow
+                  service={service}
+                  onUpdate={(data) =>
+                    !isLocked && dispatch({ type: "UPDATE_SERVICE", payload: { id: service.id, data } })
+                  }
+                  onDelete={() =>
+                    !isLocked && dispatch({ type: "DELETE_SERVICE", payload: service.id })
+                  }
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Add service */}
-        <button
-          onClick={addService}
-          className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-slate-600 text-violet-400 hover:border-violet-500 hover:text-violet-300 hover:bg-slate-800/80 rounded-xl py-3 text-sm font-semibold transition-all duration-200"
-        >
-          <Plus className="w-4 h-4" /> Add Service
-        </button>
+        {atServiceLimit ? (
+          <div className="w-full p-3 bg-amber-500/20 border border-amber-500/40 rounded-xl text-center">
+            <p className="text-xs text-amber-300">
+              Free plan includes up to {FREE_TIER.maxServices} services.{" "}
+              <a href="/pricing" className="underline font-semibold hover:text-amber-200">
+                Upgrade to Pro
+              </a>{" "}
+              for more.
+            </p>
+          </div>
+        ) : (
+          <button
+            onClick={addService}
+            className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-slate-600 text-violet-400 hover:border-violet-500 hover:text-violet-300 hover:bg-slate-800/80 rounded-xl py-3 text-sm font-semibold transition-all duration-200"
+          >
+            <Plus className="w-4 h-4" /> Add Service
+          </button>
+        )}
 
         {/* Info card */}
         <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
