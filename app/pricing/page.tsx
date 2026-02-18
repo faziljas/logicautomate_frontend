@@ -149,7 +149,6 @@ export default function PricingPage() {
         <footer className="mt-10 pt-8 border-t border-slate-800 flex flex-wrap justify-center gap-6 text-sm text-slate-500">
           <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy Policy</Link>
           <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms of Service</Link>
-          <Link href="/" className="hover:text-violet-400 transition-colors">Home</Link>
         </footer>
       </div>
     </div>
