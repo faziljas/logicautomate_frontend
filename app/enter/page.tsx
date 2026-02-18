@@ -42,6 +42,14 @@ export default function EnterPage() {
     <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden flex flex-col">
       <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
       <div className="relative flex-1 max-w-2xl mx-auto w-full px-4 py-8 sm:py-12">
+        <button
+          type="button"
+          onClick={handleSignOut}
+          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-violet-400 mb-8 transition-colors"
+        >
+          <LogOut className="w-4 h-4" />
+          Sign out
+        </button>
         <div className="text-center mb-10 sm:mb-12">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-2">
             <span className="text-violet-400">Logic</span>Automate
@@ -107,20 +115,10 @@ export default function EnterPage() {
         </p>
       </div>
 
-      <footer className="mt-auto pt-8 pb-6 px-4 border-t border-slate-800 flex flex-wrap justify-between items-center gap-4 text-sm text-slate-500">
-        <div className="flex flex-wrap justify-center sm:justify-start gap-x-6 gap-y-2">
-          <Link href="/pricing" className="hover:text-violet-400 transition-colors">Pricing</Link>
-          <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy</Link>
-          <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms</Link>
-        </div>
-        <button
-          type="button"
-          onClick={handleSignOut}
-          className="inline-flex items-center gap-2 hover:text-violet-400 transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          Sign out
-        </button>
+      <footer className="mt-auto pt-8 pb-6 border-t border-slate-800 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-500">
+        <Link href="/pricing" className="hover:text-violet-400 transition-colors">Pricing</Link>
+        <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy</Link>
+        <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms</Link>
       </footer>
     </div>
   );
