@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, UserCog, Calendar, ArrowRight } from "lucide-react";
+import { LayoutDashboard, UserCog, Calendar, ArrowRight, LogOut } from "lucide-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function EnterPage() {
@@ -25,6 +25,11 @@ export default function EnterPage() {
     });
   }, [supabase.auth, router]);
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.replace("/login");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
@@ -34,9 +39,9 @@ export default function EnterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden flex flex-col">
       <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
-      <div className="relative max-w-2xl mx-auto px-4 py-8 sm:py-12">
+      <div className="relative flex-1 max-w-2xl mx-auto w-full px-4 py-8 sm:py-12">
         <div className="text-center mb-10 sm:mb-12">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-2">
             <span className="text-violet-400">Logic</span>Automate
@@ -100,13 +105,21 @@ export default function EnterPage() {
           Customers book via your link:{" "}
           <span className="font-mono text-slate-400">logicautomate.app/your-business</span>
         </p>
-
-        <footer className="mt-12 pt-8 border-t border-slate-800 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-500">
-          <Link href="/pricing" className="hover:text-violet-400 transition-colors">Pricing</Link>
-          <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy</Link>
-          <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms</Link>
-        </footer>
       </div>
+
+      <footer className="mt-auto pt-8 pb-6 border-t border-slate-800 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-slate-500">
+        <Link href="/pricing" className="hover:text-violet-400 transition-colors">Pricing</Link>
+        <Link href="/privacy" className="hover:text-violet-400 transition-colors">Privacy</Link>
+        <Link href="/terms" className="hover:text-violet-400 transition-colors">Terms</Link>
+        <button
+          type="button"
+          onClick={handleSignOut}
+          className="inline-flex items-center gap-2 hover:text-violet-400 transition-colors"
+        >
+          <LogOut className="w-4 h-4" />
+          Sign out
+        </button>
+      </footer>
     </div>
   );
 }
