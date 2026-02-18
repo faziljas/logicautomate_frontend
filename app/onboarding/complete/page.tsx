@@ -106,18 +106,22 @@ export default function CompletePage() {
   useEffect(() => {
     if (!businessSlug && state.createdBusinessId) {
       setLoadingSlug(true);
-      supabase
-        .from("businesses")
-        .select("slug")
-        .eq("id", state.createdBusinessId)
-        .single()
-        .then(({ data, error }) => {
+      (async () => {
+        try {
+          const { data, error } = await supabase
+            .from("businesses")
+            .select("slug")
+            .eq("id", state.createdBusinessId!)
+            .single();
           if (!error && data?.slug) {
             setBusinessSlug(data.slug);
           }
-        })
-        .catch(console.error)
-        .finally(() => setLoadingSlug(false));
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoadingSlug(false);
+        }
+      })();
     }
   }, [businessSlug, state.createdBusinessId, supabase]);
 
