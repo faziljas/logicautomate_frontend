@@ -10,6 +10,7 @@ import {
   badRequest,
   jsonResponse,
 } from "@/lib/dashboard/api-helpers";
+import { isFreeTier, FREE_TIER } from "@/lib/plan-limits";
 
 export async function POST(request: NextRequest) {
   const { session, business, supabase, isOwner, error } = await getSessionAndBusiness();
@@ -43,6 +44,20 @@ export async function POST(request: NextRequest) {
     return badRequest("businessId required");
   }
   if (!name?.trim()) return badRequest("name required");
+
+  const tier = (business as { subscription_tier?: string }).subscription_tier;
+  if (isFreeTier(tier)) {
+    const { count } = await supabase
+      .from("services")
+      .select("id", { count: "exact", head: true })
+      .eq("business_id", businessId);
+    if (count != null && count >= FREE_TIER.maxServices) {
+      return jsonResponse(
+        { error: `Free plan allows up to ${FREE_TIER.maxServices} services. Upgrade to Pro for more.` },
+        { status: 403 }
+      );
+    }
+  }
 
   const { data: service, error: insertErr } = await supabase
     .from("services")

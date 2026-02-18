@@ -26,6 +26,7 @@ interface Business {
   owner_id: string | null;
   template_id?: string | null;
   custom_config?: { terminology?: TemplateTerminology };
+  subscription_tier?: string | null;
 }
 
 interface User {
@@ -82,7 +83,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     // Fetch business owned by this user
     const { data: biz } = await supabase
       .from("businesses")
-      .select("id, name, slug, owner_id, template_id, custom_config")
+      .select("id, name, slug, owner_id, template_id, custom_config, subscription_tier")
       .eq("owner_id", userId)
       .limit(1)
       .single();
@@ -112,7 +113,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     if (staffRow) {
       const { data: biz2 } = await supabase
         .from("businesses")
-        .select("id, name, slug, owner_id, template_id, custom_config")
+        .select("id, name, slug, owner_id, template_id, custom_config, subscription_tier")
         .eq("id", staffRow.business_id)
         .single();
 

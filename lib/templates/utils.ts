@@ -15,6 +15,7 @@ import type {
   TemplateSummary,
 } from './types';
 import { validateTemplateConfig, validatePartialConfig } from './validator';
+import { isFreeTier, FREE_TIER } from '@/lib/plan-limits';
 
 // ─────────────────────────────────────────
 // LOCAL CONFIG CACHE (static JSON files)
@@ -185,7 +186,7 @@ export async function applyTemplateToBusinessConfig(
   // ── 2. Load existing business (for existing custom overrides) ─
   const { data: business, error: bizErr } = await supabase
     .from('businesses')
-    .select('id, custom_config, industry_type')
+    .select('id, custom_config, industry_type, subscription_tier')
     .eq('id', businessId)
     .single();
 
@@ -222,7 +223,7 @@ export async function applyTemplateToBusinessConfig(
     (existingServices ?? []).map((s: { name: string }) => s.name.toLowerCase()),
   );
 
-  const servicesToCreate = template.config.default_services
+  let servicesToCreate = template.config.default_services
     .filter((s) => !existingNames.has(s.name.toLowerCase()))
     .map((s, idx) => ({
       business_id:      businessId,
@@ -236,6 +237,11 @@ export async function applyTemplateToBusinessConfig(
       is_active:        true,
       display_order:    idx + 1,
     }));
+
+  const tier = (business as { subscription_tier?: string }).subscription_tier;
+  if (isFreeTier(tier) && servicesToCreate.length > FREE_TIER.maxServices) {
+    servicesToCreate = servicesToCreate.slice(0, FREE_TIER.maxServices);
+  }
 
   if (servicesToCreate.length > 0) {
     const { error: svcErr } = await supabase

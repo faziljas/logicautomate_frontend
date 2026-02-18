@@ -10,7 +10,7 @@
 // ============================================================
 
 import { memo } from "react";
-import { Check } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface IndustryCardData {
@@ -27,11 +27,12 @@ interface IndustryCardProps {
   industry:   IndustryCardData;
   selected:   boolean;
   onSelect:   (id: string) => void;
+  disabled?:  boolean; // Free tier: user already has one business
 }
 
 // Stateless component - relies entirely on `selected` prop from parent
 // No local state to avoid conflicts with parent's single-select logic
-export const IndustryCard = memo(function IndustryCard({ industry, selected, onSelect }: IndustryCardProps) {
+export const IndustryCard = memo(function IndustryCard({ industry, selected, onSelect, disabled }: IndustryCardProps) {
   if (industry.comingSoon) {
     return (
       <div className="relative rounded-2xl border-2 border-dashed border-slate-600 bg-slate-800/50 p-5 opacity-60 cursor-not-allowed select-none">
@@ -49,15 +50,38 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
     );
   }
 
+  if (disabled) {
+    return (
+      <div
+        className={cn(
+          "relative w-full rounded-2xl border-2 border-slate-700 bg-slate-800/40 p-5 opacity-70 cursor-not-allowed select-none h-[240px] flex flex-col"
+        )}
+      >
+        <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-slate-900/70 z-10">
+          <span className="flex items-center gap-2 text-sm font-medium text-slate-400">
+            <Lock className="w-4 h-4" />
+            Upgrade to Pro for more businesses
+          </span>
+        </div>
+        <div className="flex items-center gap-3 mb-3 flex-shrink-0">
+          <span className="text-3xl w-12 h-12 rounded-xl flex items-center justify-center bg-slate-700/50">{industry.icon}</span>
+          <div>
+            <h3 className="font-bold text-sm text-slate-500">{industry.name}</h3>
+            <p className="text-xs text-slate-500 mt-0.5">{industry.description}</p>
+          </div>
+        </div>
+        <div className="flex-1 min-h-[100px]" />
+      </div>
+    );
+  }
+
   return (
     <button
       type="button"
       onClick={() => onSelect(industry.id)}
       className={cn(
         "group relative w-full text-left rounded-2xl border-2 p-5 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500",
-        // Use box-border to ensure border doesn't add to dimensions
         "box-border",
-        // Fixed height for all cards to prevent ANY layout shift
         "h-[240px] flex flex-col",
         selected
           ? "border-violet-500 bg-slate-800/80 shadow-lg shadow-violet-500/10"

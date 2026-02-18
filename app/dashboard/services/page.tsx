@@ -7,9 +7,11 @@
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
-import { Loader2, Plus, Pencil } from "lucide-react";
+import Link from "next/link";
+import { Loader2, Plus, Pencil, Sparkles } from "lucide-react";
 import { useDashboard } from "@/context/DashboardContext";
 import ServiceEditor from "@/components/dashboard/ServiceEditor";
+import { isFreeTier, FREE_TIER } from "@/lib/plan-limits";
 
 interface Service {
   id: string;
@@ -54,6 +56,8 @@ export default function ServicesPage() {
   }, [business?.id]);
 
   const canEdit = role === "owner";
+  const tier = business?.subscription_tier;
+  const atServiceLimit = isFreeTier(tier) && services.length >= FREE_TIER.maxServices;
 
   const handleSave = async (data: Partial<Service>) => {
     if (!business?.id) return;
@@ -100,14 +104,30 @@ export default function ServicesPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-slate-900">Services & Pricing</h1>
         {canEdit && (
-          <button
-            onClick={() => setAdding(true)}
-            className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
-          >
-            <Plus className="w-4 h-4" /> Add Service
-          </button>
+          <>
+            {atServiceLimit ? (
+              <Link
+                href="/pricing"
+                className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600"
+              >
+                <Sparkles className="w-4 h-4" /> Upgrade to Pro for more services
+              </Link>
+            ) : (
+              <button
+                onClick={() => setAdding(true)}
+                className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700"
+              >
+                <Plus className="w-4 h-4" /> Add Service
+              </button>
+            )}
+          </>
         )}
       </div>
+      {atServiceLimit && (
+        <p className="text-sm text-amber-700 bg-amber-50 rounded-lg px-3 py-2">
+          Free plan includes up to {FREE_TIER.maxServices} services. Upgrade to Pro for unlimited services.
+        </p>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-12">

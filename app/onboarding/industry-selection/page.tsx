@@ -7,12 +7,13 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, Clock, RotateCcw, ArrowLeft } from "lucide-react";
+import { ArrowRight, Clock, RotateCcw, ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useOnboarding } from "@/context/OnboardingContext";
 import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
 import { IndustryCard, INDUSTRY_LIST } from "@/components/onboarding/IndustryCard";
 import type { IndustryType } from "@/lib/templates/types";
+import { isFreeTier } from "@/lib/plan-limits";
 
 const SESSION_KEY = "bookflow_onboarding";
 
@@ -33,6 +34,16 @@ function IndustrySelectionContent() {
       router.replace("/onboarding/industry-selection");
     }
   }, [searchParams, dispatch, router]);
+
+  const [onboardingStatus, setOnboardingStatus] = useState<{ hasBusiness: boolean; subscriptionTier: string | null } | null>(null);
+  useEffect(() => {
+    fetch("/api/onboarding/status", { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => setOnboardingStatus({ hasBusiness: !!data.hasBusiness, subscriptionTier: data.subscriptionTier ?? null }))
+      .catch(() => setOnboardingStatus({ hasBusiness: false, subscriptionTier: null }));
+  }, []);
+
+  const alreadyHasBusiness = onboardingStatus?.hasBusiness && isFreeTier(onboardingStatus?.subscriptionTier);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   // Single-select handler: clicking an industry replaces the previous selection
@@ -108,6 +119,20 @@ function IndustrySelectionContent() {
           </p>
         </div>
 
+        {alreadyHasBusiness && (
+          <div className="mb-6 p-4 rounded-xl bg-amber-500/20 border border-amber-500/40 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-amber-200">
+              You're on the Free plan — one business per account. Upgrade to Pro to add more businesses or switch industry.
+            </p>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-600"
+            >
+              <Sparkles className="w-4 h-4" /> Upgrade to Pro
+            </Link>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
           {INDUSTRY_LIST.map((industry, index) => {
             const isSelected = state.selectedTemplate === industry.id;
@@ -120,6 +145,7 @@ function IndustrySelectionContent() {
                 industry={industry}
                 selected={isSelected}
                 onSelect={handleSelect}
+                disabled={alreadyHasBusiness}
               />
             );
           })}
@@ -144,18 +170,29 @@ function IndustrySelectionContent() {
 
       <div className="fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-sm border-t border-slate-800 px-4 py-4">
         <div className="max-w-3xl mx-auto">
-          <button
-            onClick={handleContinue}
-            disabled={!state.selectedTemplate}
-            className="w-full flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-400 disabled:bg-slate-700 disabled:text-slate-500 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200"
-          >
-            Continue
-            <ArrowRight className="w-4 h-4" />
-          </button>
-          {!state.selectedTemplate && (
-            <p className="text-center text-xs text-slate-500 mt-2">
-              Select your industry to continue
-            </p>
+          {alreadyHasBusiness ? (
+            <Link
+              href="/pricing"
+              className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200"
+            >
+              <Sparkles className="w-4 h-4" /> Upgrade to Pro for more businesses
+            </Link>
+          ) : (
+            <>
+              <button
+                onClick={handleContinue}
+                disabled={!state.selectedTemplate}
+                className="w-full flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-400 disabled:bg-slate-700 disabled:text-slate-500 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200"
+              >
+                Continue
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              {!state.selectedTemplate && (
+                <p className="text-center text-xs text-slate-500 mt-2">
+                  Select your industry to continue
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -25,7 +25,7 @@ export async function getSessionAndBusiness() {
 
   const { data: business, error: bizErr } = await supabase
     .from("businesses")
-    .select("id, name, slug, owner_id")
+    .select("id, name, slug, owner_id, subscription_tier")
     .eq("owner_id", session.user.id)
     .single();
 
@@ -41,7 +41,7 @@ export async function getSessionAndBusiness() {
     if (staffRow) {
       const { data: biz2 } = await supabase
         .from("businesses")
-        .select("id, name, slug, owner_id")
+        .select("id, name, slug, owner_id, subscription_tier")
         .eq("id", staffRow.business_id)
         .single();
 

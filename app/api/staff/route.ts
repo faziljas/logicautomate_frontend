@@ -11,6 +11,7 @@ import {
   badRequest,
   jsonResponse,
 } from "@/lib/dashboard/api-helpers";
+import { isFreeTier, FREE_TIER } from "@/lib/plan-limits";
 
 export async function POST(request: NextRequest) {
   const { session, business, supabase, isOwner, error } = await getSessionAndBusiness();
@@ -45,6 +46,21 @@ export async function POST(request: NextRequest) {
   if (!name?.trim()) return badRequest("name required");
   if (!email?.trim() && !phone?.trim()) {
     return badRequest("email or phone required");
+  }
+
+  const tier = (business as { subscription_tier?: string }).subscription_tier;
+  if (isFreeTier(tier)) {
+    const { count } = await supabase
+      .from("staff")
+      .select("id", { count: "exact", head: true })
+      .eq("business_id", businessId)
+      .eq("is_active", true);
+    if (count != null && count >= FREE_TIER.maxStaff) {
+      return jsonResponse(
+        { error: `Free plan allows up to ${FREE_TIER.maxStaff} staff member. Upgrade to Pro for more.` },
+        { status: 403 }
+      );
+    }
   }
 
   // Find or create user
