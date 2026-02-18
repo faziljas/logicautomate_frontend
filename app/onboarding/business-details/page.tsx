@@ -164,7 +164,7 @@ export default function BusinessDetailsPage() {
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <span className="text-xl font-bold text-violet-400">📅 LogicAutomate</span>
+          <span className="text-xl font-bold text-violet-400">📅 AnyBooking</span>
         </div>
       </header>
 
@@ -309,7 +309,7 @@ export default function BusinessDetailsPage() {
               }`}
             >
               <span className="flex items-center px-3 bg-slate-800 text-slate-400 text-sm font-mono border-r border-slate-600 shrink-0">
-                logicautomate.app/
+                anybooking.app/
               </span>
               <input
                 type="text"

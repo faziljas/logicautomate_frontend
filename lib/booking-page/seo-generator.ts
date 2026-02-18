@@ -32,7 +32,7 @@ export function generateBookingPageMeta(data: BusinessSEOData): Metadata {
 
   const title = `${name} - Book ${serviceType} Online`;
   const description = `Book ${terminology?.bookings?.toLowerCase() ?? "appointments"} at ${name}${cityPart}. ${servicesList}${servicesList ? "." : ""}`;
-  const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://anybooking.app";
   const pageUrl = `${siteUrl}/${data.slug}`;
   const ogImage = data.logo_url ?? `${siteUrl}/og-default.png`;
 
@@ -43,7 +43,7 @@ export function generateBookingPageMeta(data: BusinessSEOData): Metadata {
       title,
       description,
       url: pageUrl,
-      siteName: "LogicAutomate",
+      siteName: "AnyBooking",
       images: [{ url: ogImage, width: 1200, height: 630, alt: name }],
       locale: "en_IN",
       type: "website",
@@ -72,7 +72,7 @@ export function generateBookingPageMeta(data: BusinessSEOData): Metadata {
  */
 export function generateLocalBusinessSchema(data: BusinessSEOData): string {
   const { name, address, city, phone, slug, logo_url } = data;
-  const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://anybooking.app";
 
   const addressObj =
     address || city

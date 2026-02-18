@@ -168,7 +168,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex h-full flex-col">
           <div className="flex h-14 items-center justify-between px-4 border-b border-slate-100 lg:justify-start">
             <Link href="/dashboard" className="flex items-center gap-2">
-              <span className="text-lg font-bold text-violet-600">LogicAutomate</span>
+              <span className="text-lg font-bold text-violet-600">AnyBooking</span>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}

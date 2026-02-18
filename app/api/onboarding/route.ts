@@ -316,7 +316,7 @@ export async function POST(request: NextRequest) {
   }
 
   // ── 7. Create business ───────────────────────────────────
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app").replace(/\/+$/, "");
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://anybooking.app").replace(/\/+$/, "");
   const bookingUrl = `${baseUrl}/${finalSlug}`;
 
   const { data: business, error: bizErr } = await supabase

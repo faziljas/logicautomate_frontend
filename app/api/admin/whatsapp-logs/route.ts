@@ -1,7 +1,7 @@
 // ============================================================
 // BookFlow — Super Admin WhatsApp Logs
 // GET /api/admin/whatsapp-logs
-// LogicAutomate founders can monitor all WhatsApp issues across all businesses
+// AnyBooking founders can monitor all WhatsApp issues across all businesses
 // ============================================================
 
 export const dynamic = "force-dynamic";
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
     limit,
     stats: {
       totalFailed,
-      criticalIssues, // Failed after 3 retries - needs LogicAutomate intervention
+      criticalIssues, // Failed after 3 retries - needs AnyBooking intervention
     },
   });
 }

@@ -125,7 +125,7 @@ export default function CompletePage() {
     }
   }, [businessSlug, state.createdBusinessId, supabase]);
 
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://logicautomate.app";
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://anybooking.app";
   const bookingUrl = state.bookingUrl ?? (businessSlug ? `${baseUrl}/${businessSlug}` : null);
 
   // Hide confetti after 5s
@@ -172,7 +172,7 @@ export default function CompletePage() {
       <div className="min-h-screen bg-slate-950 text-white">
         <header className="sticky top-0 z-10 bg-slate-950/90 backdrop-blur-sm">
           <div className="max-w-lg mx-auto px-4 py-4">
-            <span className="text-xl font-bold text-violet-400">📅 LogicAutomate</span>
+            <span className="text-xl font-bold text-violet-400">📅 AnyBooking</span>
           </div>
         </header>
 

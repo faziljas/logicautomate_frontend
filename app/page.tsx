@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================
-// LogicAutomate — Landing Page (Root)
+// AnyBooking — Landing Page (Root)
 // Compact layout, modern creative design
 // ============================================================
 
@@ -22,7 +22,7 @@ export default function LandingPage() {
         {/* Header — compact */}
         <header className="flex items-center justify-between mb-8 sm:mb-10">
           <span className="text-lg sm:text-xl font-bold tracking-tight">
-            <span className="text-violet-400">Logic</span>Automate
+            <span className="text-violet-400">Any</span>Booking
           </span>
           <nav className="flex items-center gap-4 sm:gap-6 text-sm">
             <Link

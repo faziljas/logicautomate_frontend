@@ -22,7 +22,7 @@ export async function generateMetadata({
 }) {
   const { business_slug } = await params;
   const data = await fetchBusinessBySlug(business_slug);
-  if (!data?.business) return { title: "LogicAutomate" };
+  if (!data?.business) return { title: "AnyBooking" };
 
   return generateBookingPageMeta({
     name: data.business.name,

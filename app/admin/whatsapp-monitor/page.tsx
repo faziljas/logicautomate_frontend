@@ -2,7 +2,7 @@
 
 // ============================================================
 // BookFlow — Super Admin WhatsApp Monitor
-// LogicAutomate founders can monitor all WhatsApp issues
+// AnyBooking founders can monitor all WhatsApp issues
 // ============================================================
 
 export const dynamic = "force-dynamic";
@@ -97,7 +97,7 @@ export default function SuperAdminWhatsAppMonitor() {
           <h2 className="text-xl font-bold text-red-900 mb-2">Access Denied</h2>
           <p className="text-red-700 mb-4">{error}</p>
           <p className="text-sm text-red-600">
-            This page is only accessible to LogicAutomate super admins. Set SUPER_ADMIN_EMAILS in your .env file.
+            This page is only accessible to AnyBooking super admins. Set SUPER_ADMIN_EMAILS in your .env file.
           </p>
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function SuperAdminWhatsAppMonitor() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">WhatsApp System Monitor</h1>
-            <p className="text-slate-600 mt-1">LogicAutomate — Monitor all WhatsApp issues across all businesses</p>
+            <p className="text-slate-600 mt-1">AnyBooking — Monitor all WhatsApp issues across all businesses</p>
           </div>
           <button
             onClick={() => router.push("/dashboard")}

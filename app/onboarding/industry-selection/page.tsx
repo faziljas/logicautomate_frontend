@@ -80,7 +80,7 @@ function IndustrySelectionContent() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-slate-950/90 backdrop-blur-sm border-b border-slate-800">
         <div className="relative max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold text-violet-400">📅 LogicAutomate</span>
+          <span className="text-xl font-bold text-violet-400">📅 AnyBooking</span>
           <div className="flex items-center gap-3">
             <a
               href="/onboarding/industry-selection?reset=1"

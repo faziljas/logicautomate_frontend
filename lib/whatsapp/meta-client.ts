@@ -221,7 +221,7 @@ export async function sendWhatsApp(options: SendOptions): Promise<SendResult> {
 
     if (!rendered) {
       if (messageType === "staff_otp" && variables.otp) {
-        messageBody = `Your LogicAutomate staff login code is ${variables.otp}. Valid for 10 minutes.`;
+        messageBody = `Your AnyBooking staff login code is ${variables.otp}. Valid for 10 minutes.`;
       } else {
         return {
           success: false,
@@ -309,7 +309,7 @@ export async function sendWhatsApp(options: SendOptions): Promise<SendResult> {
 }
 
 function getAppUrl(): string {
-  return (process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app").replace(/\/+$/, "");
+  return (process.env.NEXT_PUBLIC_APP_URL ?? "https://anybooking.app").replace(/\/+$/, "");
 }
 
 function buildBookingVariables(b: BookingForMessage): TemplateVariables {

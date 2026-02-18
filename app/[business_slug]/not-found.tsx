@@ -16,7 +16,7 @@ export default function BusinessNotFound() {
     });
   }, [supabase.auth]);
 
-  const handleGoToLogicAutomate = () => {
+  const handleGoToAnyBooking = () => {
     if (isSignedIn) {
       router.push("/enter");
     } else {
@@ -33,10 +33,10 @@ export default function BusinessNotFound() {
           The booking page you&apos;re looking for doesn&apos;t exist or may have been moved.
         </p>
         <button
-          onClick={handleGoToLogicAutomate}
+          onClick={handleGoToAnyBooking}
           className="inline-block px-5 py-2.5 rounded-xl font-semibold text-white bg-violet-600 hover:bg-violet-700 transition-colors"
         >
-          Go to LogicAutomate
+          Go to AnyBooking
         </button>
       </div>
     </div>

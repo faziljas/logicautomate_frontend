@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Check, ArrowRight, Zap, Building2 } from "lucide-react";
 
 export const metadata = {
-  title: "Pricing — LogicAutomate",
+  title: "Pricing — AnyBooking",
   description: "Simple pricing for appointment booking. Free to start, scale as you grow.",
 };
 

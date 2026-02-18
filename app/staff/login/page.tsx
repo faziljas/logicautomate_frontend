@@ -71,7 +71,7 @@ export default function StaffLoginPage() {
           <ArrowLeft className="w-4 h-4" />
           Back
         </Link>
-        <h1 className="text-center text-xl font-bold text-slate-900">LogicAutomate Staff</h1>
+        <h1 className="text-center text-xl font-bold text-slate-900">AnyBooking Staff</h1>
         <p className="mt-1 text-center text-sm text-slate-500">
           Sign in with your staff phone number
         </p>

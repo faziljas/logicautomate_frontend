@@ -276,7 +276,7 @@ export default function CustomizationPage() {
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <span className="text-xl font-bold text-violet-400">📅 LogicAutomate</span>
+          <span className="text-xl font-bold text-violet-400">📅 AnyBooking</span>
           <button
             onClick={handleSkip}
             className="ml-auto flex items-center gap-1 text-sm text-slate-400 hover:text-white transition-colors"

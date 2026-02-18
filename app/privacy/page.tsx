@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Privacy Policy — LogicAutomate",
-  description: "Privacy policy for LogicAutomate appointment booking platform.",
+  title: "Privacy Policy — AnyBooking",
+  description: "Privacy policy for AnyBooking appointment booking platform.",
 };
 
 const sections = [
@@ -40,7 +40,7 @@ const sections = [
   },
   {
     title: "9. Contact us",
-    content: `For questions about this privacy policy or your data, contact us at: hello@logicautomate.app.`,
+    content: `For questions about this privacy policy or your data, contact us at: hello@anybooking.app.`,
   },
 ];
 
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
 
         <div className="max-w-none">
           <p className="text-slate-400 mb-8">
-            This privacy policy explains how we collect, use, store, and protect your information when you use LogicAutomate and related services.
+            This privacy policy explains how we collect, use, store, and protect your information when you use AnyBooking and related services.
           </p>
 
           {sections.map((section) => (

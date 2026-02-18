@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================
-// LogicAutomate — Enter / Portal (post sign-in) — Dark
+// AnyBooking — Enter / Portal (post sign-in) — Dark
 // ============================================================
 
 import { useEffect, useState } from "react";
@@ -63,7 +63,7 @@ export default function EnterPage() {
       <div className="relative flex-1 max-w-2xl mx-auto w-full px-4 py-8 sm:py-12">
         <div className="text-center mb-10 sm:mb-12">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-2">
-            <span className="text-violet-400">Logic</span>Automate
+            <span className="text-violet-400">Any</span>Booking
           </h1>
           <p className="text-slate-400">
             Appointment booking for salons, clinics, and service businesses
@@ -127,7 +127,7 @@ export default function EnterPage() {
         {hasBusiness && (
           <p className="text-center text-sm text-slate-500 mt-8">
             Customers book via your link:{" "}
-            <span className="font-mono text-slate-400">logicautomate.app/your-business</span>
+            <span className="font-mono text-slate-400">anybooking.app/your-business</span>
           </p>
         )}
       </div>

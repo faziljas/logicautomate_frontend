@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Terms of Service — LogicAutomate",
-  description: "Terms of service for LogicAutomate appointment booking platform.",
+  title: "Terms of Service — AnyBooking",
+  description: "Terms of service for AnyBooking appointment booking platform.",
 };
 
 const sections = [
@@ -12,7 +12,7 @@ const sections = [
   },
   {
     title: "2. Description of service",
-    content: `LogicAutomate provides an online appointment booking platform for businesses (e.g. salons, clinics, service providers). We offer features such as booking pages, staff management, reminders, notifications, and analytics. We reserve the right to modify, suspend, or discontinue any part of the Service with reasonable notice where possible.`,
+    content: `AnyBooking provides an online appointment booking platform for businesses (e.g. salons, clinics, service providers). We offer features such as booking pages, staff management, reminders, notifications, and analytics. We reserve the right to modify, suspend, or discontinue any part of the Service with reasonable notice where possible.`,
   },
   {
     title: "3. Account and eligibility",
@@ -36,11 +36,11 @@ const sections = [
   },
   {
     title: "8. Limitation of liability",
-    content: `To the maximum extent permitted by law, LogicAutomate and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or for loss of profits, data, or business opportunities, arising from your use of the Service. Our total liability shall not exceed the amount you paid us in the twelve months preceding the claim.`,
+    content: `To the maximum extent permitted by law, AnyBooking and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or for loss of profits, data, or business opportunities, arising from your use of the Service. Our total liability shall not exceed the amount you paid us in the twelve months preceding the claim.`,
   },
   {
     title: "9. Indemnification",
-    content: `You agree to indemnify and hold LogicAutomate and its affiliates harmless from any claims, damages, or expenses (including legal fees) arising from your use of the Service, your content, your violation of these terms, or your violation of any third-party rights.`,
+    content: `You agree to indemnify and hold AnyBooking and its affiliates harmless from any claims, damages, or expenses (including legal fees) arising from your use of the Service, your content, your violation of these terms, or your violation of any third-party rights.`,
   },
   {
     title: "10. Termination",
@@ -52,7 +52,7 @@ const sections = [
   },
   {
     title: "12. Contact",
-    content: `For questions about these Terms of Service, contact us at: hello@logicautomate.app.`,
+    content: `For questions about these Terms of Service, contact us at: hello@anybooking.app.`,
   },
 ];
 
@@ -72,7 +72,7 @@ export default function TermsPage() {
             Terms of Service
           </h1>
           <p className="text-slate-400">
-            Last updated: February 2025. Please read these terms carefully before using LogicAutomate.
+            Last updated: February 2025. Please read these terms carefully before using AnyBooking.
           </p>
         </header>
 

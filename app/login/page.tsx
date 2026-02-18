@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================
-// LogicAutomate — Sign in (Google + magic link) — Dark
+// AnyBooking — Sign in (Google + magic link) — Dark
 // ============================================================
 
 export const dynamic = "force-dynamic";

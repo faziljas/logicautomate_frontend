@@ -34,7 +34,7 @@
     "feedback": "Great session! How was your *{service_name}* with {staff_name}? Rate us: {rating_link}",
     "loyalty_reward": "🎉 {customer_name}! You've completed {visit_count} sessions! Reward: {offer_details}. Book: {booking_link}",
     "marketing": "Hi {customer_name}! {business_name} has an offer: {offer_details}. Book: {booking_link}",
-    "staff_otp": "Your LogicAutomate staff login code is {otp}. Valid for 10 minutes."
+    "staff_otp": "Your AnyBooking staff login code is {otp}. Valid for 10 minutes."
   },
   "features": {
     "packages": true,

@@ -15,7 +15,7 @@ import type { BookingRules } from "@/lib/templates/types";
 import NotificationsEditor, { type NotificationPrefs } from "@/components/settings/NotificationsEditor";
 import TeamMembersEditor from "@/components/settings/TeamMembersEditor";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://logicautomate.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://anybooking.app";
 
 export default function SettingsPage() {
   const { business, role, session, loading: ctxLoading, refetch } = useDashboard();

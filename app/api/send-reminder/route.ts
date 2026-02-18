@@ -132,7 +132,7 @@ async function handler(request: NextRequest) {
         const bookingDate = new Date((row as { booking_date: string }).booking_date).toLocaleDateString("en-IN");
         const bookingTime = (row as { booking_time?: string }).booking_time ?? "";
         const businessAddress = (row as { businesses?: { address?: string } }).businesses?.address ?? "";
-        const fromEmail = process.env.RESEND_FROM_EMAIL ?? "reminders@logicautomate.app";
+        const fromEmail = process.env.RESEND_FROM_EMAIL ?? "reminders@anybooking.app";
         
         const subject = reminderType === "2h"
           ? `Reminder: Your appointment is in 2 hours — ${businessName}`
@@ -198,7 +198,7 @@ async function handler(request: NextRequest) {
   const emailEnabled = reminderType === "2h" ? notifications?.email_reminder_2h : notifications?.email_reminder_24h;
   const customerEmail = (row as { customers?: { email?: string } }).customers?.email;
   const businessName = (row as { businesses?: { name?: string } }).businesses?.name ?? "";
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "reminders@logicautomate.app";
+  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "reminders@anybooking.app";
 
   // Send email reminder when enabled and Resend is configured
   if (emailEnabled && customerEmail && process.env.RESEND_API_KEY) {
