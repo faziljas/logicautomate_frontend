@@ -79,17 +79,7 @@ export default function DashboardOverviewPage() {
   }
 
   if (!business) {
-    return (
-      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-        <p className="text-slate-500">No business found. Complete onboarding first.</p>
-        <a
-          href="/onboarding"
-          className="mt-3 inline-block text-violet-600 font-medium hover:underline"
-        >
-          Go to onboarding
-        </a>
-      </div>
-    );
+    return null; // Layout will redirect to /enter
   }
 
   const handleAddWalkIn = () => {

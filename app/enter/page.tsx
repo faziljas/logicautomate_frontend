@@ -14,13 +14,24 @@ export default function EnterPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const [loading, setLoading] = useState(true);
+  const [hasBusiness, setHasBusiness] = useState<boolean | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) {
         router.replace("/login");
         return;
       }
+      
+      // Check if user has a business
+      const { data: business } = await supabase
+        .from("businesses")
+        .select("id")
+        .eq("owner_id", session.user.id)
+        .limit(1)
+        .maybeSingle();
+      
+      setHasBusiness(!!business);
       setLoading(false);
     });
   }, [supabase.auth, router]);
@@ -60,59 +71,65 @@ export default function EnterPage() {
         </div>
 
         <div className="space-y-4">
-          <Link
-            href="/dashboard"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-violet-500/30 transition-all duration-200 group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center group-hover:bg-violet-500/30 transition-colors">
-                <LayoutDashboard className="w-6 h-6 text-violet-400" />
-              </div>
-              <div className="text-left">
-                <h2 className="font-bold text-white text-lg">Owner Dashboard</h2>
-                <p className="text-sm text-slate-400">Manage bookings, staff, and analytics</p>
-              </div>
-            </div>
-            <ArrowRight className="w-5 h-5 text-violet-400 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          {hasBusiness ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-violet-500/30 transition-all duration-200 group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center group-hover:bg-violet-500/30 transition-colors">
+                    <LayoutDashboard className="w-6 h-6 text-violet-400" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="font-bold text-white text-lg">Owner Dashboard</h2>
+                    <p className="text-sm text-slate-400">Manage bookings, staff, and analytics</p>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 text-violet-400 group-hover:translate-x-1 transition-transform" />
+              </Link>
 
-          <Link
-            href="/staff/login"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-slate-600 transition-all duration-200 group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-fuchsia-500/20 flex items-center justify-center group-hover:bg-fuchsia-500/30 transition-colors">
-                <UserCog className="w-6 h-6 text-fuchsia-400" />
+              <Link
+                href="/staff/login"
+                className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-slate-600 transition-all duration-200 group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-fuchsia-500/20 flex items-center justify-center group-hover:bg-fuchsia-500/30 transition-colors">
+                    <UserCog className="w-6 h-6 text-fuchsia-400" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="font-bold text-white text-lg">Staff Portal</h2>
+                    <p className="text-sm text-slate-400">View schedule, complete appointments</p>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/onboarding/industry-selection"
+              className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-emerald-500/30 transition-all duration-200 group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-colors">
+                  <Calendar className="w-6 h-6 text-emerald-400" />
+                </div>
+                <div className="text-left">
+                  <h2 className="font-bold text-white text-lg">Create your business</h2>
+                  <p className="text-sm text-slate-400">Set up in ~3 minutes, start taking bookings</p>
+                </div>
               </div>
-              <div className="text-left">
-                <h2 className="font-bold text-white text-lg">Staff Portal</h2>
-                <p className="text-sm text-slate-400">View schedule, complete appointments</p>
-              </div>
-            </div>
-            <ArrowRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </Link>
-
-          <Link
-            href="/onboarding/industry-selection"
-            className="flex items-center justify-between w-full p-5 rounded-2xl bg-slate-900/60 border border-slate-700/50 hover:border-emerald-500/30 transition-all duration-200 group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-colors">
-                <Calendar className="w-6 h-6 text-emerald-400" />
-              </div>
-              <div className="text-left">
-                <h2 className="font-bold text-white text-lg">Create your business</h2>
-                <p className="text-sm text-slate-400">Set up in ~3 minutes, start taking bookings</p>
-              </div>
-            </div>
-            <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
-          </Link>
+              <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          )}
         </div>
 
-        <p className="text-center text-sm text-slate-500 mt-8">
-          Customers book via your link:{" "}
-          <span className="font-mono text-slate-400">logicautomate.app/your-business</span>
-        </p>
+        {hasBusiness && (
+          <p className="text-center text-sm text-slate-500 mt-8">
+            Customers book via your link:{" "}
+            <span className="font-mono text-slate-400">logicautomate.app/your-business</span>
+          </p>
+        )}
       </div>
 
       <footer className="mt-auto pt-8 pb-6 border-t border-slate-800 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-500">

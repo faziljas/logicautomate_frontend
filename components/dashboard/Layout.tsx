@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Calendar,
@@ -41,11 +41,19 @@ const NAV_ITEMS = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { business, role, signOut, terminology } = useDashboard();
+  const router = useRouter();
+  const { business, role, signOut, terminology, loading } = useDashboard();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [newBookingBadge, setNewBookingBadge] = useState(false);
+
+  // Redirect to /enter if no business (after loading completes)
+  useEffect(() => {
+    if (!loading && !business) {
+      router.replace("/enter");
+    }
+  }, [loading, business, router]);
 
   useEffect(() => {
     if (!business?.id) return;
