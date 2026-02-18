@@ -119,6 +119,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [notificationsOpen, business?.id]);
 
+  // Close notification dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationsOpen) {
+        const target = event.target as HTMLElement;
+        // Check if click is outside the notification dropdown and button
+        if (
+          target &&
+          !target.closest('[aria-label="Notifications"]') &&
+          !target.closest('.notification-dropdown')
+        ) {
+          setNotificationsOpen(false);
+        }
+      }
+    };
+
+    if (notificationsOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [notificationsOpen]);
+
   const filteredNav = NAV_ITEMS.filter(
     (item) => !item.ownerOnly || role === "owner"
   );
@@ -231,11 +255,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </button>
               {notificationsOpen && (
                 <>
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setNotificationsOpen(false)}
-                  />
-                  <div className="absolute right-0 top-full mt-1 w-80 rounded-xl border border-slate-200 bg-white shadow-lg z-50 max-h-[500px] flex flex-col">
+                  <div className="absolute right-0 top-full mt-1 w-80 rounded-xl border border-slate-200 bg-white shadow-lg z-50 max-h-[500px] flex flex-col notification-dropdown">
                     <div className="px-4 py-3 text-sm font-semibold text-slate-900 border-b border-slate-100 flex items-center justify-between">
                       <span>Notifications</span>
                       {unreadCount > 0 && (
