@@ -171,12 +171,12 @@ function IndustrySelectionContent() {
       <div className="fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-sm border-t border-slate-800 px-4 py-4">
         <div className="max-w-3xl mx-auto">
           {alreadyHasBusiness ? (
-            <Link
-              href="/pricing"
-              className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl py-4 text-base transition-all duration-200"
+            <button
+              disabled
+              className="w-full flex items-center justify-center gap-2 bg-slate-700 text-slate-500 font-semibold rounded-xl py-4 text-base cursor-not-allowed opacity-50"
             >
-              <Sparkles className="w-4 h-4" /> Upgrade to Pro for more businesses
-            </Link>
+              Select an industry to continue
+            </button>
           ) : (
             <>
               <button

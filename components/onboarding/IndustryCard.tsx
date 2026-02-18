@@ -10,7 +10,7 @@
 // ============================================================
 
 import { memo } from "react";
-import { Check, Lock } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface IndustryCardData {
@@ -54,17 +54,11 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
     return (
       <div
         className={cn(
-          "relative w-full rounded-2xl border-2 border-slate-700 bg-slate-800/40 p-5 opacity-70 cursor-not-allowed select-none h-[240px] flex flex-col"
+          "relative w-full rounded-2xl border-2 border-slate-700 bg-slate-800/40 p-5 opacity-50 cursor-not-allowed select-none h-[240px] flex flex-col"
         )}
       >
-        <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-slate-900/70 z-10">
-          <span className="flex items-center gap-2 text-sm font-medium text-slate-400">
-            <Lock className="w-4 h-4" />
-            Upgrade to Pro for more businesses
-          </span>
-        </div>
         <div className="flex items-center gap-3 mb-3 flex-shrink-0">
-          <span className="text-3xl w-12 h-12 rounded-xl flex items-center justify-center bg-slate-700/50">{industry.icon}</span>
+          <span className="text-3xl w-12 h-12 rounded-xl flex items-center justify-center bg-slate-700/50 opacity-50">{industry.icon}</span>
           <div>
             <h3 className="font-bold text-sm text-slate-500">{industry.name}</h3>
             <p className="text-xs text-slate-500 mt-0.5">{industry.description}</p>
