@@ -73,7 +73,7 @@ export const IndustryCard = memo(function IndustryCard({ industry, selected, onS
       )}
       {/* Popular badge — left side so it doesn't overlap the selected checkmark */}
       {industry.popular && (
-        <span className="absolute top-3 left-3 text-xs font-semibold bg-amber-500/25 text-amber-300 px-2.5 py-1 rounded-full border border-amber-500/30">
+        <span className="absolute top-3 left-3 text-xs font-bold bg-amber-500 text-white px-2.5 py-1 rounded-full shadow-sm">
           Popular
         </span>
       )}
