@@ -31,12 +31,44 @@ export async function POST(request: NextRequest) {
       customers(name, phone),
       services(name),
       staff(users(name)),
-      businesses(name, address, phone, slug, google_review_link)
+      businesses(name, address, phone, slug, google_review_link, created_at, subscription_tier)
     `)
     .eq("id", bookingId)
     .single();
 
   if (!row) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+
+  // ── Check WhatsApp trial period for free tier ────────────
+  const businessId = row.business_id;
+  const businessCreatedAt = (row as { businesses?: { created_at?: string } }).businesses?.created_at;
+  const businessTier = (row as { businesses?: { subscription_tier?: string } }).businesses?.subscription_tier;
+  const { isFreeTier, isInWhatsAppTrial } = await import("@/lib/plan-limits");
+  
+  if (isFreeTier(businessTier) && !isInWhatsAppTrial(businessCreatedAt, businessTier)) {
+    // Trial expired - log this attempt so it shows in WhatsApp logs
+    const customerPhone = (row as { customers?: { phone?: string } }).customers?.phone ?? "";
+    if (customerPhone) {
+      await supabase.from("whatsapp_logs").insert({
+        business_id: businessId,
+        booking_id: bookingId,
+        customer_phone: customerPhone,
+        message_type: type === "feedback" ? "feedback_request" : "booking_confirmation",
+        template_used: type === "feedback" ? "feedback_request" : "booking_confirmation",
+        message_body: "(blocked — WhatsApp trial expired)",
+        status: "failed",
+        error_message: "WhatsApp trial expired. Upgrade to Pro for WhatsApp confirmations.",
+        error_code: "TRIAL_EXPIRED",
+        sent_at: new Date().toISOString(),
+      });
+    }
+    
+    return NextResponse.json({ 
+      success: false, 
+      error: "WhatsApp trial expired. Upgrade to Pro for WhatsApp confirmations.",
+      logId: null,
+      messageSid: null,
+    }, { status: 403 });
+  }
 
   const bookerName = (row as { custom_data?: { customer_name?: string } })?.custom_data?.customer_name;
   const booking: BookingForMessage = {
