@@ -21,11 +21,11 @@ export default function LandingPage() {
             <Link href="/pricing" className="text-gray-600 hover:text-violet-600 transition-colors">
               Pricing
             </Link>
-            <Link href="/enter" className="text-violet-600 font-semibold hover:text-violet-700">
+            <Link href="/login" className="text-violet-600 font-semibold hover:text-violet-700">
               Sign in
             </Link>
             <Link
-              href="/enter"
+              href="/login"
               className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl bg-violet-600 text-white font-semibold hover:bg-violet-700 transition-colors"
             >
               Get started
@@ -45,7 +45,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/enter"
+              href="/login"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-4 px-8 rounded-xl bg-violet-600 text-white font-semibold text-lg hover:bg-violet-700 transition-colors shadow-lg shadow-violet-200"
             >
               Get started free
@@ -100,7 +100,7 @@ export default function LandingPage() {
             Create your business in a few minutes. No credit card required.
           </p>
           <Link
-            href="/enter"
+            href="/login"
             className="inline-flex items-center gap-2 py-3 px-6 rounded-xl bg-violet-600 text-white font-semibold hover:bg-violet-700 transition-colors"
           >
             Sign in or get started

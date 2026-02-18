@@ -31,7 +31,7 @@ export default function LoginPage() {
       const { error: err } = await supabase.auth.signInWithOtp({
         email: email.trim().toLowerCase(),
         options: {
-          emailRedirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/dashboard`,
+          emailRedirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/enter`,
         },
       });
       if (err) {
@@ -55,7 +55,7 @@ export default function LoginPage() {
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h1>
           <p className="text-gray-600 mb-6">
-            We sent a magic link to <strong>{email}</strong>. Click the link to sign in to your dashboard.
+            We sent a magic link to <strong>{email}</strong>. Click the link to sign in.
           </p>
           <p className="text-sm text-gray-500 mb-6">
             Didn&apos;t receive it? Check your spam folder or{" "}
@@ -144,7 +144,7 @@ export default function LoginPage() {
                 const { error: err } = await supabase.auth.signInWithOAuth({
                   provider: "google",
                   options: {
-                    redirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/auth/callback?next=/dashboard`,
+                    redirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/auth/callback?next=/enter`,
                   },
                 });
                 if (err) {

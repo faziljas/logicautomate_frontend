@@ -1,15 +1,39 @@
 "use client";
 
 // ============================================================
-// LogicAutomate — Enter / Portal
-// Owner sign-in (Google + email), Staff, Create business
+// LogicAutomate — Enter / Portal (post sign-in)
+// Shown only when signed in. No sign-in on this page.
 // ============================================================
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LayoutDashboard, UserCog, Calendar, ArrowRight } from "lucide-react";
-import { GoogleSignInButton } from "@/components/landing/GoogleSignInButton";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function EnterPage() {
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.replace("/login");
+        return;
+      }
+      setLoading(false);
+    });
+  }, [supabase.auth, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-gray-500">Loading…</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       <div className="max-w-2xl mx-auto px-4 py-16 sm:py-24">
@@ -30,12 +54,14 @@ export default function EnterPage() {
           </p>
         </div>
 
-        {/* Cards */}
+        {/* Cards — no sign-in here; Owner goes to dashboard */}
         <div className="space-y-4">
-          {/* Owner Dashboard — Google sign-in */}
-          <div className="p-5 rounded-2xl bg-white border-2 border-violet-100 shadow-violet-100 transition-all duration-200">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center">
+          <Link
+            href="/dashboard"
+            className="flex items-center justify-between w-full p-5 rounded-2xl bg-white border-2 border-violet-100 hover:border-violet-300 hover:shadow-lg shadow-violet-100 transition-all duration-200 group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center group-hover:bg-violet-200 transition-colors">
                 <LayoutDashboard className="w-6 h-6 text-violet-600" />
               </div>
               <div className="text-left">
@@ -43,16 +69,8 @@ export default function EnterPage() {
                 <p className="text-sm text-gray-500">Manage bookings, staff, and analytics</p>
               </div>
             </div>
-            <GoogleSignInButton variant="card" redirectTo="/dashboard">
-              Continue with Google
-            </GoogleSignInButton>
-            <p className="text-center text-sm text-gray-500 mt-3">
-              Or{" "}
-              <Link href="/login" className="text-violet-600 font-medium hover:underline">
-                sign in with email
-              </Link>
-            </p>
-          </div>
+            <ArrowRight className="w-5 h-5 text-violet-500 group-hover:translate-x-1 transition-transform" />
+          </Link>
 
           <Link
             href="/staff/login"
