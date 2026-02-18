@@ -15,6 +15,7 @@ import { useOnboarding } from "@/context/OnboardingContext";
 import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
 import { INDUSTRY_LIST } from "@/components/onboarding/IndustryCard";
 import { cn } from "@/lib/utils";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 // ─────────────────────────────────────────
 // CONFETTI (lightweight CSS-only particles)
@@ -90,15 +91,38 @@ function ShareButton({
 export default function CompletePage() {
   const router  = useRouter();
   const { state, dispatch } = useOnboarding();
+  const supabase = createClientComponentClient();
 
   const [copied,       setCopied]       = useState(false);
   const [showConfetti, setShowConfetti] = useState(true);
+  const [businessSlug, setBusinessSlug] = useState<string | null>(state.createdBusinessSlug);
+  const [loadingSlug, setLoadingSlug] = useState(false);
 
   const selectedIndustry = INDUSTRY_LIST.find(
     (i) => i.id === state.selectedTemplate
   );
 
-  const bookingUrl = state.bookingUrl ?? `https://logicautomate.app/${state.createdBusinessSlug ?? "your-business"}`;
+  // Fetch business slug if missing
+  useEffect(() => {
+    if (!businessSlug && state.createdBusinessId) {
+      setLoadingSlug(true);
+      supabase
+        .from("businesses")
+        .select("slug")
+        .eq("id", state.createdBusinessId)
+        .single()
+        .then(({ data, error }) => {
+          if (!error && data?.slug) {
+            setBusinessSlug(data.slug);
+          }
+        })
+        .catch(console.error)
+        .finally(() => setLoadingSlug(false));
+    }
+  }, [businessSlug, state.createdBusinessId, supabase]);
+
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://logicautomate.app";
+  const bookingUrl = state.bookingUrl ?? (businessSlug ? `${baseUrl}/${businessSlug}` : null);
 
   // Hide confetti after 5s
   useEffect(() => {
@@ -107,6 +131,7 @@ export default function CompletePage() {
   }, []);
 
   function copyLink() {
+    if (!bookingUrl) return;
     navigator.clipboard.writeText(bookingUrl).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -114,6 +139,7 @@ export default function CompletePage() {
   }
 
   function shareOnWhatsApp() {
+    if (!bookingUrl) return;
     const text = encodeURIComponent(
       `Book an appointment with us! 📅\n${bookingUrl}`
     );
@@ -121,6 +147,7 @@ export default function CompletePage() {
   }
 
   function shareOnInstagram() {
+    if (!bookingUrl) return;
     // Instagram doesn't support URL sharing via web; open link copy modal
     copyLink();
     window.open("https://www.instagram.com/", "_blank");
@@ -130,7 +157,7 @@ export default function CompletePage() {
     // Clear onboarding session state
     try { sessionStorage.removeItem("bookflow_onboarding"); } catch {}
     dispatch({ type: "RESET" });
-    router.push("/dashboard");
+    router.push("/enter"); // Go to /enter to show Dashboard + Staff Portal options
   }
 
   return (
@@ -139,7 +166,7 @@ export default function CompletePage() {
       {showConfetti && <Confetti />}
 
       <div className="min-h-screen bg-slate-950 text-white">
-        <header className="sticky top-0 z-10 bg-slate-950/90 backdrop-blur-sm border-b border-slate-800">
+        <header className="sticky top-0 z-10 bg-slate-950/90 backdrop-blur-sm">
           <div className="max-w-lg mx-auto px-4 py-4">
             <span className="text-xl font-bold text-violet-400">📅 LogicAutomate</span>
           </div>
@@ -154,11 +181,10 @@ export default function CompletePage() {
               <span className="absolute -top-1 -right-2 text-2xl animate-spin-slow">✨</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-              Your booking page is{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">live!</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Complete!</span>
             </h1>
-            <p className="text-slate-400 text-base">
-              Share the link below and start accepting appointments right away.
+            <p className="text-slate-400 text-base mb-4">
+              Your booking page is live! Share the link below and start accepting appointments right away.
             </p>
           </div>
 
@@ -180,21 +206,31 @@ export default function CompletePage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 bg-slate-800 rounded-xl px-4 py-3 border border-slate-600">
-                <span className="text-xs text-slate-400 font-medium truncate flex-1 font-mono">
-                  {bookingUrl}
-                </span>
-                <button
-                  onClick={copyLink}
-                  className="shrink-0 flex items-center gap-1.5 bg-violet-500 hover:bg-violet-400 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200"
-                >
-                  {copied ? (
-                    <><Check className="w-3 h-3" /> Copied!</>
-                  ) : (
-                    <><Copy className="w-3 h-3" /> Copy</>
-                  )}
-                </button>
-              </div>
+              {loadingSlug ? (
+                <div className="bg-slate-800 rounded-xl px-4 py-3 border border-slate-600 text-center">
+                  <p className="text-sm text-slate-400">Loading your booking URL...</p>
+                </div>
+              ) : bookingUrl ? (
+                <div className="flex items-center gap-2 bg-slate-800 rounded-xl px-4 py-3 border border-slate-600">
+                  <span className="text-xs text-slate-400 font-medium truncate flex-1 font-mono">
+                    {bookingUrl}
+                  </span>
+                  <button
+                    onClick={copyLink}
+                    className="shrink-0 flex items-center gap-1.5 bg-violet-500 hover:bg-violet-400 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all duration-200"
+                  >
+                    {copied ? (
+                      <><Check className="w-3 h-3" /> Copied!</>
+                    ) : (
+                      <><Copy className="w-3 h-3" /> Copy</>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-slate-800 rounded-xl px-4 py-3 border border-slate-600 text-center">
+                  <p className="text-sm text-slate-400">Booking URL will be available shortly</p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -227,7 +263,7 @@ export default function CompletePage() {
               <ShareButton
                 icon={ExternalLink}
                 label="Preview Page"
-                onClick={() => window.open(bookingUrl, "_blank")}
+                onClick={() => bookingUrl && window.open(bookingUrl, "_blank")}
                 className="bg-slate-700 hover:bg-slate-600 text-white"
               />
             </div>
