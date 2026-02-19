@@ -77,6 +77,7 @@ function rowToBooking(row: any): BookingForMessage {
     business_phone:   row.businesses?.phone   ?? "",
     business_slug:    row.businesses?.slug    ?? "",
     google_review_link: row.businesses?.google_review_link ?? "",
+    status:           row.status,
   };
 }
 
@@ -137,11 +138,12 @@ async function run24hReminders(
   tomorrow.setDate(tomorrow.getDate() + 1);
   const tomorrowStr = tomorrow.toISOString().split("T")[0];
 
+  // Send reminders to both pending and confirmed bookings
   const { data: bookings } = await supabase
     .from("bookings")
     .select(BOOKING_SELECT)
     .eq("booking_date", tomorrowStr)
-    .eq("status", "confirmed")
+    .in("status", ["pending", "confirmed"])
     .eq("reminder_24h_sent", false);
 
   for (const row of bookings ?? []) {

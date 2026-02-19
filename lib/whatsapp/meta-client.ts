@@ -55,6 +55,7 @@ export interface BookingForMessage {
   business_phone?: string;
   business_slug?: string;
   google_review_link?: string;
+  status?: string; // pending, confirmed, cancelled, etc.
 }
 
 function getSupabase() {
@@ -337,14 +338,31 @@ export async function sendBookingConfirmation(
   booking: BookingForMessage,
   config: TemplateConfig
 ): Promise<SendResult> {
+  const variables = buildBookingVariables(booking);
+  
+  // Render the base confirmation message
+  const baseResult = renderBusinessTemplate("confirmation", config, variables);
+  let messageBody = baseResult?.message || "";
+  
+  // Append YES/NO/RESCHEDULE options
+  messageBody += "\n\nReply YES to confirm you'll attend\nReply NO if you need to cancel\nReply RESCHEDULE to change the time";
+  
+  // Set session state to awaiting_confirmation
+  const supabase = getSupabase();
+  await supabase
+    .from("bookings")
+    .update({ whatsapp_session_state: "awaiting_confirmation" })
+    .eq("id", booking.id);
+  
   return sendWhatsApp({
     businessId: booking.business_id,
     to: booking.customer_phone,
-    messageType: "confirmation",
+    messageType: "custom",
     bookingId: booking.id,
     templateUsed: "confirmation",
+    customMessage: messageBody,
     config,
-    variables: buildBookingVariables(booking),
+    variables,
   });
 }
 
@@ -352,14 +370,33 @@ export async function send24hReminder(
   booking: BookingForMessage,
   config: TemplateConfig
 ): Promise<SendResult> {
+  const variables = buildBookingVariables(booking);
+  
+  // Render the base reminder message
+  const baseResult = renderBusinessTemplate("reminder_24h", config, variables);
+  let messageBody = baseResult?.message || "";
+  
+  // Append YES/NO/RESCHEDULE options if booking is not yet confirmed
+  if (booking.status === "pending") {
+    messageBody += "\n\nReply YES to confirm ✅\nReply NO to cancel ❌\nReply RESCHEDULE to change time 🔄";
+    
+    // Set session state
+    const supabase = getSupabase();
+    await supabase
+      .from("bookings")
+      .update({ whatsapp_session_state: "awaiting_confirmation" })
+      .eq("id", booking.id);
+  }
+  
   return sendWhatsApp({
     businessId: booking.business_id,
     to: booking.customer_phone,
-    messageType: "reminder_24h",
+    messageType: booking.status === "pending" ? "custom" : "reminder_24h",
     bookingId: booking.id,
     templateUsed: "reminder_24h",
+    customMessage: booking.status === "pending" ? messageBody : undefined,
     config,
-    variables: buildBookingVariables(booking),
+    variables,
   });
 }
 
