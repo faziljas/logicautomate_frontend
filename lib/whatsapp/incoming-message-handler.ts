@@ -87,8 +87,10 @@ async function findActiveBooking(phone: string, businessId?: string) {
   // Normalize phone (remove +, spaces, etc.)
   const normalizedPhone = phone.replace(/\D/g, "");
   
-  console.log("[whatsapp-incoming] Searching for booking with phone:", normalizedPhone);
+  console.log("[whatsapp-incoming] Searching for booking with phone:", normalizedPhone, "original:", phone);
   
+  // Query all active bookings and filter by normalized phone in code
+  // This handles phone numbers stored with + prefix or different formats
   let query = supabase
     .from("bookings")
     .select(`
@@ -100,28 +102,44 @@ async function findActiveBooking(phone: string, businessId?: string) {
       staff(users(name)),
       businesses(name, slug, address, phone)
     `)
-    .eq("customers.phone", normalizedPhone)
     .in("status", ["pending", "confirmed"])
     .order("created_at", { ascending: false })
-    .limit(1);
+    .limit(50); // Get recent bookings to filter by phone
   
   if (businessId) {
     query = query.eq("business_id", businessId);
   }
   
-  const { data, error } = await query.maybeSingle();
+  const { data: bookings, error } = await query;
   
   if (error) {
     console.error("[whatsapp-incoming] Error finding booking:", error);
     return null;
   }
   
-  if (!data) {
-    console.log("[whatsapp-incoming] No active booking found for phone:", normalizedPhone);
+  if (!bookings || bookings.length === 0) {
+    console.log("[whatsapp-incoming] No active bookings found");
     return null;
   }
   
-  console.log("[whatsapp-incoming] Found booking:", data.id, "status:", data.status);
+  // Find booking where customer phone matches (normalized)
+  const booking = bookings.find((b: any) => {
+    const customerPhone = b.customers?.phone || "";
+    const normalizedCustomerPhone = customerPhone.replace(/\D/g, "");
+    return normalizedCustomerPhone === normalizedPhone;
+  });
+  
+  if (!booking) {
+    console.log("[whatsapp-incoming] No active booking found for phone:", normalizedPhone);
+    console.log("[whatsapp-incoming] Available customer phones:", bookings.map((b: any) => ({
+      phone: b.customers?.phone,
+      normalized: (b.customers?.phone || "").replace(/\D/g, ""),
+      bookingId: b.id
+    })));
+    return null;
+  }
+  
+  console.log("[whatsapp-incoming] Found booking:", booking.id, "status:", booking.status);
   
   const booking = data as any;
   const customer = booking.customers;
