@@ -7,7 +7,10 @@ import { Client } from "@upstash/qstash";
 function getQStashClient() {
   const token = process.env.QSTASH_TOKEN;
   const baseUrl = process.env.QSTASH_URL;
-  if (!token) throw new Error("QSTASH_TOKEN is required");
+  if (!token) {
+    console.warn("[qstash] QSTASH_TOKEN not set - reminders will use cron job instead");
+    return null;
+  }
   return new Client({
     token,
     ...(baseUrl && { baseUrl }),
@@ -29,6 +32,11 @@ export async function scheduleReminders(
   bookingTime: string | Date
 ): Promise<{ messageId24h?: string; messageId2h?: string }> {
   const client = getQStashClient();
+  if (!client) {
+    console.log("[qstash] Skipping QStash scheduling - using cron job instead");
+    return {};
+  }
+  
   const dt = typeof bookingTime === "string" ? new Date(bookingTime) : bookingTime;
   const ms = dt.getTime();
 
@@ -40,22 +48,28 @@ export async function scheduleReminders(
   const results: { messageId24h?: string; messageId2h?: string } = {};
 
   // Only schedule if the time is in the future
-  if (notBefore24h > nowSec) {
-    const res24 = await client.publishJSON({
-      url: targetUrl,
-      body: { ...body, reminderType: "24h" as const },
-      notBefore: notBefore24h,
-    });
-    results.messageId24h = (res24 as { messageId?: string })?.messageId;
-  }
+  try {
+    if (notBefore24h > nowSec) {
+      const res24 = await client.publishJSON({
+        url: targetUrl,
+        body: { ...body, reminderType: "24h" as const },
+        notBefore: notBefore24h,
+      });
+      results.messageId24h = (res24 as { messageId?: string })?.messageId;
+    }
 
-  if (notBefore2h > nowSec) {
-    const res2 = await client.publishJSON({
-      url: targetUrl,
-      body: { ...body, reminderType: "2h" as const },
-      notBefore: notBefore2h,
-    });
-    results.messageId2h = (res2 as { messageId?: string })?.messageId;
+    if (notBefore2h > nowSec) {
+      const res2 = await client.publishJSON({
+        url: targetUrl,
+        body: { ...body, reminderType: "2h" as const },
+        notBefore: notBefore2h,
+      });
+      results.messageId2h = (res2 as { messageId?: string })?.messageId;
+    }
+  } catch (error) {
+    console.error("[qstash] Failed to schedule reminders:", error);
+    // Don't throw - cron job will handle reminders instead
+    return {};
   }
 
   return results;
