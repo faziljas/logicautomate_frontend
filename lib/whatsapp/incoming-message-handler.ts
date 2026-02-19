@@ -102,7 +102,7 @@ async function findActiveBooking(phone: string, businessId?: string) {
       staff(users(name)),
       businesses(name, slug, address, phone)
     `)
-    .in("status", ["pending", "confirmed"])
+    .in("status", ["pending", "confirmed", "cancelled"]) // Include cancelled for rescheduling
     .order("created_at", { ascending: false })
     .limit(50); // Get recent bookings to filter by phone
   
