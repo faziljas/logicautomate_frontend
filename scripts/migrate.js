@@ -23,6 +23,7 @@ const MIGRATION_ORDER = [
   "005_add_retry_mechanism.sql",  // WhatsApp retry mechanism
   "005_seed_templates.sql",   // salon, clinic, coaching
   "006_seed_more_templates.sql",  // consulting, fitness, photography
+  "007_add_whatsapp_session_state.sql",  // WhatsApp session state and waitlist
 ];
 
 async function runMigrations() {
