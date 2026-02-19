@@ -269,7 +269,7 @@ async function handleRescheduleIntent(booking: any) {
             slots.push({
               date: dateStr,
               time: slot.time,
-              label: `${format(checkDate, "EEEE, d MMM")} at ${slot.label}`,
+              label: `${formatDate(dateStr, "EEEE, d MMM")} at ${slot.label}`,
             });
           }
         }
