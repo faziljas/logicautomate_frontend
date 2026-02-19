@@ -388,13 +388,17 @@ async function handleSlotSelection(booking: any, slotNumber: number) {
   
   const selectedSlot = rescheduleOptions[slotNumber - 1];
   
-  // Update booking with new date/time
+  // Update booking with new date/time and restore status if it was cancelled
   await supabase
     .from("bookings")
     .update({
       booking_date: selectedSlot.date,
       booking_time: selectedSlot.time,
+      status: booking.status === "cancelled" ? "pending" : booking.status, // Restore status if cancelled
+      cancellation_reason: null, // Clear cancellation reason
       whatsapp_session_state: null,
+      reminder_24h_sent: false, // Reset reminders for new date/time
+      reminder_2h_sent: false,
       custom_data: {
         ...booking.custom_data,
         reschedule_options: undefined,
@@ -402,6 +406,7 @@ async function handleSlotSelection(booking: any, slotNumber: number) {
           date: booking.booking_date,
           time: booking.booking_time,
         },
+        rescheduled_at: new Date().toISOString(), // Track when rescheduled
       },
     })
     .eq("id", booking.id);
