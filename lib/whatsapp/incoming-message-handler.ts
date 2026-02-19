@@ -147,6 +147,10 @@ async function findActiveBooking(phone: string, businessId?: string) {
   const staff = booking.staff;
   const business = booking.businesses;
   
+  // Priority: custom_data.customer_name (booking-specific) > customer.name (table)
+  // This ensures we use the name from the actual booking, not the customer record
+  const bookingCustomerName = booking.custom_data?.customer_name || customer?.name || "Customer";
+  
   return {
     id: booking.id,
     status: booking.status,
@@ -159,7 +163,7 @@ async function findActiveBooking(phone: string, businessId?: string) {
     duration_minutes: booking.duration_minutes,
     whatsapp_session_state: booking.whatsapp_session_state,
     custom_data: booking.custom_data,
-    customer_name: customer?.name || "Customer",
+    customer_name: bookingCustomerName,
     customer_phone: customer?.phone || phone,
     service_name: service?.name || "Service",
     staff_name: staff?.users?.name || "Staff",
