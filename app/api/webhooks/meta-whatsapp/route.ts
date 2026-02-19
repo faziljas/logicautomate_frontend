@@ -82,8 +82,20 @@ export async function POST(request: NextRequest) {
             timestamp: msg.timestamp,
           };
           
+          console.log("[meta-webhook] Received message:", {
+            from: msg.from,
+            text: msg.text.body,
+            messageId: msg.id,
+          });
+          
           // Process the message
           const result = await handleIncomingMessage(incomingMessage);
+          
+          console.log("[meta-webhook] Message processed:", {
+            success: result.success,
+            handled: result.handled,
+            error: result.error,
+          });
           
           if (!result.success) {
             console.error("[meta-webhook] Failed to handle message:", result.error);

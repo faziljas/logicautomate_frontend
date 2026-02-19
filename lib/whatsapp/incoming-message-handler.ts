@@ -87,6 +87,8 @@ async function findActiveBooking(phone: string, businessId?: string) {
   // Normalize phone (remove +, spaces, etc.)
   const normalizedPhone = phone.replace(/\D/g, "");
   
+  console.log("[whatsapp-incoming] Searching for booking with phone:", normalizedPhone);
+  
   let query = supabase
     .from("bookings")
     .select(`
@@ -107,9 +109,19 @@ async function findActiveBooking(phone: string, businessId?: string) {
     query = query.eq("business_id", businessId);
   }
   
-  const { data, error } = await query.single();
+  const { data, error } = await query.maybeSingle();
   
-  if (error || !data) return null;
+  if (error) {
+    console.error("[whatsapp-incoming] Error finding booking:", error);
+    return null;
+  }
+  
+  if (!data) {
+    console.log("[whatsapp-incoming] No active booking found for phone:", normalizedPhone);
+    return null;
+  }
+  
+  console.log("[whatsapp-incoming] Found booking:", data.id, "status:", data.status);
   
   const booking = data as any;
   const customer = booking.customers;
@@ -561,6 +573,12 @@ export async function handleIncomingMessage(message: IncomingMessage): Promise<{
     
     // Detect intent
     const intent = detectIntent(message.text, booking.whatsapp_session_state);
+    
+    console.log("[whatsapp-incoming] Intent detected:", {
+      text: message.text,
+      intent: intent.type,
+      sessionState: booking.whatsapp_session_state,
+    });
     
     // Handle based on intent
     switch (intent.type) {
