@@ -123,13 +123,13 @@ async function findActiveBooking(phone: string, businessId?: string) {
   }
   
   // Find booking where customer phone matches (normalized)
-  const booking = bookings.find((b: any) => {
+  const matchedBooking = bookings.find((b: any) => {
     const customerPhone = b.customers?.phone || "";
     const normalizedCustomerPhone = customerPhone.replace(/\D/g, "");
     return normalizedCustomerPhone === normalizedPhone;
   });
   
-  if (!booking) {
+  if (!matchedBooking) {
     console.log("[whatsapp-incoming] No active booking found for phone:", normalizedPhone);
     console.log("[whatsapp-incoming] Available customer phones:", bookings.map((b: any) => ({
       phone: b.customers?.phone,
@@ -139,9 +139,9 @@ async function findActiveBooking(phone: string, businessId?: string) {
     return null;
   }
   
-  console.log("[whatsapp-incoming] Found booking:", booking.id, "status:", booking.status);
+  console.log("[whatsapp-incoming] Found booking:", matchedBooking.id, "status:", matchedBooking.status);
   
-  const booking = data as any;
+  const booking = matchedBooking as any;
   const customer = booking.customers;
   const service = booking.services;
   const staff = booking.staff;
